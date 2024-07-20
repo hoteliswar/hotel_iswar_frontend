@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        p{
+            width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Dashboard</h1>
+    <p id="accessToken"></p>
+    <p id="refreshToken"></p>
+
+    <ul>
+        
+    </ul>
+
+    <script>
+        // Helper function to get a cookie value
+        function getCookie(name) {
+            let value = "; " + document.cookie;
+            let parts = value.split("; " + name + "=");
+            if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+
+        // Retrieve and display the access token
+        const accessToken = getCookie('access_token');
+        if (accessToken) {
+            document.getElementById('accessToken').innerText = `Access Token: ${accessToken}`;
+        } else {
+            document.getElementById('accessToken').innerText = 'No access token found.';
+        }
+
+        // Retrieve and display the refresh token
+        const refreshToken = getCookie('refresh_token');
+        if (refreshToken) {
+            document.getElementById('refreshToken').innerText = `Refresh Token: ${refreshToken}`;
+        } else {
+            document.getElementById('refreshToken').innerText = 'No refresh token found.';
+        }
+
+        // Optionally, you can use the access token for further API requests
+        fetch('http://127.0.0.1:8000/api/accounts/tenants/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            }
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    </script>
+</body>
+</html>

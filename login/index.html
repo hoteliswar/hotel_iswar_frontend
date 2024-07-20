@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login Page</title>
+        <!-- <link rel="stylesheet" href="styles.css"> -->
+        <style>
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -39,7 +39,7 @@
         }
         
         input {
-            width: 100%;
+            width: 80%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
@@ -65,54 +65,81 @@
         }
         
     </style>
-</head>
-<body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit">Login</button>
-        </form>
-        <p id="error-message"></p>
-    </div>
-    <script src="script.js"></script>
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-        
-            fetch('https://your-api-endpoint.com/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.token) {
-                    document.cookie = `token=${data.token};path=/;`;
-                    alert('Login successful!');
-                } else {
-                    document.getElementById('error-message').textContent = 'Invalid username or password';
-                }
-            })
-            .catch(error => {
-                document.getElementById('error-message').textContent = 'An error occurred. Please try again.';
-                console.error('Error:', error);
-            });
-        });
-        
-    </script>
-</body>
-</html>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script> -->
 
+    </head>
+    <body>
+        <div class="login-container">
+            <h2>Login</h2>
+            <form id="loginForm" method="POST">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username"
+                        placeholder="Enter Username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password"
+                        placeholder="Enter Password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            <p id="error-message"></p>
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+                // Helper function to set a cookie
+                function setCookie(name, value, days) {
+                    const d = new Date();
+                    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+                    const expires = "expires=" + d.toUTCString();
+                    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+                }
+        
+                // Handle the form submission
+                document.getElementById('loginForm').addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent the form from submitting the traditional way
+        
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+        
+                    fetch('http://127.0.0.1:8000/api/accounts/token/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            username: username,
+                            password: password
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.access && data.refresh) {
+                            // Store the access token in cookies
+                            setCookie('access_token', data.access, 7); // Store for 7 days
+                            setCookie('refresh_token', data.refresh, 7); // Store refresh token
+
+                            // Store the tokens in variables
+                            accessToken = data.access;
+                            refreshToken = data.refresh;
+                            
+                            console.log('Login successful, access token stored in cookies.');
+                            console.log('Access Token:', accessToken);
+                            console.log('Refresh Token:', refreshToken);
+
+                            // Redirect to a new URL after successful login
+                            window.location.href = 'dashboard.html'; // Change to your desired URL
+                        } else {
+                            console.error('Login failed:', data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            </script>
+    </body>
+</html>
