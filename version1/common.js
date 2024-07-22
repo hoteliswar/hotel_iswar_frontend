@@ -26,7 +26,7 @@ function refreshAccessToken(url, option) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    refresh: refreshToken
+                    refresh: getCookie('refresh_token')
                 })
             })
             .then(response => {
@@ -50,7 +50,10 @@ function refreshAccessToken(url, option) {
                 if(data.access){
                     setCookie('access_token', data.access, 5);
                 }
-                refreshAccessToken(url, option);
+                if(response.status === 200){
+                    refreshAccessToken(url, option);
+                }
+                // refreshAccessToken(url, option);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -74,7 +77,7 @@ async function refreshAccessToken2(url, option) {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    refresh: refreshToken
+                    refresh: getCookie('refresh_token')
                 })
             })
             .then(response => {
@@ -83,8 +86,8 @@ async function refreshAccessToken2(url, option) {
                 }
                 else if (response.status == 200){
                     // access update
-                    console.log('Access Token:', accessToken);
-                    console.log('Refresh Token:', refreshToken);
+                    console.log('Access Token:', getCookie('access_token'));
+                    console.log('Refresh Token:', getCookie('refresh_token'));
                     console.log('Refresh Status: 200');
                     // if(data.access){
                     //     setCookie('access_token', data.access, 5);
@@ -97,6 +100,9 @@ async function refreshAccessToken2(url, option) {
                 console.log(data.access);
                 if(data.access){
                     setCookie('access_token', data.access, 5);
+                }
+                if(response.status === 200){
+                    refreshAccessToken(url, option);
                 }
                 // refreshAccessToken(url, option);
             })

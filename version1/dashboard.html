@@ -15,7 +15,13 @@
         <p id="accessToken"></p>
         <p id="refreshToken"></p>
 
-        <ul>
+        <ul type="square">
+            <b><u>MENU</u></b><br><br>
+            <li><a href="tenants.html">List of Tenants</a></li>
+            <li><a href="">User</a></li>
+            <li><a href="">Create New Food</a></li>
+            <li><a href="foodlist.html">List of Food Items</a></li>
+            <li></li>
 
         </ul>
 
@@ -48,7 +54,7 @@
 
         const url = 'http://127.0.0.1:8000/api/accounts/tenants/';
 
-        refreshAccessToken(url, option)
+        refreshAccessToken2(url, option)
         // .then(response => response.json())
         .then(data => {
             console.log('Data:', data);
