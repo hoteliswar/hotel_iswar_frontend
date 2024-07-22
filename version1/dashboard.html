@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard</title>
+        <style>
+        p{
+            width: 400px;
+        }
+    </style>
+    </head>
+    <body>
+        <h1>Welcome to the Dashboard</h1>
+        <p id="accessToken"></p>
+        <p id="refreshToken"></p>
+
+        <ul>
+
+        </ul>
+
+        <script src="common.js"></script>
+        <script>
+
+        // Retrieve and display the access token
+        const accessToken = getCookie('access_token');
+        if (accessToken) {
+            document.getElementById('accessToken').innerText = `Access Token: ${accessToken}`;
+        } else {
+            document.getElementById('accessToken').innerText = 'No access token found.';
+        }
+
+        // Retrieve and display the refresh token
+        const refreshToken = getCookie('refresh_token');
+        if (refreshToken) {
+            document.getElementById('refreshToken').innerText = `Refresh Token: ${refreshToken}`;
+        } else {
+            document.getElementById('refreshToken').innerText = 'No refresh token found.';
+        }
+
+        option = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            }
+        }
+
+        const url = 'http://127.0.0.1:8000/api/accounts/tenants/';
+
+        refreshAccessToken(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Data:', data);
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+
+    </script>
+
+    </body>
+</html>

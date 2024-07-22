@@ -91,9 +91,9 @@
             src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script>
                 // Helper function to set a cookie
-                function setCookie(name, value, days) {
+                function setCookie(name, value, minutes) {
                     const d = new Date();
-                    d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+                    d.setTime(d.getTime() + (minutes * 60 * 1000));
                     const expires = "expires=" + d.toUTCString();
                     document.cookie = name + "=" + value + ";" + expires + ";path=/";
                 }
@@ -119,8 +119,8 @@
                     .then(data => {
                         if (data.access && data.refresh) {
                             // Store the access token in cookies
-                            setCookie('access_token', data.access, 7); // Store for 7 days
-                            setCookie('refresh_token', data.refresh, 7); // Store refresh token
+                            setCookie('access_token', data.access, 5); // Store for 5 minutes
+                            setCookie('refresh_token', data.refresh, 10000); // Store refresh token
 
                             // Store the tokens in variables
                             accessToken = data.access;
