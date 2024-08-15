@@ -14,11 +14,11 @@ body {
 }
 
 .header {
-    height: 10vh;
+    height: 8vh;
 }
 
 .header-title{
-    font-size: 2em;
+    font-size: 1.7em;
     font-weight: 600;
     color: rgb(255, 175, 2);
     /* text-align: center; */
@@ -42,7 +42,7 @@ body {
 
 .header-items li {
     float: left;
-    padding: 10px 15px;
+    padding: 5px 10px;
     font-size: 1.2em;
     
 }
@@ -50,8 +50,10 @@ body {
 .header-items .support{
     font-size: .8em;
     text-align: center;
-    border: 1px solid #000000;
+    border: 1px solid #f07816;
     border-radius: 3px;
+    padding: 2px;
+    background-color: #fbe1ac;
 }
 
 
@@ -59,7 +61,7 @@ body {
 /* -------------- */
 
 .screen-wrap {
-    height: 90vh;
+    height: 92vh;
     /* background-color: aqua; */
 }
 
@@ -74,8 +76,8 @@ body {
 
 .dashboard-nav{
     background-color: aliceblue;
-    height: 90vh;
-
+    height: 100%;
+    overflow-y: auto;
     user-select: none;
     -webkit-user-select: none;
     -moz-user-select: none;

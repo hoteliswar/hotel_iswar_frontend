@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const dashboardContent = document.getElementById('dashboard-content');
     const navItems = document.querySelectorAll('.dash-nav-item');
 
+    loadContent('DASHBOARD');   // Load the default content
+
     navItems.forEach(item => {
         item.addEventListener('click', function () {
             const navName = this.querySelector('.nav-name').textContent.trim();
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'DASHBOARD':
                 dashboardContent.innerHTML = '<h2>Dashboard Content</h2><p>Welcome to your dashboard!</p>';
                 break;
-            case 'MENU':
+            case 'MENU MANAGEMENT':
                 dashboardContent.innerHTML = '<h2>Menu Content</h2><p>Here you can manage your menu items.</p>';
                 break;
             case 'Category 3':
@@ -62,3 +64,50 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 });
+
+
+// Landscape Alert
+
+
+function checkOrientation() {
+    if (window.innerWidth <= 900) {
+        let overlay = document.getElementById('orientationOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'orientationOverlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 1)';
+            overlay.style.zIndex = '9998';
+            document.body.appendChild(overlay);
+
+            let alertBox = document.createElement('div');
+            alertBox.id = 'orientationAlert';
+            alertBox.style.position = 'fixed';
+            alertBox.style.top = '50%';
+            alertBox.style.left = '50%';
+            alertBox.style.transform = 'translate(-50%, -50%)';
+            alertBox.style.padding = '40px';
+            alertBox.style.backgroundColor = 'white';
+            alertBox.style.color = 'black';
+            alertBox.style.textAlign = 'center';
+            alertBox.style.zIndex = '9999';
+            alertBox.style.borderRadius = '10px';
+            alertBox.style.boxShadow = '0 0 10px rgba(255,255,255,0.5)';
+            alertBox.textContent = "For the best experience, please use in landscape mode in Desktop or Tablet.";
+            overlay.appendChild(alertBox);
+        }
+    } else {
+        let overlay = document.getElementById('orientationOverlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    }
+}
+
+window.addEventListener("orientationchange", checkOrientation);
+window.addEventListener("resize", checkOrientation);
+checkOrientation(); // Initial check

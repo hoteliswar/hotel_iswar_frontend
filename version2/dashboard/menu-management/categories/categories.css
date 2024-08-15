@@ -7,6 +7,8 @@
 
 .new-item-card-title {
     font-size: large;
+    text-transform: uppercase;
+    font-weight: bold;
     border-bottom: 2px solid black;
 }
 
@@ -52,6 +54,8 @@
 }
 
 .all-items-list-title {
+    text-transform: uppercase;
+    font-weight: bold;
     font-size: large;
     border-bottom: 2px solid black;
 }
@@ -97,6 +101,14 @@
     padding-left: 15px;
 }
 
+.delete-btn, .edit-btnn{
+    font-weight: 800;
+    cursor: pointer;
+    color: rgb(255, 140, 0);
+    width: 10%;
+    margin-left: 10px;
+}
+
 /* Checkbox */
 
 .switch {
@@ -138,6 +150,7 @@ input:checked+.slider {
     background-color: #f48c1d;
 }
 
+
 input:checked+.slider:before {
     transform: translateX(26px);
 }
@@ -148,6 +161,14 @@ input:checked+.slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+input:checked+.sliderList{
+    background-color: #fcdab7;
+}
+
+input:not(:checked) + .sliderList {
+    background-color: #d5d5d5;
 }
 
 /* End checkbox */

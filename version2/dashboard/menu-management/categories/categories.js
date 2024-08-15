@@ -1,19 +1,46 @@
-function addICatgeoryToList(name, description, status, imageSrc) {
+function addCatgeoryToList(name, description, status, imageSrc) {
     const itemsContainer = document.querySelector('.all-list-table-items');
+
+    // const itemHTML = `
+    //     <div class="record-row">
+    //         <div class="col-2" id="name">${name}</div>
+    //         <div class="col-3" id="description">${description}</div>
+    //         <div class="col-2" id="status">${status}</div>
+    //         <div class="col-2" id="imagesrc"><img src="${imageSrc}" alt="${name}" width="50"></div>
+    //         <div class="col-3">
+    //             <button class="edit-btnn">Edit</button>
+    //             <button class="delete-btn"></button>
+    //             <i class="fa fa-trash delete-btn" aria-hidden="true"></i>
+    //         </div>
+    //     </div>
+    // `;
+
+    // <label class="switch">
+    //     <input type="checkbox" id="categoryStatus" class="new-item-card-body-item-input" onchange="updateStatus(this)">
+    //         <span class="slider round"></span>
+    // </label>
 
     const itemHTML = `
         <div class="record-row">
             <div class="col-2" id="name">${name}</div>
             <div class="col-3" id="description">${description}</div>
-            <div class="col-2" id="status">${status}</div>
+            <div class="col-3" id="status">
+                <label class="switch">
+                    <input type="checkbox" class="listStatus" id="categoryStatus" ${status === 'Active' ? 'checked' : ''} disabled>
+                    <span class=" slider sliderList round"></span>
+                </label>
+                <span id="statusDisableText">${status}</span>
+
+            </div>
             <div class="col-2" id="imagesrc"><img src="${imageSrc}" alt="${name}" width="50"></div>
-            <div class="col-3">
-                <button class="edit-btnn">Edit</button>
-                <button class="delete-btn">X</button>
+            <div class="col-2">
+                <i class="edit-btnn fa-solid fa-pen-to-square"></i>
+                <i class="fa fa-trash delete-btn" aria-hidden="true"></i>
             </div>
         </div>
         
     `;
+
 
     itemsContainer.insertAdjacentHTML('beforeend', itemHTML);
 
@@ -75,10 +102,10 @@ document.getElementById('editForm').addEventListener('submit', (e) => {
     document.getElementById('editModal').style.display = 'none';
 });
 
-addICatgeoryToList('South Indian', 'Veg', 'Active', 'https://via.placeholder.com/150');
-addICatgeoryToList('North Indian', 'Veg', 'Inactive', 'https://via.placeholder.com/150');
-addICatgeoryToList('Chinese', 'Veg', 'Active', 'https://via.placeholder.com/150');
-addICatgeoryToList('Italian', 'Veg', 'Inactive', 'https://via.placeholder.com/150');
+addCatgeoryToList('South Indian', 'Veg', 'Active', 'https://via.placeholder.com/150');
+addCatgeoryToList('North Indian', 'Veg', 'Inactive', 'https://via.placeholder.com/150');
+addCatgeoryToList('Chinese', 'Veg', 'Active', 'https://via.placeholder.com/150');
+addCatgeoryToList('Italian', 'Veg', 'Inactive', 'https://via.placeholder.com/150');
 
 
 
@@ -94,5 +121,9 @@ function updateStatus(checkbox) {
 
 function updateModalStatus(checkbox) {
     document.getElementById('statusModalText').textContent = checkbox.checked ? 'Active' : 'Inactive';
+}
+
+function updateDisableStatus(checkbox) {
+    document.getElementById('statusDisableText').textContent = checkbox.checked ? 'Active' : 'Inactive';
 }
 

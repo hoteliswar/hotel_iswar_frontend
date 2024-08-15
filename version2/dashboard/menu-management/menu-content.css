@@ -7,6 +7,7 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+    border-radius: 15px;
 }
 
 .nav-item {
@@ -14,12 +15,15 @@
     text-align: center;
     padding: 10px 15px;
     font-size: 1em;
+    transition: all 0.2s ease;
 }
 
 .nav-item-selected{
-    background-color: aliceblue;
-    border: 3px solid #000;
+    background-color: rgb(255, 119, 0);
+    color: #fff;
+    border: 1px solid rgb(254, 124, 10);
     border-radius: 15px;
+    transition: all 0.2s ease;
 }
 
 .nav-item-content-load{
