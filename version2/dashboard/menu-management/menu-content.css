@@ -1,0 +1,30 @@
+.menu-content-wrapper{
+    margin: 10px;
+}
+
+.nav-items {
+    background-color: rgb(255, 225, 170);
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.nav-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px 15px;
+    font-size: 1em;
+}
+
+.nav-item-selected{
+    background-color: aliceblue;
+    border: 3px solid #000;
+    border-radius: 15px;
+}
+
+.nav-item-content-load{
+    height: 80vh;
+    overflow-y: auto; /* Enable vertical scrolling */
+    overflow-x: hidden; /* Hide horizontal scrollbar if not needed */
+    padding-bottom: 150px;
+}

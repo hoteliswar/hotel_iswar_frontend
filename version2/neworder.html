@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Reservation</title>
+    <link rel="stylesheet" href="table-style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">Dine Ops</div>
+        <div class="header-items">
+            <ul>
+                <li>New Order</li>
+                <li class="support">Call For Support <br> 7002246506</li>
+                <li>Dashboard</li>
+                <li>Food</li>
+                <li>Order</li>
+                <li>Table</li>
+                <li>Bill</li>
+                <li>Profile</li>
+                <li>Log Out</li>
+            </ul>
+        </div>
+    </div>
+
+    
+    <div class="table-view">
+        <div class="table-view-head">Table View</div>
+        <div class="table-view-body">
+            <div class="row-caption">Ground Floor</div>
+            <div class="table-view-row">
+                <div class="table-view-cell" onclick="takeOrder(document.getElementById('table-no').textContent)">
+                    <div class="text">
+                        <div id="order-min"></div>
+                        <div id="table-no">1</div>
+                        <div id="amount"></div>
+                    </div>
+                </div>
+                <div class="table-view-cell">
+                    <div class="text">
+                        <div id="order-min">4 Min</div>
+                        <div id="table-no">2</div>
+                        <div id="amount">Rs. 399.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="table-script.js"></script>
+</body>
+</html>

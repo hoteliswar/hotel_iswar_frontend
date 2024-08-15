@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Items</title>
+    <link rel="stylesheet" href="./menu-management/items/items.css">
+</head>
+
+<body>
+    <div class="new-item-card">
+        <div class="new-item-card-title">Add New Item</div>
+        <div class="new-item-card-body">
+            <div class="new-item-card-body-item">
+                <div class="new-item-card-body-item-label">Item Name</div>
+                <input type="text" class="new-item-card-body-item-input">
+            </div>
+            <div class="new-item-card-body-item">
+                <div class="new-item-card-body-item-label">Item Price</div>
+                <input type="text" class="new-item-card-body-item-input">
+            </div>
+            <div class="new-item-card-body-item">
+                <div class="new-item-card-body-item-label">Item Category</div>
+                <select class="new-item-card-body-item-input">
+                    <option selected>Choose category</option>
+                    <option value="1">Category 1</option>
+                    <option value="2">Category 2</option>
+                    <option value="3">Category 3</option>
+                </select>
+            </div>
+            <div class="new-item-card-body-item">
+                <div class="new-item-card-body-item-label">Item Description</div>
+                <textarea class="new-item-card-body-item-input" rows="1"></textarea>
+            </div>
+            <div class="new-item-card-body-item">
+                <div class="new-item-card-body-item-label">Item Image</div>
+                <input type="file" class="new-item-card-body-item-input">
+            </div>
+            <div class="new-item-card-body-item">
+                <button class="new-item-card-body-item-button" id="add-item">Add Item</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="all-items-list">
+        <div class="all-items-list-title">All Items</div>
+        <div class="all-list-table-head">
+            <div class="col-2">Name</div>
+            <div class="col-2">Price</div>
+            <div class="col-2">Category</div>
+            <div class="col-2">Description</div>
+            <div class="col-2">Image</div>
+            <div class="col-2">Edit/Delete</div>
+        </div>
+        <div class="all-list-table-items">
+            <!-- List items inserted -->
+        </div>
+    </div>
+
+    <!--  Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Item</h2>
+            <form id="editForm">
+                <div class="modal-body-item">
+                    <!-- <div class="new-item-card-body-item-label">Item Name</div> -->
+                    <input type="text" class="modal-input" placeholder="Item Name" id="editName">
+                </div>
+                <div class="modal-body-item">
+                    <!-- <div class="new-item-card-body-item-label">Item Price</div> -->
+                    <input type="text" class="modal-input" placeholder="Item Price" id="editPrice">
+                </div>
+                <div class="modal-body-item">
+                    <!-- <div class="new-item-card-body-item-label">Item Category</div> -->
+                    <select class="modal-input" id="editCategory">
+                        <option selected>Choose category</option>
+                        <option value="Category 1">Category 1</option>
+                        <option value="Category 2">Category 2</option>
+                        <option value="Category 3">Category 3</option>
+                    </select>
+                </div>
+                <div class="modal-body-item">
+                    <!-- <div class="new-item-card-body-item-label">Item Description</div> -->
+                    <textarea class="modal-input" rows="1" placeholder="Description" id="editDescription"></textarea>
+                </div>
+                <div class="modal-body-item">
+                    <!-- <div class="new-item-card-body-item-label">Item Image</div> -->
+                    <input type="file" class="modal-input" id="editImage">
+                </div>
+                <div class="modal-body-item">
+                    <button class="new-item-card-body-item-button" id="add-item">Update Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+     <!-- End Modal  -->
+
+
+    <script src="./menu-management/items/items.js"></script>
+</body>
+
+</html>

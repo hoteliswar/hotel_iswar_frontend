@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sidebar</title>
+    <style>
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #f58b5b;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+<body>
+    <ul>
+        <li>
+            <a href="dashboard.html"><i class="fe fe-home"></i> <span>Dashboard</span></a>
+        </li>
+
+        <li>
+            <a href="takeorder.html"><i class="fe fe-user-plus"></i> <span>Take Order</span></a>
+        </li>
+        <li>
+            <a href=""><i class="fe fe-calendar"></i> <span>Menu</span></a>
+        </li>
+        <li>
+            <a href=""><i class="fa fa-flask"></i> <span>Tests</span></a>
+        </li>
+
+
+        <!-- <li class="submenu ">
+            <a href="#" id="myLink"><i class="fe fe-book"></i> <span> Reports</span> <span class="menu-arrow"></span></a>
+            <ul class="show">
+                <li class="show"><a href="reports.php"><i class="fe fe-user"></i> <span>Individual</span></a></li>
+                <li class="show"><a href="send-report.php"><i class="fe fe-users"></i> <span>Combined</span></a></li>
+            </ul>
+        </li> -->
+
+        <!-- <li class="submenu">
+            <a href="#"><i class="fe fe-user"></i> <span> Reports</span> <span class="menu-arrow"></span></a>
+            <ul style="display: none;">
+                <li><a href="report-patient.php"><i class="fe fe-user-plus"></i> Patients</a></li>
+                <li><a href="report-doctor.php"><i class="fe fe-user-plus"></i> Doctors</a></li>
+            </ul>
+        </li> -->
+        <!-- <li>
+            <a href="reports.php"><i class="fe fe-book"></i> <span>Reports</span></a>
+        </li>
+        <li>
+            <a href="send-report.php"><i class="fe fe-share"></i> <span>Send Report</span></a> -->
+        </li>
+        <li>
+            <a href=""><i class="fa fa-cog"></i> <span>Settings</span></a>
+        </li>
+
+        <!-- <li>
+            <a href="./assets/process/logout.php?logout"><i class="fa fa-sign-out"></i> <span>Logout</span></a>
+        </li> -->
+    </ul>
+    <div class="sidebar-footer"><b>v1.0</b></div>
+
+
+    <!-- Custom JS -->
+    <script src="assets/js/script.js"></script>
+    <script>
+        // Wait for the page to load
+        document.addEventListener('DOMContentLoaded', function() {
+        // Simulate click event on the anchor tag
+        document.getElementById('myLink').click();
+        });
+    </script>
+    
+</body>
+
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Food</title>
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, textarea {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 220px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Update Food Items</h1>
+    <a href="dashboard.html">Go to Dashboard</a><br>
+
+    <form id="food-form">
+        <h2>Update</h2>
+        <div class="form-group">
+            <label for="name">Id</label>
+            <input type="text" id="id" name="id" disabled>
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="text" id="price" name="price">
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="name">Image</label>
+            <input type="text" id="image" name="image">
+        </div>
+        </div><div class="form-group">
+            <label for="name">Category</label>
+            <input type="text" id="category" name="category">
+        </div>
+        <button type="button" onclick="createFood();">Update Food</button>
+    </form>
+
+    <script src="common.js"></script>
+    <script>
+        const url = window.location.href;
+
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Get the encoded JSON string from the URL
+        const encodedJsonString = getQueryParam('data');
+
+        // Decode the JSON string
+        const decodedJsonString = decodeURIComponent(encodedJsonString);
+
+        // Parse the JSON string back into an object
+        const jsonData = JSON.parse(decodedJsonString);
+
+        console.log(jsonData); 
+        document.getElementById('id').value = jsonData.id;
+        document.getElementById('name').value = jsonData.name;
+        document.getElementById('price').value = jsonData.price;
+        document.getElementById('description').value = jsonData.description;
+        document.getElementById('image').value = jsonData.image;
+        document.getElementById('category').value = jsonData.category;
+
+        function createFood() {
+            const id = document.getElementById('id').value
+            const name = document.getElementById('name').value;
+            const price = document.getElementById('price').value;
+            const description = document.getElementById('description').value;
+            const image = document.getElementById('image').value;
+            const category = document.getElementById('category').value;
+            const form_data = document.getElementById('food-form');
+            console.log(name);
+            console.log(price);
+            console.log(description);
+            console.log(image);
+            console.log(category);
+
+            const foodData = {
+                name,
+                price,
+                description,
+                category
+            };
+
+            const url = `http://127.0.0.1:8000/api/foods/fooditems/${id}/`
+            option = {
+                method: 'PUT', // or 'POST' depending on your API
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(foodData)
+            }
+
+            refreshAccessToken2(url, option)
+            // .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if (data) {
+                    // jsonData = data;
+                    const loadUpdate = JSON.stringify(data);
+                    const encodedJsonString = encodeURIComponent(loadUpdate);
+                    const url = `updatefood.html?data=${encodedJsonString}`;
+                    window.location.href = url;
+
+                    alert('Food item updated successfully!');
+                } else {
+                    alert('Failed to update food item.');
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+                alert('An error occurred while updating the food item.');
+            });
+
+        }
+
+    </script>
+</body>
+</html>

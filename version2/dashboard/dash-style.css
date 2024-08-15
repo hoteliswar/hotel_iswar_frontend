@@ -1,0 +1,119 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    max-width: auto;
+    /* min-width: 768px; Adjust as needed */
+    overflow-x: hidden;
+    overflow-y: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.header {
+    height: 10vh;
+}
+
+.header-title{
+    font-size: 2em;
+    font-weight: 600;
+    color: rgb(255, 175, 2);
+    /* text-align: center; */
+    padding: 10px;
+    padding-left: 20px;
+    display: inline-block;
+}
+
+.header-items {
+    float: right;
+    padding-right: 20px;
+}
+
+.header-items ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    padding-top: 5px;
+}
+
+.header-items li {
+    float: left;
+    padding: 10px 15px;
+    font-size: 1.2em;
+    
+}
+
+.header-items .support{
+    font-size: .8em;
+    text-align: center;
+    border: 1px solid #000000;
+    border-radius: 3px;
+}
+
+
+
+/* -------------- */
+
+.screen-wrap {
+    height: 90vh;
+    /* background-color: aqua; */
+}
+
+.row {
+    --bs-gutter-x: 0;
+}
+
+.row>* {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.dashboard-nav{
+    background-color: aliceblue;
+    height: 90vh;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.dash-nav-item{
+    width: auto;
+    height: 50px;
+    background-color: rgb(255, 175, 2);
+    border-bottom: 1px solid #fff;
+    border-top: 1px solid #fff;
+    position: relative;
+    color: #fff;
+    cursor: pointer;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    /* white-space: nowrap; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 50px 0 50px;
+}
+
+.dash-nav-item .nav-name{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.dashboard-area{
+    background-color: #ffffff;
+    height: 90vh;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Food</title>
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, textarea {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            width: 220px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Create New Food</h1>
+    <a href="dashboard.html">Go to Dashboard</a><br>
+
+    <form id="food-form">
+        <h2>Create New Food Item</h2>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name">
+        </div>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" id="price" name="price">
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description"></textarea>
+        </div>
+        <button type="submit" onclick="createFood();">Create Food</button>
+    </form>
+
+    <script src="common.js"></script>
+    <script>
+        
+        // document.getElementById('productForm').addEventListener('submit', function(event) {
+        //     event.preventDefault(); // Prevent the form from submitting the traditional way
+        function createFood() {
+            const name = document.getElementById('name').value;
+            const price = document.getElementById('price').value;
+            const description = document.getElementById('description').value;
+            const form_data = document.getElementById('food-form');
+            console.log(name);
+            console.log(price);
+            console.log(description);
+
+
+            const option = {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    description: description,
+                    price: price,
+                    tenant : 1
+                })
+            }
+
+            const url = 'http://127.0.0.1:8000/api/foods/fooditems/';
+
+            refreshAccessToken2(url, option)
+            // .then(response => response.json())
+            .then(data => {
+                alert("Food Item Created Successfully");
+                console.log('Data:', data);
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            });
+        }
+    // });
+    </script>
+</body>
+</html>

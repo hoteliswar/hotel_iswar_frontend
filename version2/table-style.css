@@ -1,0 +1,95 @@
+.header {
+    height: 70px;
+}
+
+.header-title{
+    font-size: 2em;
+    font-weight: 600;
+    color: rgb(255, 175, 2);
+    /* text-align: center; */
+    padding: 10px;
+    padding-left: 20px;
+    display: inline-block;
+}
+
+.header-items {
+    float: right;
+    padding-right: 20px;
+}
+
+.header-items ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    padding-top: 5px;
+}
+
+.header-items li {
+    float: left;
+    padding: 10px 15px;
+    font-size: 1.2em;
+}
+
+.header-items .support{
+    font-size: .8em;
+    text-align: center;
+    border: 1px solid #000000;
+    border-radius: 3px;
+}
+
+.table-view{
+    height: auto;
+}
+
+.table-view-head{
+    height: 60px;
+}
+
+.table-view-body{
+    height: auto;
+}
+
+.table-view-row{
+    height: auto;
+    margin-left: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.table-view-row::-webkit-scrollbar {
+    display: none;
+}
+
+
+.row-caption{
+    font-size: 18px;
+    font-weight: 300;
+    margin: 10px;
+}
+
+.table-view-cell{
+    display: inline-block;
+    position: relative;
+    height: 90px;
+    width: 90px;
+    background-color: rgb(226, 225, 225);
+    border-radius: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-style: dashed ;
+    border-color: rgb(176, 176, 176);
+    cursor: pointer;
+}
+
+.table-view-cell .text{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+
+}
