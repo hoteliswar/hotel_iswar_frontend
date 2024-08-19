@@ -3,7 +3,9 @@
 }
 
 body {
+    
     max-width: auto;
+    height: auto;
     /* min-width: 768px; Adjust as needed */
     overflow-x: hidden;
     overflow-y: hidden;
@@ -61,6 +63,8 @@ body {
 /* -------------- */
 
 .screen-wrap {
+    /* 78 - height for tablet */
+    
     height: 92vh;
     /* background-color: aqua; */
 }
@@ -76,7 +80,7 @@ body {
 
 .dashboard-nav{
     background-color: aliceblue;
-    height: 100%;
+    height: 92vh;
     overflow-y: auto;
     user-select: none;
     -webkit-user-select: none;

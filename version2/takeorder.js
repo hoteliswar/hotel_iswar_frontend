@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
             { id: 8, name: 'Item 8', price: 6.99 }, //
             { id: 9, name: 'Item 9', price: 6.99 }
         ],
-        'Category 3': [
+        'Category 4': [
             { id: 10, name: 'Item 7', price: 10.99 },
             { id: 11, name: 'Item 8', price: 11.99 },
             { id: 12, name: 'Item 9', price: 9.99 }
@@ -234,3 +234,14 @@ document.querySelector('.button-group').addEventListener('click', () => {
     const selected = getSelectedButton();
     console.log(`Currently selected button: ${selected}`);
 });
+
+function getBrowserHeaderHeight() {
+    const screenHeight = window.screen.height; // Total screen height
+    const viewportHeight = window.innerHeight; // Viewport height (excluding browser UI)
+    const headerHeight = screenHeight - viewportHeight;
+    const string = `Screen height: ${screenHeight}px, Viewport height: ${viewportHeight}px, Browser header height: ${headerHeight}px`;
+    document.body.style.height = (viewportHeight-1 )+ 'px';
+    return string;
+}
+
+console.log(getBrowserHeaderHeight());

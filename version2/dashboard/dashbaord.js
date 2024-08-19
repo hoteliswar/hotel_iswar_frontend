@@ -111,3 +111,6 @@ function checkOrientation() {
 window.addEventListener("orientationchange", checkOrientation);
 window.addEventListener("resize", checkOrientation);
 checkOrientation(); // Initial check
+
+
+

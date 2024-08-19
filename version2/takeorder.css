@@ -10,10 +10,10 @@ body {
 }
 
 .header {
-    height: 70px;
+    height: 11%;
 }
 
-.header-title{
+.header-title {
     font-size: 2em;
     font-weight: 600;
     color: rgb(255, 175, 2);
@@ -39,11 +39,11 @@ body {
 .header-items li {
     float: left;
     padding: 10px 15px;
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
-.header-items .support{
-    font-size: .8em;
+.header-items .support {
+    font-size: .7em;
     text-align: center;
     border: 1px solid #000000;
     border-radius: 3px;
@@ -52,7 +52,7 @@ body {
 /* -------------- */
 
 .screen-wrap {
-    height: 100vh;
+    height: 89%;
 }
 
 .row {
@@ -62,6 +62,10 @@ body {
 .row>* {
     padding-right: 0;
     padding-left: 0;
+}
+
+.menu-catg {
+    height: 89%;
 }
 
 .menu-category-item {
@@ -79,14 +83,12 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0 50px 0 50px;
-
 }
 
 .menu-category-head {
     background-color: rgb(206, 206, 206);
     font-weight: bold;
-    color: rgb(86, 86, 86);
-
+    color: rgb(61, 61, 61);
     width: auto;
     height: 50px;
     border-bottom: 1px solid #fff;
@@ -97,6 +99,28 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0 50px 0 50px;
+}
+
+.menu-category {
+    height: 69vh;
+    overflow-y: auto;
+}
+
+.menu-category::-webkit-scrollbar {
+    width: 2px;
+}
+
+.menu-category::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.menu-category::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+.menu-category::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
 
 .menu-category-item .category-name,
@@ -132,7 +156,8 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #efefef;
-    border-left: 0px  solid #ababab;;
+    border-left: 0px solid #ababab;
+    ;
     border-right: 0px solid #ababab;
 }
 
@@ -194,15 +219,18 @@ body {
 
 /* Bill Section */
 .bill-info {
+    height: 89%;
     display: inline-block;
     flex-direction: column;
     overflow: hidden;
     /* width: auto; */
-    height: 100rem;
+    /* height: 100rem; */
 }
 
 .bill-container {
-    height: 20rem;
+    background-color: #f1f1f1;
+    min-height: 33.5vh;
+    max-height: 33.5vh;
     overflow-y: auto;
 }
 
@@ -267,6 +295,7 @@ body {
 }
 
 .delivery-catg {
+    /* height: auto; */
     display: flex;
     gap: 0px;
     background-color: rgb(128, 128, 128);
@@ -294,7 +323,7 @@ body {
 }
 
 .table-no {
-    padding: 10px;
+    padding: 8px;
 }
 
 .table-no-head,
@@ -305,19 +334,21 @@ body {
 
 .bill-head {
     background-color: #c8c8c8;
-    padding: 10px;
+    padding: 7px;
+    padding-left: 10px;
     border-bottom: 1px solid #434343;
     border-top: 1px solid #434343;
     width: 100%;
     font-size: 0.8em;
     font-weight: 600;
+    height: 5vh;
 }
 
 .all-qty,
 .all-names,
 .all-prices {
     display: inline-block;
-    height: 20px;
+    /* height: 1px; */
 }
 
 .all-names {
@@ -336,36 +367,37 @@ body {
 
 .bill-footer {
     background-color: #525252;
-    height: 100%;
-    /* padding: 10px; */
+    margin-top: auto;
 }
 
-.total-amt{
+.total-amt {
     padding: 10px;
 }
 
-.total-amount, .discount, .net-amt{
+.total-amount,
+.discount,
+.net-amt {
     display: inline-block;
     color: #fff;
 }
 
 .total-amount {
-    width: 31%;
+    width: 28%;
     /* text-align: right; */
-    font-size: 1em;
+    font-size: 0.8em;
 }
 
-.discount{
-    width: 33%;
-    font-size: 1em;
+.discount {
+    width: 31%;
+    font-size: 0.8em;
 }
 
-.net-amt{
-    width: 33%;
-    font-size: 1em;
+.net-amt {
+    width: 35%;
+    font-size: 0.8em;
 }
 
-.disc-box{
+.disc-box {
     border: 0px;
     width: 20%;
 }
@@ -376,30 +408,35 @@ body {
     margin: 0;
 }
 
-.ta-price, .na-price{
+.ta-price,
+.na-price {
     color: #e2a600;
     font-size: 1.3em;
     font-weight: 500;
 }
 
-.button-groups{
+.button-groups {
+    display: flex;
     align-items: center;
-    padding: 10px;
+    justify-content: center;
+    padding: 8px;
 }
 
-.save-btn, .print-btn,
-.kot-btn, .hold-btn{
-    display: inline;
-    min-width: 24%;
+.save-btn,
+.print-btn,
+.kot-btn,
+.hold-btn {
+    display: inline-block;
+    min-width: 20%;
     background-color: #e2a600;
-    font-size: 1.1em;
-    font-weight: 600;
+    font-size: 1em;
+    font-weight: 500;
     border: 0px;
     border-radius: 3px;
-    margin-left: 2px;
+    margin-left: 15px;
 }
 
-.payment-method{
+.payment-method {
     text-align: center;
     background-color: #6a6a6a;
     height: 30px;
@@ -407,22 +444,77 @@ body {
     border-bottom: 1px solid #434343;
 }
 
-.pm-check{
+.pm-check {
     display: inline-block;
     color: #fff;
     width: 19%;
 }
 
-.settle-bill{
+.settle-bill {
     padding: 10px;
     text-align: center;
+    font-size: 1em;
+    font-weight: 500;
 }
 
-.settle-btn{
+.settle-btn {
     background-color: #e2a600;
     width: 200px;
     font-size: 1.3em;
     font-weight: 600;
     border: 0px;
     border-radius: 3px;
+}
+
+.form-check-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+@media screen and (min-height: 700px) {
+
+    .menu-category {
+        height: 82vh;
+        overflow-y: auto;
+    }
+
+    .menu-category-item .category-name,
+    .menu-category-head .category-name {
+        font-size: 1em;
+        font-weight: 700;
+    }
+
+
+    .total-amount {
+        width: 33%;
+        /* text-align: right; */
+        font-size: 1em;
+    }
+
+    .discount {
+        width: 31%;
+        font-size: 1em;
+    }
+
+    .net-amt {
+        width: 33%;
+        font-size: 1em;
+    }
+
+    .ta-price,
+    .na-price {
+        color: #e2a600;
+        font-size: 1.4em;
+        font-weight: 500;
+    }
+
+    .form-check-label {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .bill-container {
+        min-height: 46.5vh;
+        max-height: 46.5vh;
+    }
 }
