@@ -1,3 +1,25 @@
+function setBillContainerHeight() {
+    const deliveryCatg = document.querySelector('.delivery-catg');
+    const billHead = document.querySelector('.bill-head');
+    const billFooter = document.querySelector('.bill-footer');
+    const billContainer = document.querySelector('.bill-container');
+
+    const deliveryCatgHeight = deliveryCatg.offsetHeight;
+    const billHeadHeight = billHead.offsetHeight;
+    const billFooterHeight = billFooter.offsetHeight;
+
+    document.documentElement.style.setProperty('--delivery-catg-height', `${deliveryCatgHeight}px`);
+    document.documentElement.style.setProperty('--bill-head-height', `${billHeadHeight}px`);
+    document.documentElement.style.setProperty('--bill-footer-height', `${billFooterHeight}px`);
+
+    billContainer.classList.add('bill-container-dynamic-height');
+}
+
+// Call the function when the page loads and on window resize
+window.addEventListener('load', setBillContainerHeight);
+window.addEventListener('resize', setBillContainerHeight);
+
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const menuCategories = document.querySelectorAll('.menu-category-item');
@@ -9,9 +31,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const menuItems = {
         'Category 1': [
-            { id: 1, name: 'Item 1', price: 99.99 },
-            { id: 2, name: 'Item 2', price: 7.99 },
-            { id: 3, name: 'Item 3', price: 5.99 }
+            { id: 11, name: 'Item 1', price: 99.99 },
+            { id: 15, name: 'Item 2', price: 7.99 },
+            { id: 16, name: 'Item 2', price: 7.99 },
+            { id: 17, name: 'Item 2', price: 7.99 },
+            { id: 13, name: 'Item 3', price: 5.99 }
         ],
         'Category 2': [
             { id: 4, name: 'Item 4', price: 12.99 },
@@ -19,14 +43,14 @@ document.addEventListener('DOMContentLoaded', function () {
             { id: 6, name: 'Item 6', price: 6.99 },
             { id: 7, name: 'Item 7', price: 6.99 },
             { id: 8, name: 'Item 8', price: 6.99 },
-            { id: 5, name: 'Item 5', price: 8.99 }, //
-            { id: 6, name: 'Item 6', price: 6.99 },
-            { id: 7, name: 'Item 7', price: 6.99 },
-            { id: 8, name: 'Item 8', price: 6.99 },
-            { id: 5, name: 'Item 5', price: 8.99 },
-            { id: 6, name: 'Item 6', price: 6.99 },
-            { id: 7, name: 'Item 7', price: 6.99 },
-            { id: 8, name: 'Item 8', price: 6.99 },
+            { id: 25, name: 'Item 5', price: 8.99 }, //
+            { id: 26, name: 'Item 6', price: 6.99 },
+            { id: 27, name: 'Item 7', price: 6.99 },
+            { id: 28, name: 'Item 8', price: 6.99 },
+            { id: 35, name: 'Item 5', price: 8.99 },
+            { id: 46, name: 'Item 6', price: 6.99 },
+            { id: 57, name: 'Item 7', price: 6.99 },
+            { id: 68, name: 'Item 8', price: 6.99 },
             { id: 5, name: 'Item 5', price: 8.99 },
             { id: 6, name: 'Item 6', price: 6.99 },
             { id: 7, name: 'Item 7', price: 6.99 },
@@ -276,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function () {
             alert('Please select a table or room before proceeding');
             console.log('Please select a table or room before proceeding');
             // Optionally, you can add some visual feedback here
-        }else if (selectElement && selectElement.value !== "") {
+        } else if (selectElement && selectElement.value !== "") {
             e.preventDefault();
 
             getOrderType.textContent = document.querySelector('.type-selected').textContent;
@@ -285,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // alert('Selected a table or room before proceeding');
             document.getElementById('morePopup').style.display = 'none';
             // Optionally, you can add some visual feedback here
-        }else {
+        } else {
             console.log('Done button clicked');
             getOrderType.textContent = document.querySelector('.type-selected').textContent;
             getOrderTypeInfo.textContent = '';
