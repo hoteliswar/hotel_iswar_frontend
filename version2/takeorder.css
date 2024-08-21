@@ -7,14 +7,15 @@ body {
     /* min-width: 768px; Adjust as needed */
     overflow-x: hidden;
     overflow-y: hidden;
+    user-select: none;
 }
 
 .header {
-    height: 11%;
+    height: 8vh;
 }
 
-.header-title {
-    font-size: 2em;
+.header-title{
+    font-size: 1.7em;
     font-weight: 600;
     color: rgb(255, 175, 2);
     /* text-align: center; */
@@ -38,16 +39,20 @@ body {
 
 .header-items li {
     float: left;
-    padding: 10px 15px;
-    font-size: 1em;
+    padding: 5px 10px;
+    font-size: 1.2em;
+    
 }
 
-.header-items .support {
-    font-size: .7em;
+.header-items .support{
+    font-size: .8em;
     text-align: center;
-    border: 1px solid #000000;
+    border: 1px solid #f07816;
     border-radius: 3px;
+    padding: 2px;
+    background-color: #fbe1ac;
 }
+
 
 /* -------------- */
 
@@ -204,6 +209,7 @@ body {
     position: relative;
     border-bottom: 3px solid green;
     cursor: pointer;
+    user-select: none;
 }
 
 .menu-item .item-name {
@@ -229,8 +235,8 @@ body {
 
 .bill-container {
     background-color: #f1f1f1;
-    min-height: 33.5vh;
-    max-height: 33.5vh;
+    min-height: 35vh;
+    max-height: 35vh;
     overflow-y: auto;
 }
 
@@ -249,6 +255,14 @@ body {
 
 .bill-container::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+.bill-watermark{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 33vh;
+    color: #b6b6b6;
 }
 
 .bill-item {
@@ -270,7 +284,7 @@ body {
 
 .bill-item .bill-item-qty {
     display: inline-block;
-    width: 5%;
+    width: 6%;
     text-align: center;
 }
 
@@ -295,29 +309,147 @@ body {
 }
 
 .delivery-catg {
-    /* height: auto; */
-    display: flex;
-    gap: 0px;
-    background-color: rgb(128, 128, 128);
+    /* display: flex; */
+    /* gap: 0px; */
+    background-color: #525252;
+    color: #ffffff;
+    font-size: 0.9em;
 }
 
-.selectable {
-    padding: 10px 20px;
+.mobile-no{
+    padding: 10px;
+    padding-bottom: 5px;
+}
+
+.order-type{
+    padding: 10px;
+    padding-top: 5px;
+}
+
+.get-order-type, .get-order-type-info{
+    display: inline;
+}
+
+.more-button{
+    padding: 20px;
+    padding-right: 0;
+    
+}
+
+.morebutton-text{
+    background-color: rgb(247, 190, 66);
+    height: 40px;
+    width: auto;
+    color: #000000;
+    font-size: 1.1em;
+    border-radius: 30px 0 0 30px;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    color: #000000;
+}
+
+.popup-content input, .popup-content button {
+    margin: 10px 0;
+}
+
+.popup-title{
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.delivery-catgeory{
+    color: #000000;
+    padding-bottom: 10px;
+}
+
+.button-group button{
+    margin: 0;
+}
+
+.popup .doneButton{
+    background-color: #e2a600;
+    border: 0px;
+    border-radius: 3px;
+    font-weight: 500;
+    height: 40px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.input-group label {
+    min-width: 80px;
+    margin-right: 10px;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.table-numbers-group{
+    padding-top: 5px;
+}
+
+.table-button, .room-button{
+    background-color: #a9a9a9;
+    border: 0px;
+    border-radius: 2px;
+    font-weight: 500;
+    height: 40px;
+}
+
+.order-type-option-select{
+    width: 100%;
+    padding: 10px;
+}
+
+.selectable, .type-selectable {
+    padding: 8px 5px;
+    font-size: 1em;
     border: 0px solid rgb(128, 128, 128);
     background-color: rgb(128, 128, 128);
     color: #f9f9f9;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
     height: 50px;
-    width: 33.3%;
+    width: auto;
 }
 
-.selectable:hover {
+.selectable:hover, .type-selectable:hover {
     background-color: rgb(255, 175, 2);
     color: white;
 }
 
-.selectable.selected {
+.selectable.selected, .type-selectable.type-selected{
     background-color: rgb(255, 175, 2);
     color: white;
 }
@@ -514,7 +646,11 @@ body {
     }
 
     .bill-container {
-        min-height: 46.5vh;
-        max-height: 46.5vh;
+        min-height: 48vh;
+        max-height: 48vh;
+    }
+
+    .bill-watermark{
+        height: 46.5vh;
     }
 }

@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Take Order</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Free Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="takeorder.css">
 </head>
 
@@ -113,21 +115,65 @@
                 <div class="menu-items"></div>
             </div>
             <div class="bill-info col-5">
-                <div class="delivery-catg button-group">
-                    <button class="selectable">DINE-IN</button>
-                    <button class="selectable">DELIVERY</button>
-                    <button class="selectable">PICK UP</button>
-                </div>
-                <div class="table-no">
-                    <div class="table-no-head">Table No.</div>
-                    <div class="table-no-body">1</div>
+                <div class="delivery-catg">
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="mobile-no">
+                                <label for="mobile-input">Mobile</label>
+                                <input type="text" class="mobile-no-input" id="mobile-input"
+                                    placeholder="Customer Mobile No.">
+                            </div>
+                            <div class="order-type row">
+                                Order Type: &nbsp;
+                                <div class="get-order-type col-5"> DINE-IN </div>
+                                <div class="get-order-type-info col-3"> T02 </div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div id="moreButton" class="more-button">
+                                <div class="morebutton-text">
+                                    <i class="fa-solid fa-circle-arrow-left"></i> &nbsp; MORE
+                                </div>
+                            </div>
+                            <!-- More Modal -->
+                            <div id="morePopup" class="popup">
+                                <div class="popup-content">
+                                    <div class="popup-title">More Info</div>
+
+                                    <div class="input-group">
+                                        <label for="mobile">Mobile: </label>
+                                        <input type="text" id="mobile" placeholder="Customer Mobile">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="email">Email: </label>
+                                        <input type="email" id="email" placeholder="Customer Email">
+                                    </div>
+
+                                    <div class="button-group">
+                                        <div class="delivery-catgeory">Order Type: </div>
+                                        <button class="type-selectable">DINE-IN</button>
+                                        <button class="type-selectable">DELIVERY</button>
+                                        <button class="type-selectable">PICKUP</button>
+                                        <button class="type-selectable">ROOM SERVICE</button>
+                                        <div class="order-type-options"></div>
+                                    </div>
+                                    
+                                    
+                                    <button id="doneButton" class="doneButton">Done</button>
+                                </div>
+                            </div>
+                            <!--End More Modal -->
+                        </div>
+                    </div>
                 </div>
                 <div class="bill-head">
                     <div class="all-names">ITEMS</div>
                     <div class="all-qty">QTY</div>
                     <div class="all-prices">PRICE</div>
                 </div>
-                <div class="bill-container"></div>
+                <div class="bill-container">
+                    <div class="bill-watermark"><i class="fa-solid fa-utensils fa-5x"></i></div>
+                </div>
                 <div class="bill-footer">
                     <div class="total-amt">
                         <div class="total-amount ">
@@ -176,6 +222,7 @@
             </div>
         </div>
     </div>
+
 
     <script src="takeorder.js"></script>
 </body>

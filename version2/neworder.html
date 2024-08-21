@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Table Reservation</title>
+    <!-- Font Awesome Free Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="table-style.css">
 </head>
+
 <body>
     <div class="header">
         <div class="header-title">Dine Ops</div>
@@ -18,22 +22,34 @@
                 <li>Order</li>
                 <li>Table</li>
                 <li>Bill</li>
-                <li>Profile</li>
-                <li>Log Out</li>
             </ul>
         </div>
     </div>
 
-    
+
     <div class="table-view">
-        <div class="table-view-head">Table View</div>
+        <div class="table-view-head">Table View
+            <div class="order-type-info">
+                <button class="type-selectable">DINE-IN</button>
+                <button class="type-selectable">DELIVERY</button>
+                <button class="type-selectable">PICKUP</button>
+                <button class="type-selectable">ROOM SERVICE</button>
+            </div>
+        </div>
         <div class="table-view-body">
-            <div class="row-caption">Ground Floor</div>
             <div class="table-view-row">
-                <div class="table-view-cell" onclick="takeOrder(document.getElementById('table-no').textContent)">
+                <div class="row-caption">Ground Floor</div>
+                <div class="table-view-cell">
                     <div class="text">
                         <div id="order-min"></div>
                         <div id="table-no">1</div>
+                        <div id="amount"></div>
+                    </div>
+                </div>
+                <div class="table-view-cell">
+                    <div class="text">
+                        <div id="order-min"></div>
+                        <div id="table-no">2</div>
                         <div id="amount"></div>
                     </div>
                 </div>
@@ -45,10 +61,29 @@
                     </div>
                 </div>
             </div>
+            <div class="table-view-row">
+                <div class="row-caption">Room Service</div>
+                <div class="room-view-cell">
+                    <div class="text">
+                        <div id="order-min"></div>
+                        <div id="room-no">101</div>
+                        <div id="amount"></div>
+                    </div>
+                </div>
+                <div class="room-view-cell">
+                    <div class="text">
+                        <div id="order-min"></div>
+                        <div id="room-no">102</div>
+                        <div id="amount"></div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
 
     <script src="table-script.js"></script>
 </body>
+
 </html>

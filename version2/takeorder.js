@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const menuItems = {
         'Category 1': [
-            { id: 1, name: 'Item 1', price: 9.99 },
+            { id: 1, name: 'Item 1', price: 99.99 },
             { id: 2, name: 'Item 2', price: 7.99 },
             { id: 3, name: 'Item 3', price: 5.99 }
         ],
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
             loadMenuItems(categoryName);
         });
     });
-    
+
 
     function loadMenuItems(category) {
         const items = menuItems[category] || [];
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-    
+
 
     function renderBillItems() {
         billContainer.innerHTML = '';
@@ -151,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
             deleteIcon.innerHTML = '&#10006;'; // X symbol
             deleteIcon.addEventListener('click', () => removeItemFromBill(item.id));
 
-            
+
             billItemElement.appendChild(itemNameDiv);
 
             billItemElement.appendChild(minusButton);
@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             billItemElement.appendChild(itemPriceDiv);
             billItemElement.appendChild(deleteIcon);
+
             billContainer.appendChild(billItemElement);
         });
 
@@ -185,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateNetTotal() {
         const totalAmount = parseFloat(calculateTotal());
         const discountPercentage = parseFloat(discBox.value) || 0;
-        
+
         let netAmount = totalAmount;
         if (discountPercentage > 0) {
             const discountAmount = totalAmount * (discountPercentage / 100);
@@ -195,10 +196,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const discountAmount = totalAmount * (discountPercentage / 100);
             netAmount = totalAmount - discountAmount;
         }
-        
+
         netTotal.textContent = `₹${netAmount.toFixed(2)}`;
     }
-    
+
     function selectFirstCategory() {
         const firstCategory = menuCategories[0];
         if (firstCategory) {
@@ -207,8 +208,8 @@ document.addEventListener('DOMContentLoaded', function () {
             loadMenuItems(categoryName);
         }
     }
-    
-    
+
+
     selectFirstCategory();
 
 });
@@ -230,18 +231,202 @@ function getSelectedButton() {
     return selectedButton ? selectedButton.textContent : null;
 }
 
-document.querySelector('.button-group').addEventListener('click', () => {
-    const selected = getSelectedButton();
-    console.log(`Currently selected button: ${selected}`);
-});
+// document.querySelector('.button-group').addEventListener('click', () => {
+//     const selected = getSelectedButton();
+//     console.log(`Currently selected button: ${selected}`);
+// });
 
 function getBrowserHeaderHeight() {
     const screenHeight = window.screen.height; // Total screen height
     const viewportHeight = window.innerHeight; // Viewport height (excluding browser UI)
     const headerHeight = screenHeight - viewportHeight;
     const string = `Screen height: ${screenHeight}px, Viewport height: ${viewportHeight}px, Browser header height: ${headerHeight}px`;
-    document.body.style.height = (viewportHeight-1 )+ 'px';
+    document.body.style.height = (viewportHeight - 1) + 'px';
     return string;
 }
 
 console.log(getBrowserHeaderHeight());
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('moreButton').addEventListener('click', function () {
+        console.log('MORE button clicked');
+        document.getElementById('morePopup').style.display = 'flex';
+    });
+
+    // const doneButton = document.getElementById('doneButton');
+    // doneButton.disabled = true;
+    // if ((document.querySelector('order-type-option-select')).value) {
+    //     doneButton.disabled = false;
+    // }
+
+    // document.getElementById('doneButton').addEventListener('click', function () {
+    //     console.log('Done button clicked');
+    //     document.getElementById('morePopup').style.display = 'none';
+    // });
+
+    const getOrderType = document.querySelector('.get-order-type');
+    const getOrderTypeInfo = document.querySelector('.get-order-type-info');
+
+
+    doneButton.addEventListener('click', function (e) {
+        const selectElement = document.querySelector('.order-type-option-select');
+        if (selectElement && selectElement.value === "") {
+            e.preventDefault();
+            alert('Please select a table or room before proceeding');
+            console.log('Please select a table or room before proceeding');
+            // Optionally, you can add some visual feedback here
+        }else if (selectElement && selectElement.value !== "") {
+            e.preventDefault();
+
+            getOrderType.textContent = document.querySelector('.type-selected').textContent;
+            getOrderTypeInfo.textContent = selectElement.value;
+
+            // alert('Selected a table or room before proceeding');
+            document.getElementById('morePopup').style.display = 'none';
+            // Optionally, you can add some visual feedback here
+        }else {
+            console.log('Done button clicked');
+            getOrderType.textContent = document.querySelector('.type-selected').textContent;
+            getOrderTypeInfo.textContent = '';
+            document.getElementById('morePopup').style.display = 'none';
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    var mobileInput = document.getElementById('mobile');
+    var mobileInputCopy = document.getElementById('mobile-input');
+
+    function validateAndSyncMobile(input, target) {
+        // Remove any non-digit characters
+        input.value = input.value.replace(/\D/g, '');
+
+        // Limit to 10 digits
+        if (input.value.length > 10) {
+            input.value = input.value.slice(0, 10);
+        }
+
+        // Sync with the other input
+        target.value = input.value;
+    }
+
+    mobileInput.addEventListener('input', function () {
+        validateAndSyncMobile(this, mobileInputCopy);
+    });
+
+    mobileInputCopy.addEventListener('input', function () {
+        validateAndSyncMobile(this, mobileInput);
+    });
+});
+
+// --------------
+
+
+// Display the Table/Room list upon selction of Order Type
+
+let tableNumbersAppended = false;
+let roomNumbersAppended = false;
+
+document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.type-selectable');
+    const orderTypeOptions = document.querySelector('.order-type-options');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+
+            // Remove 'selected' class from all buttons
+            buttons.forEach(btn => btn.classList.remove('type-selected'));
+
+            // Add 'selected' class to clicked button
+            this.classList.add('type-selected');
+
+            // Update order-type-options based on selection
+            switch (this.textContent) {
+                case 'DINE-IN':
+                    // orderTypeOptions.appendChild(getAllTableNumbers());
+                    if (!tableNumbersAppended) {
+                        orderTypeOptions.innerHTML = '';
+                        roomNumbersAppended = false;
+                        orderTypeOptions.appendChild(getAllTableNumbers());
+                        tableNumbersAppended = true;
+                    }
+                    break;
+                case 'ROOM SERVICE':
+                    // orderTypeOptions.innerHTML = getAllRoomNumbers();
+                    if (!roomNumbersAppended) {
+                        orderTypeOptions.innerHTML = '';
+                        tableNumbersAppended = false;
+                        orderTypeOptions.appendChild(getAllRoomNumbers());
+                        roomNumbersAppended = true;
+                    }
+                    break;
+                case 'DELIVERY':
+                case 'PICKUP':
+                    orderTypeOptions.innerHTML = '';
+                    tableNumbersAppended = false;
+                    roomNumbersAppended = false;
+                    orderTypeOptions.innerHTML = '';
+                    break;
+            }
+        });
+    });
+});
+
+function getAllTableNumbers() {
+    // Get all tables to add
+    // Array of table numbers
+    const tableNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    function createDineInOptions2() {
+        return tableNumbers.map(number =>
+            `<button class="table-button" data-table="${number}">Table ${number}</button>`
+        ).join('');
+    }
+
+    function createDineInOptions() {
+        return `<select id="table-select" class="order-type-option-select" required>
+            <option value="">Select a table</option>
+            ${tableNumbers.map(number =>
+            `<option value="${number}">Table ${number}</option>`
+        ).join('')}
+        </select>`;
+    }
+
+    // Usage
+    const orderTypeOptions = document.createElement('div');
+    orderTypeOptions.className = 'table-numbers-group';
+    orderTypeOptions.innerHTML = createDineInOptions();
+
+    return orderTypeOptions;
+}
+function getAllRoomNumbers() {
+    // Get all tables to add
+    // Array of table numbers
+    const roomNumbers = [101, 201, 301, 401];
+
+    function createRoomServiceOptions2() {
+        return roomNumbers.map(number =>
+            `<button class="room-button" data-table="${number}">Room ${number}</button>`
+        ).join('');
+    }
+
+    function createRoomServiceOptions() {
+        return `<select id="room-select" class="order-type-option-select" required>    
+            <option value="">Select a room</option>
+            ${roomNumbers.map(number =>
+            `<option value="${number}">Table ${number}</option>`
+        ).join('')}
+        </select>`;
+    }
+
+    // Usage
+    const orderTypeOptions = document.createElement('div');
+    orderTypeOptions.className = 'table-numbers-group';
+    orderTypeOptions.innerHTML = createRoomServiceOptions();
+
+    return orderTypeOptions;
+}
+
+
+

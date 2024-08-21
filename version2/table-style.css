@@ -1,9 +1,17 @@
+* {
+    box-sizing: border-box;
+}
+
+body{
+    user-select: none;
+}
+
 .header {
-    height: 70px;
+    height: 8vh;
 }
 
 .header-title{
-    font-size: 2em;
+    font-size: 1.7em;
     font-weight: 600;
     color: rgb(255, 175, 2);
     /* text-align: center; */
@@ -27,23 +35,59 @@
 
 .header-items li {
     float: left;
-    padding: 10px 15px;
+    padding: 5px 10px;
     font-size: 1.2em;
+    
 }
 
 .header-items .support{
     font-size: .8em;
     text-align: center;
-    border: 1px solid #000000;
+    border: 1px solid #f07816;
     border-radius: 3px;
+    padding: 2px;
+    background-color: #fbe1ac;
 }
 
+
+/* ------ */
 .table-view{
     height: auto;
 }
 
 .table-view-head{
     height: 60px;
+    border-top: 1px solid #d0c6be;
+    font-size: 1.2em;
+    padding-top: 5px;
+    font-weight: 550;
+}
+
+.order-type-info{
+    float: right;
+}
+
+.type-selectable{
+    /* padding: 8px 5px; */
+    font-size: 0.7em;
+    border: 0px solid rgb(128, 128, 128);
+    background-color: rgb(128, 128, 128);
+    color: #f9f9f9;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    height: 35px;
+    width: auto;
+    border-radius: 2px;
+}
+
+.type-selectable:hover {
+    background-color: rgb(255, 175, 2);
+    color: white;
+}
+
+.type-selectable.type-selected{
+    background-color: rgb(255, 175, 2);
+    color: white;
 }
 
 .table-view-body{
@@ -62,14 +106,15 @@
     display: none;
 }
 
-
 .row-caption{
-    font-size: 18px;
+    font-size: 1em;
     font-weight: 300;
     margin: 10px;
+    margin-left: 0px;
+    color: #be5703;
 }
 
-.table-view-cell{
+.table-view-cell, .room-view-cell{
     display: inline-block;
     position: relative;
     height: 90px;
@@ -83,7 +128,7 @@
     cursor: pointer;
 }
 
-.table-view-cell .text{
+.table-view-cell .text, .room-view-cell .text{
     margin: 0;
     position: absolute;
     top: 50%;
