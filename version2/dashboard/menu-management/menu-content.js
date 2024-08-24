@@ -122,6 +122,24 @@ function initializeMenuContent() {
         loadContent(contentPage, contentLoadSection);
     }
 
+    let currentScript = null;
+
+    function handleItemClick(scriptUrl) {
+        // Remove the old script if it exists
+        if (currentScript) {
+            document.body.removeChild(currentScript);
+        }
+
+        // Create and append the new script
+        const script = document.createElement('script');
+        script.src = scriptUrl;
+        document.body.appendChild(script);
+
+        // Update the reference to the current script
+        currentScript = script;
+    }
+
+
     function loadContent(contentPage, contentLoadSection) {
         // Load HTML
         fetch(`./menu-management/${contentPage}/${contentPage}.html`)
@@ -131,11 +149,13 @@ function initializeMenuContent() {
                 // Load and execute the associated JavaScript file
                 const script = document.createElement('script');
                 script.src = `./menu-management/${contentPage}/${contentPage}.js`;
+                scriptUrl = `./menu-management/${contentPage}/${contentPage}.js`;
                 script.onload = function () {
                     // This will run after the script has loaded and executed
                     console.log(`${contentPage}.js loaded and executed`);
                 };
-                document.body.appendChild(script);
+                // document.body.appendChild(script);
+                handleItemClick(scriptUrl);
             })
             .catch(error => {
                 console.error('Error loading content:', error);

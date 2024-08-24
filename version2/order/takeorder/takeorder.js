@@ -1,25 +1,3 @@
-function setBillContainerHeight() {
-    const deliveryCatg = document.querySelector('.delivery-catg');
-    const billHead = document.querySelector('.bill-head');
-    const billFooter = document.querySelector('.bill-footer');
-    const billContainer = document.querySelector('.bill-container');
-
-    const deliveryCatgHeight = deliveryCatg.offsetHeight;
-    const billHeadHeight = billHead.offsetHeight;
-    const billFooterHeight = billFooter.offsetHeight;
-
-    document.documentElement.style.setProperty('--delivery-catg-height', `${deliveryCatgHeight}px`);
-    document.documentElement.style.setProperty('--bill-head-height', `${billHeadHeight}px`);
-    document.documentElement.style.setProperty('--bill-footer-height', `${billFooterHeight}px`);
-
-    billContainer.classList.add('bill-container-dynamic-height');
-}
-
-// Call the function when the page loads and on window resize
-window.addEventListener('load', setBillContainerHeight);
-window.addEventListener('resize', setBillContainerHeight);
-
-
 
 document.addEventListener('DOMContentLoaded', function () {
     const menuCategories = document.querySelectorAll('.menu-category-item');
@@ -262,9 +240,11 @@ function getSelectedButton() {
 
 function getBrowserHeaderHeight() {
     const screenHeight = window.screen.height; // Total screen height
+    const screenWidth = window.screen.width; // Total screen width
     const viewportHeight = window.innerHeight; // Viewport height (excluding browser UI)
     const headerHeight = screenHeight - viewportHeight;
     const string = `Screen height: ${screenHeight}px, Viewport height: ${viewportHeight}px, Browser header height: ${headerHeight}px`;
+    const string2 = `Screen width: ${screenWidth}px`;
     document.body.style.height = (viewportHeight - 1) + 'px';
     return string;
 }

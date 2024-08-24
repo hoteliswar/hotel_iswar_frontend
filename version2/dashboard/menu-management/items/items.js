@@ -1,3 +1,6 @@
+// document.addEventListener('DOMContentLoaded', function () {
+// window.addEventListener('load', function() {
+
 function addItemToList(name, price, category, description, imageSrc) {
     const itemsContainer = document.querySelector('.all-list-table-items');
 
@@ -79,10 +82,119 @@ document.getElementById('editForm').addEventListener('submit', (e) => {
     document.getElementById('editModal').style.display = 'none';
 });
 
-addItemToList('Chicken Masala Biriyani', 10.00, 'South Indian - Veg', 'Description 1', 'https://via.placeholder.com/150');
-addItemToList('Item 2', 20.00, 'Category 2', 'Description 2', '');
-addItemToList('Item 3', 30.00, 'Category 3', 'Description 3', '');
+// addItemToList('Chicken Masala Biriyani Masala', 10.00, 'South Indian - Veg', 'Description 1', 'https://via.placeholder.com/150');
+// addItemToList('Item 2', 20.00, 'Category 2', 'Description 2', '');
+// addItemToList('Item 3', 30.00, 'Category 3', 'Description 3', '');
 
+getFooditems();
 
+// API Call GET Food Items
+function getFooditems() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
 
+    const url = 'http://127.0.0.1:8000/api/foods/fooditems/';
 
+    refreshAccessToken2(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Data:', data);
+            // document.getElementById('foods_data').innerHTML = JSON.stringify(data);
+
+            // const preElement = document.getElementById('foods_data');
+            // preElement.textContent = JSON.stringify(data, null, 2);
+            passToList(data);
+
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+
+    function passToList(data) {
+
+        data.forEach(item => {
+
+            // const foodData = {
+            //     id: item.id,
+            //     name: item.name,
+            //     description: item.description,
+            //     price: item.price,
+            //     category: item.category,
+            //     image: item.image,
+            //     tenant: item.tenant
+            // };
+            addItemToList(item.name, item.price, item.category_id, item.description, '');
+
+        });
+
+    }
+};
+// });
+
+// API Call POST Food Items - Create
+
+document.getElementById('add-item').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const itemName = document.querySelector('#new-item-name').value;
+    const itemPrice = document.querySelector('#new-item-price').value;
+    const itemCategory = document.querySelector('#new-item-catg').value;
+    const itemDescription = document.querySelector('#new-item-desc').value;
+    const itemImage = document.querySelector('#new-item-img').files[0];
+
+    // const formData = new FormData();
+    // formData.append('name', itemName);
+    // formData.append('price', itemPrice);
+    // formData.append('category', itemCategory);
+    // formData.append('description', itemDescription);
+    // formData.append('image', itemImage);
+
+    const itemData = {
+        name: itemName,
+        price: itemPrice,
+        category: itemCategory,
+        description: itemDescription,
+        // itemImage is a file, which can't be directly included in JSON
+        // You may need to handle it separately if you need to send it
+    };
+
+    createFood(itemData);
+});
+
+function createFood(itemData) {
+    console.log(itemData);
+    const option = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: itemData.name,
+            description: itemData.description,
+            price: itemData.price,
+            category_id: 1
+        })
+    }
+
+    const url = 'http://127.0.0.1:8000/api/foods/fooditems/';
+
+    refreshAccessToken(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Data:', data);
+            console.table(data);
+            addItemToList(data.name, data.price, data.category_id, data.description, '');
+            alert("Food Item Created Successfully");
+            exit();
+
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+}

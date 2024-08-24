@@ -14,15 +14,15 @@
         <div class="new-item-card-body">
             <div class="new-item-card-body-item">
                 <div class="new-item-card-body-item-label">Item Name</div>
-                <input type="text" class="new-item-card-body-item-input">
+                <input type="text" class="new-item-card-body-item-input" id="new-item-name">
             </div>
             <div class="new-item-card-body-item">
                 <div class="new-item-card-body-item-label">Item Price</div>
-                <input type="text" class="new-item-card-body-item-input">
+                <input type="text" class="new-item-card-body-item-input" id="new-item-price">
             </div>
             <div class="new-item-card-body-item">
                 <div class="new-item-card-body-item-label">Item Category</div>
-                <select class="new-item-card-body-item-input">
+                <select class="new-item-card-body-item-input" id="new-item-catg">
                     <option selected>Choose category</option>
                     <option value="1">Category 1</option>
                     <option value="2">Category 2</option>
@@ -31,14 +31,14 @@
             </div>
             <div class="new-item-card-body-item">
                 <div class="new-item-card-body-item-label">Item Description</div>
-                <textarea class="new-item-card-body-item-input" rows="1"></textarea>
+                <textarea class="new-item-card-body-item-input" id="new-item-desc" rows="1"></textarea>
             </div>
             <div class="new-item-card-body-item">
                 <div class="new-item-card-body-item-label">Item Image</div>
-                <input type="file" class="new-item-card-body-item-input">
+                <input type="file" class="new-item-card-body-item-input" id="new-item-img">
             </div>
             <div class="new-item-card-body-item">
-                <button class="new-item-card-body-item-button" id="add-item">Add Item</button>
+                <button class="new-item-card-body-item-button" id="add-item" type="button">Add Item</button>
             </div>
         </div>
     </div>
@@ -90,7 +90,7 @@
                     <input type="file" class="modal-input" id="editImage">
                 </div>
                 <div class="modal-body-item">
-                    <button class="new-item-card-body-item-button" id="add-item">Update Item</button>
+                    <button class="new-item-card-body-item-button" id="update-item">Update Item</button>
                 </div>
             </form>
         </div>
@@ -100,6 +100,9 @@
 
 
     <script src="./menu-management/items/items.js"></script>
+    <script src="items.js"></script>
+    <!-- <script src="./../../../common.js"></script> -->
+    <!-- <script src="./../../../session.js"></script> -->
 </body>
 
 </html>

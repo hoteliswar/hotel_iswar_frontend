@@ -39,7 +39,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
                 console.log('Refresh Token:', refreshToken);
 
                 // Redirect to a new URL after successful login
-                window.location.href = 'dashboard.html'; // Change to your desired URL
+                window.location.href = './../dashboard/dashboard.html'; // Change to your desired URL
             } else {
                 console.error('Login failed:', data);
             }

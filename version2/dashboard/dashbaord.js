@@ -44,6 +44,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 fileName = 'not-found';
         }
 
+        let currentScript = null;
+        function handleItemClick(scriptUrl) {
+            // Remove the old script if it exists
+            if (currentScript) {
+                document.body.removeChild(currentScript);
+            }
+
+            // Create and append the new script
+            const script = document.createElement('script');
+            script.src = scriptUrl;
+            document.body.appendChild(script);
+
+            // Update the reference to the current script
+            currentScript = script;
+        }
+
         fetch(`${fileName}.html`)
             .then(response => response.text())
             .then(data => {
@@ -51,11 +67,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Load and execute the associated JavaScript file
                 const script = document.createElement('script');
                 script.src = `${fileName}.js`;
+                scriptUrl = `${fileName}.js`;
                 script.onload = function () {
                     // This will run after the script has loaded and executed
                     console.log(`${fileName}.js loaded and executed`);
                 };
-                document.body.appendChild(script);
+                // document.body.appendChild(script);
+                handleItemClick(scriptUrl);
             })
             .catch(error => {
                 console.error('Error loading content:', error);

@@ -16,7 +16,7 @@ body {
 }
 
 .header {
-    height: 8vh;
+    height: 9vh;
 }
 
 .header-title{
@@ -65,7 +65,7 @@ body {
 .screen-wrap {
     /* 78 - height for tablet */
     
-    height: 92vh;
+    height: 91vh;
     /* background-color: aqua; */
 }
 
@@ -122,4 +122,23 @@ body {
     height: 90vh;
     overflow-y: hidden;
     overflow-x: hidden;
+}
+
+
+
+.dashboard-nav::-webkit-scrollbar {
+    width: 2px;
+}
+
+.dashboard-nav::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.dashboard-nav::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+.dashboard-nav::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
