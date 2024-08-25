@@ -15,7 +15,8 @@ function getCookie(name) {
 }
 
 function refreshAccessToken(url, option) {
-
+    console.log(' refreshAccessToken() called !!');
+    
     return fetch(url, option)
     .then(response => {
         console.log(response.status);
@@ -67,6 +68,12 @@ function refreshAccessToken(url, option) {
         else if (response.status === 201) {
             console.log('Status: 201 okay');
             return response.json();
+        }
+        else {
+            console.log(`Unexpected status code: ${response.status}`);
+            return response.json().then(err => {
+                throw new Error(err.message);
+            });
         }
     });
 }

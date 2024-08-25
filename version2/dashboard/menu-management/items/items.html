@@ -9,6 +9,8 @@
 </head>
 
 <body>
+
+    <!-- Add New Item Card -->
     <div class="new-item-card">
         <div class="new-item-card-title">Add New Item</div>
         <div class="new-item-card-body">
@@ -37,12 +39,23 @@
                 <div class="new-item-card-body-item-label">Item Image</div>
                 <input type="file" class="new-item-card-body-item-input" id="new-item-img">
             </div>
+
+            <div class="new-item-card-body-item">
+                <div class="new-item-card-body-item-label">Category Status</div>
+                <label class="switch">
+                    <input type="checkbox" id="itemStatus" class="new-item-card-body-item-input" onchange="updateStatus(this)">
+                    <span class="slider round"></span>
+                </label>
+                <span id="statusText">Disabled</span>
+            </div>
             <div class="new-item-card-body-item">
                 <button class="new-item-card-body-item-button" id="add-item" type="button">Add Item</button>
             </div>
         </div>
     </div>
 
+
+    <!-- All Items List -->
     <div class="all-items-list">
         <div class="all-items-list-title">All Items</div>
         <div class="all-list-table-head">
@@ -50,7 +63,8 @@
             <div class="col-2">Price</div>
             <div class="col-2">Category</div>
             <div class="col-2">Description</div>
-            <div class="col-2">Image</div>
+            <div class="col-1">Image</div>
+            <div class="col-1">Status</div>
             <div class="col-2">Edit/Delete</div>
         </div>
         <div class="all-list-table-items">
@@ -89,6 +103,15 @@
                     <!-- <div class="new-item-card-body-item-label">Item Image</div> -->
                     <input type="file" class="modal-input" id="editImage">
                 </div>
+
+                <div class="modal-body-item">
+                    <label class="switch">
+                        <input type="checkbox" id="editStatus" class="new-item-card-body-item-input" onchange="updateModalStatus(this)">
+                        <span class="slider round"></span>
+                    </label>
+                    <span id="statusModalText">Disabled</span>
+                </div>
+
                 <div class="modal-body-item">
                     <button class="new-item-card-body-item-button" id="update-item">Update Item</button>
                 </div>
