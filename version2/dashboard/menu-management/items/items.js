@@ -102,13 +102,7 @@ function updateModalStatus(checkbox) {
 
 
 // Handle form submission for updating item
-// document.getElementById('update-').addEventListener('submit', (e) => {
-//     e.preventDefault();
-//     // Handle the update logic here
-//     // You can access the updated values using the form elements
-//     // After updating, close the modal
-//     document.getElementById('editModal').style.display = 'none';
-// });
+// PUT API call after click(Update button)
 
 document.getElementById('update-item').addEventListener('click', function (e) {
     e.preventDefault();
@@ -127,20 +121,12 @@ document.getElementById('update-item').addEventListener('click', function (e) {
         price: itemPrice,
         description: itemDescription,
         category_id: 1,
-        // status: itemStatus,
+        status: itemStatus,
     };
-    const foodData = {
-        itemName,
-        itemPrice,
-        itemDescription
-    };
-
+    
     console.table(updatedItem);
-    console.log(JSON.stringify(updatedItem));
-    console.table(foodData);
 
     updateItem(updatedItem);
-    // alert(updatedItem);
 
     function updateItem(updatedItem){
         option = {
@@ -149,7 +135,6 @@ document.getElementById('update-item').addEventListener('click', function (e) {
                 'Authorization': 'Bearer ' + getCookie('access_token'),
                 'Content-Type': 'application/json'
             },
-            // body: JSON.stringify(foodData)
             body: JSON.stringify({
                 name: updatedItem.name,
                 price: updatedItem.price,
@@ -163,24 +148,14 @@ document.getElementById('update-item').addEventListener('click', function (e) {
         // Send a PUT request to update the item
     
         refreshAccessToken(url, option)
-        // fetch(url, option)
-        //     .then(response => {
-        //         console.log(`Unexpected status code: ${response.status}`);
-        //         return response.json().then(err => {
-        //             throw new Error(err.message);
-        //         });
-        //     })
             // .then(response => response.json())
             .then(data => {
                 console.log('Item updated successfully:', data);
-                alert('Item updated successfully:', data);
-                alert('Item updated successfully:', data);
-                alert('Item updated successfully:', data);
+                // alert('Item updated successfully:', data);
                 // Optionally, update the UI or show a success message
             })
             .catch(error => {
                 console.error('Error updating item:', error);
-                alert('Item not updated :', error);
                 alert('Item not updated :', error);
                 // Handle the error, show an error message to the user
             });
@@ -191,7 +166,6 @@ document.getElementById('update-item').addEventListener('click', function (e) {
 // addItemToList('Chicken Masala Biriyani Masala', 10.00, 'South Indian - Veg', 'Description 1', 'https://via.placeholder.com/150');
 // addItemToList('Item 2', 20.00, 'Category 2', 'Description 2', '');
 // addItemToList('Item 3', 30.00, 'Category 3', 'Description 3', '');
-
 // getFooditems();
 
 // API Call GET Food Items
