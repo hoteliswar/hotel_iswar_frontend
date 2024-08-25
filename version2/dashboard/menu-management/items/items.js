@@ -214,7 +214,7 @@ function getFooditems() {
 
     }
 };
-// });
+
 
 getFooditems();
 
@@ -262,6 +262,8 @@ document.getElementById('add-item').addEventListener('click', function (e) {
 function updateStatus(checkbox) {
     document.getElementById('statusText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
 }
+
+// API Call POST Food Items - Create
 
 function createFood(itemData) {
     console.log(itemData);

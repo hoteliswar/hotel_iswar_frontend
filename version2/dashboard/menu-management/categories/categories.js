@@ -1,24 +1,5 @@
-function addCatgeoryToList(name, description, status, imageSrc) {
+function addCatgeoryToList(name, description, status, imageSrc, id) {
     const itemsContainer = document.querySelector('.all-list-table-items');
-
-    // const itemHTML = `
-    //     <div class="record-row">
-    //         <div class="col-2" id="name">${name}</div>
-    //         <div class="col-3" id="description">${description}</div>
-    //         <div class="col-2" id="status">${status}</div>
-    //         <div class="col-2" id="imagesrc"><img src="${imageSrc}" alt="${name}" width="50"></div>
-    //         <div class="col-3">
-    //             <button class="edit-btnn">Edit</button>
-    //             <button class="delete-btn"></button>
-    //             <i class="fa fa-trash delete-btn" aria-hidden="true"></i>
-    //         </div>
-    //     </div>
-    // `;
-
-    // <label class="switch">
-    //     <input type="checkbox" id="categoryStatus" class="new-item-card-body-item-input" onchange="updateStatus(this)">
-    //         <span class="slider round"></span>
-    // </label>
 
     const itemHTML = `
         <div class="record-row">
@@ -26,10 +7,10 @@ function addCatgeoryToList(name, description, status, imageSrc) {
             <div class="col-3" id="description">${description}</div>
             <div class="col-3" id="status">
                 <label class="switch">
-                    <input type="checkbox" class="listStatus" id="categoryStatus" ${status === 'Active' ? 'checked' : ''} disabled>
+                    <input type="checkbox" class="listStatus" id="categoryStatus" ${status === 'enabled' ? 'checked' : ''} disabled>
                     <span class=" slider sliderList round"></span>
                 </label>
-                <span id="statusDisableText">${status}</span>
+                <span id="statusDisableText">${capitalizeFirstLetter(status)}</span>
 
             </div>
             <div class="col-2" id="imagesrc"><img src="${imageSrc}" alt="${name}" width="50"></div>
@@ -41,6 +22,7 @@ function addCatgeoryToList(name, description, status, imageSrc) {
         
     `;
 
+    imageSrc = 'blank';
 
     itemsContainer.insertAdjacentHTML('beforeend', itemHTML);
 
@@ -50,32 +32,51 @@ function addCatgeoryToList(name, description, status, imageSrc) {
     // Add event listener to the edit button of the last added row
     const editButton = lastAddedRow.querySelector('.edit-btnn');
     editButton.addEventListener('click', () => {
-        openUpdateModal(name, description, status, imageSrc);
+        console.log("Edit button clicked");
+        console.log(name, description, status, imageSrc, id);
+        openUpdateModal(name, description, status, imageSrc, id);
     });
 }
 
-function openUpdateModal(name, description, status, imageSrc) {
+// Open Update Category Modal
+function openUpdateModal(name, description, status, imageSrc, id) {
     const modal = document.getElementById('editModal');
-    const editName = document.getElementById('editName');
-    const editDescription = document.getElementById('editDescription');
-    const editStatus = document.getElementById('editStatus');
+    const editName = document.getElementById('editCatgName');
+    const editDescription = document.getElementById('editCatgDescription');
+    const editStatus = document.getElementById('editCatgStatus');
     const statusModalText = document.getElementById('statusModalText');
-    const editImage = document.getElementById('editImage');
+    const editImage = document.getElementById('editCatgImg');
+
+    const catgId = document.createElement('input');
+    catgId.type = 'hidden';
+    catgId.id = 'catgId';
+    catgId.value = id;
+    modal.appendChild(catgId);
+
+    console.log('Name in Open Update Modal:', name);   
+    console.log('ID in Open Update Modal:', id);   
 
     editName.value = name;
     editDescription.value = description;
-
-    if (status === 'Active') {
-        editStatus.checked = true;
-        statusModalText.textContent = 'Active';
-    } else {
-        editStatus.checked = false;
-        statusModalText.textContent = 'Inactive';
-    }
-
-    // editStatus.value = status;
-    // editImage.setAttribute('value', imageSrc);
     // editImage.value = imageSrc;
+    statusModalText.textContent = capitalizeFirstLetter(status);
+
+
+    // if (status === 'enabled') {
+    //     editStatus.checked = true;
+    //     statusModalText.textContent = 'Enabled';
+    // } else {
+    //     editStatus.checked = false;
+    //     statusModalText.textContent = 'Disabled';
+    // }
+
+    if (status === 'enabled') {
+        console.log(status);
+        editStatus.checked = true;
+        // var statusText = 'enabled';
+    } else {
+        // var statusText = 'disabled';
+    }
 
     modal.style.display = 'block';
 }
@@ -102,10 +103,10 @@ document.getElementById('editForm').addEventListener('submit', (e) => {
     document.getElementById('editModal').style.display = 'none';
 });
 
-addCatgeoryToList('South Indian', 'Veg', 'Active', 'https://via.placeholder.com/150');
-addCatgeoryToList('North Indian', 'Veg', 'Inactive', 'https://via.placeholder.com/150');
-addCatgeoryToList('Chinese', 'Veg', 'Active', 'https://via.placeholder.com/150');
-addCatgeoryToList('Italian', 'Veg', 'Inactive', 'https://via.placeholder.com/150');
+// addCatgeoryToList('South Indian', 'Veg', 'Enabled', 'https://via.placeholder.com/150');
+// addCatgeoryToList('North Indian', 'Veg', 'Disabled', 'https://via.placeholder.com/150');
+// addCatgeoryToList('Chinese', 'Veg', 'Enabled', 'https://via.placeholder.com/150');
+// addCatgeoryToList('Italian', 'Veg', 'Disabled', 'https://via.placeholder.com/150');
 
 
 
@@ -115,15 +116,176 @@ addCatgeoryToList('Italian', 'Veg', 'Inactive', 'https://via.placeholder.com/150
 
 // });
 
-function updateStatus(checkbox) {
-    document.getElementById('statusText').textContent = checkbox.checked ? 'Active' : 'Inactive';
+function updateCatgStatus(checkbox) {
+    document.getElementById('statusText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
 }
 
-function updateModalStatus(checkbox) {
-    document.getElementById('statusModalText').textContent = checkbox.checked ? 'Active' : 'Inactive';
+function updateCatgModalStatus(checkbox) {
+    document.getElementById('statusModalText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
 }
 
 function updateDisableStatus(checkbox) {
-    document.getElementById('statusDisableText').textContent = checkbox.checked ? 'Active' : 'Inactive';
+    document.getElementById('statusDisableText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
 }
 
+// API Call GET Category List
+function getCategoryList() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const url = 'http://127.0.0.1:8000/api/foods/categories/';
+
+    refreshAccessToken2(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Data:', data);
+            passToList(data);
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+
+    function passToList(data) {
+        data.forEach(item => {
+            addCatgeoryToList(item.name, item.description, item.status, '', item.id);
+        });
+    }
+};
+
+
+getCategoryList();
+
+// Capitalize the first letter of a string
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+
+// API Call POST Category Items - Create
+
+document.getElementById('add-category').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const catgName = document.querySelector('#catgName').value;
+    const catgDescription = document.querySelector('#catgDescription').value;
+    const catgStatus = document.querySelector('#catgStatus');
+    const catgImg = document.querySelector('#catgImg').value;
+
+    if (catgStatus.checked) {
+        var catgStatusText = 'enabled';
+        // alert('Status:', statusText);
+    } else {
+        var catgStatusText = 'disabled';
+        // alert('Status:', statusText);
+    }
+
+    const catgData = {
+        name: catgName,
+        description: catgDescription,
+        status: catgStatusText,
+        image: catgImg
+    };
+    console.table(catgData);
+
+    createCategory(catgData);
+});
+
+// API Call POST Food Items - Create
+
+function createCategory(catgData) {
+    console.log(catgData);
+    const option = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            name: catgData.name,
+            description: catgData.description,
+            status: catgData.status,
+            image: ''
+        })
+    }
+
+    const url = 'http://127.0.0.1:8000/api/foods/categories/';
+
+    refreshAccessToken(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Category:', data);
+            console.table(data);
+            // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status);
+            alert("Category Created Successfully");
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+}
+
+// API Call PUT Category Items - Update
+
+document.getElementById('update-category').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const catgId = document.querySelector('#catgId').value;
+    const catgName = document.querySelector('#editCatgName').value;
+    const catgDescription = document.querySelector('#editCatgDescription').value;
+    const catgStatus = document.querySelector('#editCatgStatus');
+    const catgImg = document.querySelector('#editCatgImg').value;
+
+    const updatedCatgData = {
+        id: catgId,
+        name: catgName,
+        description: catgDescription,
+        status: catgStatus.checked ? 'enabled' : 'disabled',
+        image: catgImg
+    };
+
+    console.table(updatedCatgData);
+
+    updatedCatg(updatedCatgData);
+
+    function updatedCatg(updatedCatgData){
+        option = {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: updatedCatgData.name,
+                description: updatedCatgData.description,
+                status: updatedCatgData.status
+                
+            })
+        }
+    
+        console.log(updatedCatgData.id);
+        console.log(catgId);
+
+
+        const url = `http://127.0.0.1:8000/api/foods/categories/${updatedCatgData.id}/`
+    
+        // Send a PUT request to update the item
+    
+        refreshAccessToken(url, option)
+            // .then(response => response.json())
+            .then(data => {
+                console.log('Category updated successfully:', data);
+                // alert('Item updated successfully:', data);
+                // Optionally, update the UI or show a success message
+            })
+            .catch(error => {
+                console.error('Error updating item:', error);
+                alert('Category not updated :', error);
+                // Handle the error, show an error message to the user
+            });
+    }
+
+});

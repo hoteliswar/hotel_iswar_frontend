@@ -37,8 +37,8 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'MENU MANAGEMENT':
                 fileName = './menu-management/menu-content';
                 break;
-            case 'Category 3':
-                fileName = 'category3-content';
+            case 'REPORTS':
+                fileName = './reports-app/reports-content';
                 break;
             default:
                 fileName = 'not-found';
@@ -85,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 // Landscape Alert
-
 
 function checkOrientation() {
     if (window.innerWidth <= 900) {

@@ -15,39 +15,30 @@
             <div class="new-item-card-body-item">
                 <div class="new-item-card-body-item-label">Category
                     Name</div>
-                <input type="text" class="new-item-card-body-item-input">
+                <input type="text" class="new-item-card-body-item-input" id="catgName">
             </div>
-            <!-- <div class="new-item-card-body-item">
-                <div class="new-item-card-body-item-label">Item Category</div>
-                <select class="new-item-card-body-item-input">
-                    <option selected>Choose category</option>
-                    <option value="1">Category 1</option>
-                    <option value="2">Category 2</option>
-                    <option value="3">Category 3</option>
-                </select>
-            </div> -->
             <div class="new-item-card-body-item">
                 <div class="new-item-card-body-item-label">Category
                     Description</div>
-                <textarea class="new-item-card-body-item-input" rows="1"></textarea>
+                <textarea class="new-item-card-body-item-input" rows="1" id="catgDescription"></textarea>
             </div>
             <div class="new-item-card-body-item">
                 <div class="new-item-card-body-item-label">Category
                     Status</div>
                 <!-- <input type="text" class="new-item-card-body-item-input"> -->
                 <label class="switch">
-                    <input type="checkbox" id="categoryStatus" class="new-item-card-body-item-input" onchange="updateStatus(this)">
+                    <input type="checkbox" id="catgStatus" class="new-item-card-body-item-input" id="catgStatus" onchange="updateCatgStatus(this)">
                     <span class="slider round"></span>
                 </label>
-                <span id="statusText">Select</span>
+                <span id="statusText">Disabled</span>
             </div>
             <div class="new-item-card-body-item">
                 <div class="new-item-card-body-item-label">Category
                     Image</div>
-                <input type="file" class="new-item-card-body-item-input">
+                <input type="file" class="new-item-card-body-item-input" id="catgImg">
             </div>
             <div class="new-item-card-body-item">
-                <button class="new-item-card-body-item-button" id="add-item">Add Category</button>
+                <button class="new-item-card-body-item-button" id="add-category">Add Category</button>
             </div>
         </div>
     </div>
@@ -74,29 +65,29 @@
             <form id="editForm">
                 <div class="modal-body-item">
                     <!-- <div class="new-item-card-body-item-label">Item Name</div> -->
-                    <input type="text" class="modal-input" placeholder="Catgeory Name" id="editName">
+                    <input type="text" class="modal-input" placeholder="Catgeory Name" id="editCatgName">
                 </div>
                 
                 <div class="modal-body-item">
                     <!-- <div class="new-item-card-body-item-label">Item Description</div> -->
-                    <textarea class="modal-input" rows="1" placeholder="Description" id="editDescription"></textarea>
+                    <textarea class="modal-input" rows="1" placeholder="Description" id="editCatgDescription"></textarea>
                 </div>
                 <div class="modal-body-item">
                     <!-- <div class="new-item-card-body-item-label">Item Price</div> -->
                     <!-- <input type="text" class="modal-input" placeholder="status" id="editStatus"> -->
                     <label class="switch">
-                        <input type="checkbox" id="editStatus" class="new-item-card-body-item-input" onchange="updateModalStatus(this)">
+                        <input type="checkbox" id="editCatgStatus" class="new-item-card-body-item-input" onchange="updateCatgModalStatus(this)">
                         <span class="slider round"></span>
                     </label>
-                    <span id="statusModalText">Inactive</span>
+                    <span id="statusModalText">Disabled</span>
 
                 </div>
                 <div class="modal-body-item">
                     <!-- <div class="new-item-card-body-item-label">Item Image</div> -->
-                    <input type="file" class="modal-input" id="editImage">
+                    <input type="file" class="modal-input" id="editCatgImg">
                 </div>
                 <div class="modal-body-item">
-                    <button class="new-item-card-body-item-button" id="add-item">Update Category</button>
+                    <button class="new-item-card-body-item-button" id="update-category">Update Category</button>
                 </div>
             </form>
         </div>
