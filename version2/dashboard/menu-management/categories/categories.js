@@ -16,7 +16,7 @@ function addCatgeoryToList(name, description, status, imageSrc, id) {
             <div class="col-2" id="imagesrc"><img src="${imageSrc}" alt="${name}" width="50"></div>
             <div class="col-2">
                 <i class="edit-btnn fa-solid fa-pen-to-square"></i>
-                <i class="fa fa-trash delete-btn" aria-hidden="true"></i>
+                <i class="fa fa-trash delete-btn" onclick=deleteCategory(${id}); aria-hidden="true"></i>
             </div>
         </div>
         
@@ -36,6 +36,29 @@ function addCatgeoryToList(name, description, status, imageSrc, id) {
         console.log(name, description, status, imageSrc, id);
         openUpdateModal(name, description, status, imageSrc, id);
     });
+}
+
+// API Call to delete category - DELETE
+function deleteCategory(id){
+    const option = {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+    const url = `http://127.0.0.1:8000/api/foods/categories/${id}/`;
+    refreshAccessToken2(url, option)
+    // .then(response => response.json())
+    .then(data => {
+        console.log('Data:', data);
+        getCategoryList();
+        alert("Category Deleted..");
+    })
+    .catch(error => {
+        console.log('Error fetching data:', error);
+    });
+
 }
 
 // Open Update Category Modal
@@ -95,13 +118,13 @@ window.addEventListener('click', (event) => {
 
 
 // Handle form submission for updating item
-document.getElementById('editForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    // Handle the update logic here
-    // You can access the updated values using the form elements
-    // After updating, close the modal
-    document.getElementById('editModal').style.display = 'none';
-});
+// document.getElementById('editForm').addEventListener('submit', (e) => {
+//     e.preventDefault();
+//     // Handle the update logic here
+//     // You can access the updated values using the form elements
+//     // After updating, close the modal
+//     document.getElementById('editModal').style.display = 'none';
+// });
 
 // addCatgeoryToList('South Indian', 'Veg', 'Enabled', 'https://via.placeholder.com/150');
 // addCatgeoryToList('North Indian', 'Veg', 'Disabled', 'https://via.placeholder.com/150');
@@ -166,7 +189,7 @@ function updateDisableStatus(checkbox) {
 if( categoryData =  getCategoryListFromStorage()){
     passToCategoryList(categoryData);
 } else {
-    console.log('Else');
+    console.log('No data in storage');
 }
 
 function passToCategoryList(data) {
@@ -181,7 +204,7 @@ function capitalizeFirstLetter(string) {
 }
 
 
-// API Call POST Category Items - Create
+// EventListener to POST Category Items - Create
 
 document.getElementById('add-category').addEventListener('click', function (e) {
     e.preventDefault();

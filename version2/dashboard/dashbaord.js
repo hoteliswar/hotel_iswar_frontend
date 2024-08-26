@@ -188,4 +188,57 @@ function getCategoryListFromStorage() {
 }
 
 
+getFooditems();
 
+// API Call GET Food Items
+function getFooditems() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+    const url = 'http://127.0.0.1:8000/api/foods/fooditems/';
+
+    refreshAccessToken2(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Data:', data);
+            localStorage.setItem('allFoodList', JSON.stringify(data));
+            getAllFoodListFromStorage();
+            // document.getElementById('foods_data').innerHTML = JSON.stringify(data);
+
+            // const preElement = document.getElementById('foods_data');
+            // preElement.textContent = JSON.stringify(data, null, 2);
+            passToList(data);
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+
+    // function passToList(data) {
+    //     data.forEach(item => {
+    //         addItemToList(item.name, item.price, item.category_name, item.description, '', item.status, item.id, item.veg);
+    //     });
+    // }
+};
+
+function getAllFoodListFromStorage() {
+    const storedFoodData = localStorage.getItem('allFoodList');
+    if (storedFoodData) {
+        if (storedFoodData === 'undefined') {
+            console.log('No food list found in local storage');
+            getFooditems();
+        }
+        const foodList = JSON.parse(storedFoodData);
+        console.log('Category list from local storage:', foodList);
+        // passToCategoryList(categoryList);
+        return foodList;
+    } else {
+        console.log('No category list found in local storage');
+        // Optionally, you can call getCategoryList() here to fetch from API if not in storage
+        getFooditems();
+    }
+    
+}

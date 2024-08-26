@@ -1,5 +1,4 @@
 // Putting Options in category list
-
 function putCategoryInSelect(){
     let selectCategory = document.getElementById('new-item-catg');
     categoryData = getCategoryListFromStorage();
@@ -17,8 +16,6 @@ function putCategoryInSelect(){
 }
 
 putCategoryInSelect();
-
-
 
 // Add New Item to List
 function addItemToList(name, price, category, description, imageSrc, status, id, veg) {
@@ -42,7 +39,7 @@ function addItemToList(name, price, category, description, imageSrc, status, id,
             <div class="col-2" id="itemStatus">${vegData}</div>
             <div class="col-1">
                 <i class="edit-btn fa-solid fa-pen-to-square"></i>
-                <i class="fa fa-trash delete-btn" aria-hidden="true"></i>
+                <i class="fa fa-trash delete-btn" onclick=deleteFood(${id}); aria-hidden="true"></i>
             </div>
         </div>
         
@@ -58,6 +55,29 @@ function addItemToList(name, price, category, description, imageSrc, status, id,
     editButton.addEventListener('click', () => {
         openEditModal(name, price, category, description, imageSrc, status, id, veg);
     });
+}
+
+
+// API Call to delete food item - DELETE
+function deleteFood(id){
+    const option = {
+        method: 'DELETE',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+    const url = `http://127.0.0.1:8000/api/foods/fooditems/${id}/`;
+    refreshAccessToken2(url, option)
+    // .then(response => response.json())
+    .then(data => {
+        console.log('Data:', data);
+        getFooditems();
+    })
+    .catch(error => {
+        console.log('Error fetching data:', error);
+    });
+
 }
 
 
@@ -128,7 +148,7 @@ function updateModalStatus(checkbox) {
 }
 
 
-// Handle form submission for updating item
+
 // PUT API call after click(Update button)
 
 document.getElementById('update-item').addEventListener('click', function (e) {
@@ -140,15 +160,16 @@ document.getElementById('update-item').addEventListener('click', function (e) {
     const itemDescription = document.getElementById('editDescription').value;
     const itemCategory = document.getElementById('editCategory').value;
     const itemImage = document.getElementById('editImage').value;
-    const itemStatus = document.getElementById('editStatus').value;
+    const itemStatus = document.getElementById('editStatus');
 
     // Create an object with the updated item details
     const updatedItem = {
         name: itemName,
         price: itemPrice,
         description: itemDescription,
-        category_id: 1,
-        status: itemStatus,
+        category_id: itemCategory,
+        status: itemStatus.checked ? 'enabled' : 'disabled',
+        id: itemId
     };
 
     console.table(updatedItem);
@@ -166,11 +187,13 @@ document.getElementById('update-item').addEventListener('click', function (e) {
                 name: updatedItem.name,
                 price: updatedItem.price,
                 description: updatedItem.description,
-                category_id: 1,
+                category_id: 11,
+                status: updatedItem.status,
+                veg: true
             })
         }
 
-        const url = `http://127.0.0.1:8000/api/foods/fooditems/${itemId}/`
+        const url = `http://127.0.0.1:8000/api/foods/fooditems/${updatedItem.id}/`
 
         // Send a PUT request to update the item
 
@@ -178,6 +201,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
             // .then(response => response.json())
             .then(data => {
                 console.log('Item updated successfully:', data);
+                getFooditems();
                 // alert('Item updated successfully:', data);
                 // Optionally, update the UI or show a success message
             })
@@ -196,57 +220,58 @@ document.getElementById('update-item').addEventListener('click', function (e) {
 // getFooditems();
 
 // API Call GET Food Items
-function getFooditems() {
-    const option = {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + getCookie('access_token'),
-            'Content-Type': 'application/json'
-        }
-    }
+// function getFooditems() {
+//     const option = {
+//         method: 'GET',
+//         headers: {
+//             'Authorization': 'Bearer ' + getCookie('access_token'),
+//             'Content-Type': 'application/json'
+//         }
+//     }
 
-    const url = 'http://127.0.0.1:8000/api/foods/fooditems/';
+//     const url = 'http://127.0.0.1:8000/api/foods/fooditems/';
 
-    refreshAccessToken2(url, option)
-        // .then(response => response.json())
-        .then(data => {
-            console.log('Data:', data);
-            // document.getElementById('foods_data').innerHTML = JSON.stringify(data);
+//     refreshAccessToken2(url, option)
+//         // .then(response => response.json())
+//         .then(data => {
+//             console.log('Data:', data);
+//             // document.getElementById('foods_data').innerHTML = JSON.stringify(data);
 
-            // const preElement = document.getElementById('foods_data');
-            // preElement.textContent = JSON.stringify(data, null, 2);
-            passToList(data);
+//             // const preElement = document.getElementById('foods_data');
+//             // preElement.textContent = JSON.stringify(data, null, 2);
+//             passToList(data);
 
-        })
-        .catch(error => {
-            console.log('Error fetching data:', error);
-        });
+//         })
+//         .catch(error => {
+//             console.log('Error fetching data:', error);
+//         });
 
-    function passToList(data) {
-
-        data.forEach(item => {
-
-            // const foodData = {
-            //     id: item.id,
-            //     name: item.name,
-            //     description: item.description,
-            //     price: item.price,
-            //     category: item.category,
-            //     image: item.image,
-            //     tenant: item.tenant
-            // };
-            addItemToList(item.name, item.price, item.category_name, item.description, '', item.status, item.id, item.veg);
-
-        });
-
-    }
-};
+//     function passToList(data) {
+//         data.forEach(item => {
+//             addItemToList(item.name, item.price, item.category_name, item.description, '', item.status, item.id, item.veg);
+//         });
+//     }
+// };
 
 
-getFooditems();
+// getFooditems();
+// getAllFoodListFromStorage();
+
+
+if( foodData =  getAllFoodListFromStorage()){
+    passToFoodList(foodData);
+} else {
+    console.log('No data in storage');
+}
+
+function passToFoodList(data) {
+    data.forEach(item => {
+        addItemToList(item.name, item.price, item.category_name, item.description, '', item.status, item.id, item.veg);
+    });
+}
+
 
 // API Call POST Food Items - Create
-
 document.getElementById('add-item').addEventListener('click', function (e) {
     e.preventDefault();
 
@@ -270,18 +295,9 @@ document.getElementById('add-item').addEventListener('click', function (e) {
     // Non Veg - Veg
     if (itemVegNon.checked === true) {
         var vegNon = 'false';
-        // alert('Status:', statusText);
     } else {
         var vegNon = 'true';
-        // alert('Status:', statusText);
     }
-
-    // const formData = new FormData();
-    // formData.append('name', itemName);
-    // formData.append('price', itemPrice);
-    // formData.append('category', itemCategory);
-    // formData.append('description', itemDescription);
-    // formData.append('image', itemImage);
 
     const itemData = {
         name: itemName,
@@ -332,7 +348,8 @@ function createFood(itemData) {
         .then(data => {
             console.log('Data:', data);
             console.table(data);
-            addItemToList(data.name, data.price, data.category_id, data.description, '', data.status, data.veg);
+            getFooditems();
+            // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status, data.veg);
             alert("Food Item Created Successfully");
         })
         .catch(error => {
