@@ -1,3 +1,11 @@
+
+function getCookie(name) {
+    let value = "; " + document.cookie;
+    let parts = value.split("; " + name + "=");
+    if (parts.length === 2) return parts.pop().split(";").shift();
+}
+
+
 document.addEventListener('DOMContentLoaded', function () {
     const dashboardContent = document.getElementById('dashboard-content');
     const navItems = document.querySelectorAll('.dash-nav-item');
@@ -128,6 +136,56 @@ function checkOrientation() {
 window.addEventListener("orientationchange", checkOrientation);
 window.addEventListener("resize", checkOrientation);
 checkOrientation(); // Initial check
+
+getCategoryList();
+
+// API Call GET Category List - Read
+function getCategoryList() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const url = 'http://127.0.0.1:8000/api/foods/categories/';
+
+    refreshAccessToken(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Data:', data);
+            // Save the data to local storage
+            localStorage.setItem('categoryList', JSON.stringify(data));
+            getCategoryListFromStorage();
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+
+    // function passToList(data) {
+    //     data.forEach(item => {
+    //         addCatgeoryToList(item.name, item.description, item.status, '', item.id);
+    //     });
+    // }
+};
+
+
+function getCategoryListFromStorage() {
+    const storedData = localStorage.getItem('categoryList');
+    if (storedData) {
+        const categoryList = JSON.parse(storedData);
+        console.log('Category list from local storage:', categoryList);
+        // passToCategoryList(categoryList);
+        return categoryList;
+    } else {
+        console.log('No category list found in local storage');
+        // Optionally, you can call getCategoryList() here to fetch from API if not in storage
+        getCategoryList();
+        // getCategoryListFromStorage();
+    }
+    
+}
 
 
 

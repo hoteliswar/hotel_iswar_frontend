@@ -25,10 +25,8 @@
             <div class="new-item-card-body-item">
                 <div class="new-item-card-body-item-label">Item Category</div>
                 <select class="new-item-card-body-item-input" id="new-item-catg">
-                    <option selected>Choose category</option>
-                    <option value="1">Category 1</option>
-                    <option value="2">Category 2</option>
-                    <option value="3">Category 3</option>
+                    <option selected disabled>Choose category</option>
+                    
                 </select>
             </div>
             <div class="new-item-card-body-item">
@@ -49,6 +47,14 @@
                 <span id="statusText">Disabled</span>
             </div>
             <div class="new-item-card-body-item">
+                <div class="new-item-card-body-item-label">Veg / Non Veg</div>
+                <label class="switch">
+                    <input type="checkbox" id="veg-non" class="new-item-card-body-item-input" onchange="updateVegNon(this)">
+                    <span class="slider round"></span>
+                </label>
+                <span id="veg-nonText">Veg</span>
+            </div>
+            <div class="new-item-card-body-item">
                 <button class="new-item-card-body-item-button" id="add-item" type="button">Add Item</button>
             </div>
         </div>
@@ -60,12 +66,13 @@
         <div class="all-items-list-title">All Items</div>
         <div class="all-list-table-head">
             <div class="col-2">Name</div>
-            <div class="col-2">Price</div>
-            <div class="col-2">Category</div>
+            <div class="col-1">Price</div>
+            <div class="col-1">Category</div>
             <div class="col-2">Description</div>
-            <div class="col-1">Image</div>
+            <div class="col-2">Image</div>
             <div class="col-1">Status</div>
-            <div class="col-2">Edit/Delete</div>
+            <div class="col-2">Veg/Non Veg</div>
+            <div class="col-1">Edit/Delete</div>
         </div>
         <div class="all-list-table-items">
             <!-- List items inserted -->
@@ -89,10 +96,8 @@
                 <div class="modal-body-item">
                     <!-- <div class="new-item-card-body-item-label">Item Category</div> -->
                     <select class="modal-input" id="editCategory">
-                        <option selected>Choose category</option>
-                        <option value="Category 1">Category 1</option>
-                        <option value="Category 2">Category 2</option>
-                        <option value="Category 3">Category 3</option>
+                        <option selected disabled>Choose category</option>
+                        
                     </select>
                 </div>
                 <div class="modal-body-item">
@@ -124,7 +129,7 @@
 
     <script src="./menu-management/items/items.js"></script>
     <script src="items.js"></script>
-    <!-- <script src="./../../../common.js"></script> -->
+    <script src="./../../../common.js"></script>
     <!-- <script src="./../../../session.js"></script> -->
 </body>
 

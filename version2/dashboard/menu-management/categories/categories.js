@@ -128,37 +128,52 @@ function updateDisableStatus(checkbox) {
     document.getElementById('statusDisableText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
 }
 
-// API Call GET Category List
-function getCategoryList() {
-    const option = {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + getCookie('access_token'),
-            'Content-Type': 'application/json'
-        }
-    }
+// API Call GET Category List - Read
 
-    const url = 'http://127.0.0.1:8000/api/foods/categories/';
+// function getCategoryList_notusing() {
+//     const option = {
+//         method: 'GET',
+//         headers: {
+//             'Authorization': 'Bearer ' + getCookie('access_token'),
+//             'Content-Type': 'application/json'
+//         }
+//     }
 
-    refreshAccessToken2(url, option)
-        // .then(response => response.json())
-        .then(data => {
-            console.log('Data:', data);
-            passToList(data);
-        })
-        .catch(error => {
-            console.log('Error fetching data:', error);
-        });
+//     const url = 'http://127.0.0.1:8000/api/foods/categories/';
 
-    function passToList(data) {
-        data.forEach(item => {
-            addCatgeoryToList(item.name, item.description, item.status, '', item.id);
-        });
-    }
-};
+//     refreshAccessToken2(url, option)
+//         // .then(response => response.json())
+//         .then(data => {
+//             console.log('Data:', data);
+//             passToList(data);
+//         })
+//         .catch(error => {
+//             console.log('Error fetching data:', error);
+//         });
+
+//     function passToList(data) {
+//         data.forEach(item => {
+//             addCatgeoryToList(item.name, item.description, item.status, '', item.id);
+//         });
+//     }
+// };
 
 
-getCategoryList();
+
+// getCategoryList();
+// getCategoryListFromStorage();
+
+if( categoryData =  getCategoryListFromStorage()){
+    passToCategoryList(categoryData);
+} else {
+    console.log('Else');
+}
+
+function passToCategoryList(data) {
+    data.forEach(item => {
+        addCatgeoryToList(item.name, item.description, item.status, '', item.id);
+    });
+}
 
 // Capitalize the first letter of a string
 function capitalizeFirstLetter(string) {
@@ -220,6 +235,7 @@ function createCategory(catgData) {
         .then(data => {
             console.log('Category:', data);
             console.table(data);
+            getCategoryList();
             // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status);
             alert("Category Created Successfully");
         })
@@ -277,6 +293,7 @@ document.getElementById('update-category').addEventListener('click', function (e
         refreshAccessToken(url, option)
             // .then(response => response.json())
             .then(data => {
+                getCategoryList();
                 console.log('Category updated successfully:', data);
                 // alert('Item updated successfully:', data);
                 // Optionally, update the UI or show a success message

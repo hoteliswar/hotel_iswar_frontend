@@ -1,19 +1,46 @@
-// document.addEventListener('DOMContentLoaded', function () {
-// window.addEventListener('load', function() {
+// Putting Options in category list
+
+function putCategoryInSelect(){
+    let selectCategory = document.getElementById('new-item-catg');
+    categoryData = getCategoryListFromStorage();
+    console.log('Items.js called........')
+    console.table(categoryData);
+
+    // Insert options in selectCategory
+    categoryData.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = category.name;
+        selectCategory.appendChild(option);
+    });
+
+}
+
+putCategoryInSelect();
+
+
 
 // Add New Item to List
-function addItemToList(name, price, category, description, imageSrc, status, id) {
+function addItemToList(name, price, category, description, imageSrc, status, id, veg) {
     const itemsContainer = document.querySelector('.all-list-table-items');
+
+    console.log('Veg / NonVeg: ',veg);
+    if(veg === true){
+        var vegData = 'Veg'
+    }else{
+        var vegData = 'Non-Veg'
+    }
 
     const itemHTML = `
         <div class="record-row">
             <div class="col-2" id="name">${name}</div>
-            <div class="col-2" id="price">${price}</div>
-            <div class="col-2" id="category">${category}</div>
+            <div class="col-1" id="price">${price}</div>
+            <div class="col-1" id="category">${category}</div>
             <div class="col-2" id="description">${description}</div>
-            <div class="col-1" id="imagesrc"><img src="${imageSrc}" alt="${name}" width="50"></div>
+            <div class="col-2" id="imagesrc"><img src="${imageSrc}" alt="${name}" width="50"></div>
             <div class="col-1" id="itemStatus">${status}</div>
-            <div class="col-2">
+            <div class="col-2" id="itemStatus">${vegData}</div>
+            <div class="col-1">
                 <i class="edit-btn fa-solid fa-pen-to-square"></i>
                 <i class="fa fa-trash delete-btn" aria-hidden="true"></i>
             </div>
@@ -29,7 +56,7 @@ function addItemToList(name, price, category, description, imageSrc, status, id)
     // Add event listener to the edit button of the last added row
     const editButton = lastAddedRow.querySelector('.edit-btn');
     editButton.addEventListener('click', () => {
-        openEditModal(name, price, category, description, imageSrc, status, id);
+        openEditModal(name, price, category, description, imageSrc, status, id, veg);
     });
 }
 
@@ -123,12 +150,12 @@ document.getElementById('update-item').addEventListener('click', function (e) {
         category_id: 1,
         status: itemStatus,
     };
-    
+
     console.table(updatedItem);
 
     updateItem(updatedItem);
 
-    function updateItem(updatedItem){
+    function updateItem(updatedItem) {
         option = {
             method: 'PUT',
             headers: {
@@ -142,11 +169,11 @@ document.getElementById('update-item').addEventListener('click', function (e) {
                 category_id: 1,
             })
         }
-    
+
         const url = `http://127.0.0.1:8000/api/foods/fooditems/${itemId}/`
-    
+
         // Send a PUT request to update the item
-    
+
         refreshAccessToken(url, option)
             // .then(response => response.json())
             .then(data => {
@@ -208,7 +235,7 @@ function getFooditems() {
             //     image: item.image,
             //     tenant: item.tenant
             // };
-            addItemToList(item.name, item.price, item.category_id, item.description, '', item.status, item.id);
+            addItemToList(item.name, item.price, item.category_name, item.description, '', item.status, item.id, item.veg);
 
         });
 
@@ -229,12 +256,23 @@ document.getElementById('add-item').addEventListener('click', function (e) {
     const itemDescription = document.querySelector('#new-item-desc').value;
     const itemImage = document.querySelector('#new-item-img').files[0];
     const itemStatus = document.querySelector('#itemStatus');
+    const itemVegNon = document.querySelector('#veg-non');
 
+    // Status Enabled - Disabled
     if (itemStatus.checked === true) {
         var statusText = 'enabled';
         // alert('Status:', statusText);
     } else {
         var statusText = 'disabled';
+        // alert('Status:', statusText);
+    }
+
+    // Non Veg - Veg
+    if (itemVegNon.checked === true) {
+        var vegNon = 'false';
+        // alert('Status:', statusText);
+    } else {
+        var vegNon = 'true';
         // alert('Status:', statusText);
     }
 
@@ -251,6 +289,7 @@ document.getElementById('add-item').addEventListener('click', function (e) {
         category: itemCategory,
         description: itemDescription,
         status: statusText,
+        veg: vegNon
         // itemImage is a file, which can't be directly included in JSON
         // You may need to handle it separately if you need to send it
     };
@@ -261,6 +300,9 @@ document.getElementById('add-item').addEventListener('click', function (e) {
 
 function updateStatus(checkbox) {
     document.getElementById('statusText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
+}
+function updateVegNon(checkbox) {
+    document.getElementById('veg-nonText').textContent = checkbox.checked ? 'Non Veg' : 'Veg';
 }
 
 // API Call POST Food Items - Create
@@ -277,8 +319,9 @@ function createFood(itemData) {
             name: itemData.name,
             description: itemData.description,
             price: itemData.price,
-            category_id: 1,
+            category_id: itemData.category,
             status: itemData.status,
+            veg: itemData.veg
         })
     }
 
@@ -289,7 +332,7 @@ function createFood(itemData) {
         .then(data => {
             console.log('Data:', data);
             console.table(data);
-            addItemToList(data.name, data.price, data.category_id, data.description, '', data.status);
+            addItemToList(data.name, data.price, data.category_id, data.description, '', data.status, data.veg);
             alert("Food Item Created Successfully");
         })
         .catch(error => {
