@@ -1,4 +1,5 @@
 
+
 function getCookie(name) {
     let value = "; " + document.cookie;
     let parts = value.split("; " + name + "=");
@@ -242,3 +243,5 @@ function getAllFoodListFromStorage() {
     }
     
 }
+
+

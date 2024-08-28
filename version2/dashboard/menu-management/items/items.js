@@ -1,6 +1,6 @@
 // Putting Options in category list
 function putCategoryInSelect(){
-    let selectCategory = document.getElementById('new-item-catg');
+    let selectCategory = document.getElementById('new-item-catg');     // Create
     categoryData = getCategoryListFromStorage();
     console.log('Items.js called........')
     console.table(categoryData);
@@ -13,6 +13,21 @@ function putCategoryInSelect(){
         selectCategory.appendChild(option);
     });
 
+
+    // Put in Modal Select
+    let editModalCategory = document.getElementById('editCategory');  // Modal
+    categoryData = getCategoryListFromStorage();
+    console.log('Items.js called........')
+    console.table(categoryData);
+
+    // Insert options in selectCategory
+    categoryData.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.id;
+        option.textContent = category.name;
+        editModalCategory.appendChild(option);
+    });
+    
 }
 
 putCategoryInSelect();
@@ -80,9 +95,16 @@ function deleteFood(id){
 
 }
 
+// Local Storage Call to get Category ID from Name
+function getCatgIdFromName(name) {
+    const categoryData = getCategoryListFromStorage();
+    const category = categoryData.find(category => category.name === name);
+    return category ? category.id : null;
+}
+
 
 // Open Update Modal
-function openEditModal(name, price, category, description, imageSrc, status, id) {
+function openEditModal(name, price, category, description, imageSrc, status, id, veg) {
     const modal = document.getElementById('editModal');
     const editName = document.getElementById('editName');
     const editPrice = document.getElementById('editPrice');
@@ -91,6 +113,8 @@ function openEditModal(name, price, category, description, imageSrc, status, id)
     const editImage = document.getElementById('editImage');
     const editStatus = document.getElementById('editStatus');
     const editStatusText = document.getElementById('statusModalText');
+    const editVegNon = document.getElementById('editVegNon');
+    const editVegNonText = document.getElementById('vegnonTextModal');
 
     const itemId = document.createElement('input');
     itemId.type = 'hidden';
@@ -101,7 +125,7 @@ function openEditModal(name, price, category, description, imageSrc, status, id)
 
     editName.value = name;
     editPrice.value = price;
-    // editCategory.value = category;
+    editCategory.value = getCatgIdFromName(category);
     editDescription.value = description;
     // editImage.setAttribute('value', imageSrc);
     // editImage.value = imageSrc;
@@ -116,6 +140,14 @@ function openEditModal(name, price, category, description, imageSrc, status, id)
         // var statusText = 'enabled';
     } else {
         // var statusText = 'disabled';
+    }
+
+    if (veg === true){
+        editVegNon.checked = false;
+        editVegNonText.textContent = 'Veg';
+    } else {
+        editVegNon.checked = true;
+        editVegNonText.textContent = 'Non-Veg';
     }
 
     // Pre-select the category in the dropdown
@@ -146,6 +178,9 @@ window.addEventListener('click', (event) => {
 function updateModalStatus(checkbox) {
     document.getElementById('statusModalText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
 }
+function updateModalVegNon(checkbox) {
+    document.getElementById('vegnonTextModal').textContent = checkbox.checked ? 'Non-Veg' : 'Veg';
+}
 
 
 
@@ -161,6 +196,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
     const itemCategory = document.getElementById('editCategory').value;
     const itemImage = document.getElementById('editImage').value;
     const itemStatus = document.getElementById('editStatus');
+    const itemVegNon = document.getElementById('editVegNon');
 
     // Create an object with the updated item details
     const updatedItem = {
@@ -169,7 +205,8 @@ document.getElementById('update-item').addEventListener('click', function (e) {
         description: itemDescription,
         category_id: itemCategory,
         status: itemStatus.checked ? 'enabled' : 'disabled',
-        id: itemId
+        id: itemId,
+        veg: itemVegNon.checked ? false : true
     };
 
     console.table(updatedItem);
@@ -187,9 +224,9 @@ document.getElementById('update-item').addEventListener('click', function (e) {
                 name: updatedItem.name,
                 price: updatedItem.price,
                 description: updatedItem.description,
-                category_id: 11,
+                category_id: updatedItem.category_id,
                 status: updatedItem.status,
-                veg: true
+                veg: updatedItem.veg
             })
         }
 
