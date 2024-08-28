@@ -95,8 +95,8 @@ function deleteFood(id){
 
 }
 
-// Local Storage Call to get Category ID from Name
-function getCatgIdFromName(name) {
+// Local Storage Call to get Category ID by Category Name from localStorage
+function getCatgIdByName(name) {
     const categoryData = getCategoryListFromStorage();
     const category = categoryData.find(category => category.name === name);
     return category ? category.id : null;
@@ -125,7 +125,7 @@ function openEditModal(name, price, category, description, imageSrc, status, id,
 
     editName.value = name;
     editPrice.value = price;
-    editCategory.value = getCatgIdFromName(category);
+    editCategory.value = getCatgIdByName(category);
     editDescription.value = description;
     // editImage.setAttribute('value', imageSrc);
     // editImage.value = imageSrc;
@@ -174,7 +174,7 @@ window.addEventListener('click', (event) => {
     }
 });
 
-// Function to capitalize the first letter of a string
+
 function updateModalStatus(checkbox) {
     document.getElementById('statusModalText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
 }
@@ -350,7 +350,7 @@ document.getElementById('add-item').addEventListener('click', function (e) {
     createFood(itemData);
 });
 
-
+// Change Checkbox text on Checkbox Change on Modal
 function updateStatus(checkbox) {
     document.getElementById('statusText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
 }
@@ -395,7 +395,7 @@ function createFood(itemData) {
 }
 
 
-
+// Function to capitalize the first letter of a string
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }

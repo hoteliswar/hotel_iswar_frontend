@@ -1,3 +1,27 @@
+// Get all items from Local Storage
+function getAllFoodListFromStorage() {
+    const storedFoodData = localStorage.getItem('allFoodList');
+    if (storedFoodData) {
+        if (storedFoodData === 'undefined') {
+            console.log('No food list found in local storage');
+            getFooditems();
+        }
+        const foodList = JSON.parse(storedFoodData);
+        console.log('Category list from local storage:', foodList);
+        // passToCategoryList(categoryList);
+        return foodList;
+    } else {
+        console.log('No category list found in local storage');
+        // Optionally, you can call getCategoryList() here to fetch from API if not in storage
+        if (getFooditems()) {
+            getAllFoodListFromStorage();
+        }
+    }
+
+}
+
+console.table(getAllFoodListFromStorage());
+
 
 document.addEventListener('DOMContentLoaded', function () {
     const menuCategories = document.querySelectorAll('.menu-category-item');
