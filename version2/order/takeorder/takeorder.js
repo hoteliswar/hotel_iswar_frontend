@@ -1,26 +1,48 @@
 // Get all items from Local Storage
-function getAllFoodListFromStorage() {
-    const storedFoodData = localStorage.getItem('allFoodList');
-    if (storedFoodData) {
-        if (storedFoodData === 'undefined') {
-            console.log('No food list found in local storage');
-            getFooditems();
-        }
-        const foodList = JSON.parse(storedFoodData);
-        console.log('Category list from local storage:', foodList);
-        // passToCategoryList(categoryList);
-        return foodList;
-    } else {
-        console.log('No category list found in local storage');
-        // Optionally, you can call getCategoryList() here to fetch from API if not in storage
-        if (getFooditems()) {
-            getAllFoodListFromStorage();
-        }
+allFoodItems = getAllFoodListFromStorage();
+
+console.table(allFoodItems);
+// console.table(allFoodItems.map(item => item.name));
+
+const distinctCategories = [];
+allFoodItems.forEach(item => {
+    if (item.category_name && !distinctCategories.includes(item.category_name)) {
+        distinctCategories.push(item.category_name);
     }
+});
+console.table(distinctCategories);
 
-}
+const categorizedItems = {};
+allFoodItems.forEach(item => {
+    if (item.category_name) {
+        if (!categorizedItems[item.category_name]) {
+            categorizedItems[item.category_name] = [];
+        }
+        categorizedItems[item.category_name].push({
+            id: item.id,
+            name: item.name,
+            price: item.price
+        });
+    }
+});
 
-console.table(getAllFoodListFromStorage());
+console.log(categorizedItems);
+
+// ----------------------------
+
+document.addEventListener('DOMContentLoaded', function () {
+    const categoryDiv = document.querySelector('.menu-category');
+
+    distinctCategories.forEach(category => {
+        const categoryDivItems = document.createElement('div');
+        categoryDivItems.classList.add('menu-category-item');
+        const categoryDivItemsName = document.createElement('div');
+        categoryDivItemsName.classList.add('category-name');
+        categoryDivItemsName.textContent = category;
+        categoryDivItems.appendChild(categoryDivItemsName);
+        categoryDiv.appendChild(categoryDivItems);
+    });
+});
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -31,48 +53,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const netTotal = document.querySelector('.na-price');
     const discBox = document.querySelector('.disc-box');
 
-    const menuItems = {
-        'Category 1': [
-            { id: 11, name: 'Item 1', price: 99.99 },
-            { id: 15, name: 'Item 2', price: 7.99 },
-            { id: 16, name: 'Item 2', price: 7.99 },
-            { id: 17, name: 'Item 2', price: 7.99 },
-            { id: 13, name: 'Item 3', price: 5.99 }
-        ],
-        'Category 2': [
-            { id: 4, name: 'Item 4', price: 12.99 },
-            { id: 5, name: 'Item 5', price: 8.99 },
-            { id: 6, name: 'Item 6', price: 6.99 },
-            { id: 7, name: 'Item 7', price: 6.99 },
-            { id: 8, name: 'Item 8', price: 6.99 },
-            { id: 25, name: 'Item 5', price: 8.99 }, //
-            { id: 26, name: 'Item 6', price: 6.99 },
-            { id: 27, name: 'Item 7', price: 6.99 },
-            { id: 28, name: 'Item 8', price: 6.99 },
-            { id: 35, name: 'Item 5', price: 8.99 },
-            { id: 46, name: 'Item 6', price: 6.99 },
-            { id: 57, name: 'Item 7', price: 6.99 },
-            { id: 68, name: 'Item 8', price: 6.99 },
-            { id: 5, name: 'Item 5', price: 8.99 },
-            { id: 6, name: 'Item 6', price: 6.99 },
-            { id: 7, name: 'Item 7', price: 6.99 },
-            { id: 8, name: 'Item 8', price: 6.99 },
-            { id: 5, name: 'Item 5', price: 8.99 },
-            { id: 6, name: 'Item 6', price: 6.99 },
-            { id: 7, name: 'Item 7', price: 6.99 },
-            { id: 8, name: 'Item 8', price: 6.99 },
-            { id: 5, name: 'Item 5', price: 8.99 },
-            { id: 6, name: 'Item 6', price: 6.99 },
-            { id: 7, name: 'Item 7', price: 6.99 },
-            { id: 8, name: 'Item 8', price: 6.99 }, //
-            { id: 9, name: 'Item 9', price: 6.99 }
-        ],
-        'Category 4': [
-            { id: 10, name: 'Item 7', price: 10.99 },
-            { id: 11, name: 'Item 8', price: 11.99 },
-            { id: 12, name: 'Item 9', price: 9.99 }
-        ]
-    };
+    const menuItems = categorizedItems;
+
+    // const menuItems = {
+    //     'Category 1': [
+    //         { id: 11, name: 'Item 1', price: 99.99 },
+    //         { id: 15, name: 'Item 2', price: 7.99 },
+    //         { id: 16, name: 'Item 2', price: 7.99 },
+    //     ],
+    //     'Category 2': [
+    //         { id: 4, name: 'Item 4', price: 12.99 },
+    //         { id: 5, name: 'Item 5', price: 8.99 },
+    //         { id: 6, name: 'Item 6', price: 6.99 },
+    //     ],
+    //     'Category 4': [
+    //         { id: 10, name: 'Item 7', price: 10.99 },
+    //         { id: 11, name: 'Item 8', price: 11.99 },
+    //         { id: 12, name: 'Item 9', price: 9.99 }
+    //     ]
+    // };
+
 
     const billItems = [];
 
