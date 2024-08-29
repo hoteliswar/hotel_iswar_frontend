@@ -1,19 +1,26 @@
 // Get all items from Local Storage
 allFoodItems = getAllFoodListFromStorage();
-
 console.table(allFoodItems);
+allCatgItems = getCategoryListFromStorage();
+console.table(allCatgItems);
+
+const enabledFoodItems = allFoodItems.filter(item => item.status === "enabled");
+console.table(enabledFoodItems);
+const enabledCatgItems = allCatgItems.filter(item => item.status === "enabled");
+console.table(enabledCatgItems);
+
 // console.table(allFoodItems.map(item => item.name));
 
 const distinctCategories = [];
-allFoodItems.forEach(item => {
-    if (item.category_name && !distinctCategories.includes(item.category_name)) {
-        distinctCategories.push(item.category_name);
+enabledCatgItems.forEach(item => {
+    if (item.name && !distinctCategories.includes(item.name)) {
+        distinctCategories.push(item.name);
     }
 });
 console.table(distinctCategories);
 
 const categorizedItems = {};
-allFoodItems.forEach(item => {
+enabledFoodItems.forEach(item => {
     if (item.category_name) {
         if (!categorizedItems[item.category_name]) {
             categorizedItems[item.category_name] = [];
@@ -30,6 +37,7 @@ console.log(categorizedItems);
 
 // ----------------------------
 
+// Set all categories from local storage to Menu
 document.addEventListener('DOMContentLoaded', function () {
     const categoryDiv = document.querySelector('.menu-category');
 
@@ -75,13 +83,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     const billItems = [];
-
-    // menuCategories.forEach(category => {
-    //     category.addEventListener('click', function () {
-    //         const categoryName = this.querySelector('.category-name').textContent.trim();
-    //         loadMenuItems(categoryName);
-    //     });
-    // });
 
     menuCategories.forEach(category => {
         category.addEventListener('click', function () {

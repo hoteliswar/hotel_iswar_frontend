@@ -90,6 +90,10 @@ body {
     padding: 0 50px 0 50px;
 }
 
+.menu-category-item.selected{
+    background-color: #ffcb20;
+}
+
 .menu-category-head {
     background-color: rgb(206, 206, 206);
     font-weight: bold;
