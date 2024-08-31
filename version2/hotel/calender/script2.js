@@ -7,7 +7,7 @@ let currentYear = currentDate.getFullYear();
 // Sample room data with bookings (room number as key, array of booking periods)
 const roomBookings = {
     101: [
-        { start: new Date(currentYear, 8, 1, 12, 0), end: new Date(currentYear, 8, 2, 12, 0) },
+        { start: new Date(2024, 7, 27, 13, 0), end: new Date(2024, 7, 29, 23, 0) },
         { start: new Date(currentYear, 8, 2, 12, 0), end: new Date(currentYear, 8, 3, 12, 0) },
     ],
     102: [
@@ -99,7 +99,7 @@ function generateWeekCalendar(date) {
     const start = startOfWeek(date);
     const daysInWeek = 7;
 
-    console.log(`Start: ${start}`);
+    console.log(`Start <1>: ${start}`);
 
     let calendar = '<table>';
 
