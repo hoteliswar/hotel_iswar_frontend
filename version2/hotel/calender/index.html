@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking Calendar - Week View</title>
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            text-align: center;
+            padding: 0;
+            position: relative;
+            height: 60px;
+            /* Adjust as needed */
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        td {
+            position: relative;
+            width: 100px;
+            /* Adjust as needed */
+        }
+
+        .half-day {
+            width: 50%;
+            height: 100%;
+            float: left;
+            text-align: center;
+            line-height: 30px;
+            /* Adjust as needed */
+            position: relative;
+        }
+
+        .booked {
+            background-color: #ffcccc;
+        }
+
+        .available {
+            background-color: #ccffcc;
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            background-color: #000;
+            color: #fff;
+            padding: 5px;
+            border-radius: 3px;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            white-space: nowrap;
+        }
+
+        .half-day:hover .tooltip {
+            display: block;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        .controls select {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Hotel Booking Calendar - Week View</h1>
+    <div class="controls">
+        <button id="prevWeek">Previous Week</button>
+        <button id="nextWeek">Next Week</button>
+        <label for="monthSelect">Select Month:</label>
+        <select id="monthSelect">
+            <option value="0">January</option>
+            <option value="1">February</option>
+            <option value="2">March</option>
+            <option value="3">April</option>
+            <option value="4">May</option>
+            <option value="5">June</option>
+            <option value="6">July</option>
+            <option value="7">August</option>
+            <option value="8">September</option>
+            <option value="9">October</option>
+            <option value="10">November</option>
+            <option value="11">December</option>
+        </select>
+    </div>
+    <h2 id="currentMonth">August</h2>
+    <div id="calendar"></div>
+
+    <script src="script2.js"></script>
+</body>
+
+</html>
