@@ -252,7 +252,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
 
 
 // addItemToList('Chicken Masala Biriyani Masala', 10.00, 'South Indian - Veg', 'Description 1', 'https://via.placeholder.com/150');
-// addItemToList('Item 2', 20.00, 'Category 2', 'Description 2', '');
+addItemToList('Item 2', 20.00, 'Category 2', 'Description 2', '','enabled', '1', true);
 // addItemToList('Item 3', 30.00, 'Category 3', 'Description 3', '');
 // getFooditems();
 

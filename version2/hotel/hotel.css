@@ -122,8 +122,6 @@ body {
     overflow-x: hidden;
 }
 
-
-
 .dashboard-nav::-webkit-scrollbar {
     width: 2px;
 }
@@ -140,3 +138,6 @@ body {
 .dashboard-nav::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+/* Add Modal from room.html */
+

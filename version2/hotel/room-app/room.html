@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" href="./room-app/room.css">
+    <link rel="stylesheet" href="room.css">
+</head>
+
+<body>
+    <div class="header-wrap">
+        <div class="date-time">4 September 2024</div>
+        <div class="header-buttons">
+            <!-- <button class="add-room-btn" id="openAddModal">Add Room</button> -->
+            <div class="add-room-btn" id="openAddModal">Add Room</div>
+            <!-- <button class="add-room-btn">+ Add Room</button> -->
+        </div>
+    </div>
+
+    <div class="room-list-card">
+        <div class="all-room-head">All Rooms</div>
+        <div class="room-list-table">
+            <div class="col-2">Room Number</div>
+            <div class="col-2">Price</div>
+            <div class="col-2">Room Type</div>
+            <div class="col-2">Description</div>
+            <div class="col-2">Bed Type</div>
+            <div class="col-2">Actions</div>
+        </div>
+        <div class="append-all-room"></div>
+    </div>
+
+    <div class="modal-container">
+        <div id="bookingModal" class="roomModal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="add-room-form">
+                    <div class="input-element-image">
+                        <div id="imagePreview" class="image-preview"></div>
+                        <label for="roomImage">Add Room Images</label>
+                        <input type="file" class="roomImage" name="roomImage" accept="image/*" multiple>
+                    </div>
+
+                    <div class="input-element">
+                        <label for="roomNumber">Room Number</label>
+                        <input type="text" id="roomNumber" name="roomNumber" placeholder="Room Number" required>
+                    </div>
+                    <div class="input-element">
+                        <label for="roomPrice">Room Price</label>
+                        <input type="text" id="roomPrice" name="roomPrice" placeholder="Room Price" required>
+                    </div>
+                    <div class="input-element">
+                        <label for="roomType">Room Type</label>
+                        <select id="roomType" name="roomType" required>
+                            <option value="" selected disabled>Select Room Type</option>
+                            <option value="standard">Standard</option>
+                            <option value="deluxe">Deluxe</option>
+                            <option value="suite">Suite</option>
+                            <option value="executive">Executive</option>
+                        </select>
+                    </div>
+                    <div class="input-element">
+                        <label for="bedType">Bed Type</label>
+                        <select id="bedType" name="bedType" required>
+                            <option value="" selected disabled>Select Bed Type</option>
+                            <option value="single">Single Bed</option>
+                            <option value="2single">2 Single Bed</option>
+                            <option value="double">Double Bed</option>
+                            <option value="king">King Size Bed</option>
+                            <option value="queen">Queen Size Bed</option>
+                        </select>
+                    </div>
+
+                    <div class="input-element">
+                        <label for="roomStatus">Room Status</label>
+                        <select id="roomStatus" name="roomStatus" required>
+                            <option value="" selected disabled>Select Status</option>
+                            <option value="Available">Available</option>
+                            <option value="Dirty">Dirty</option>
+                            <option value="Cleaned">Cleaned</option>
+                            <option value="underMaintenance">Under Maintenance</option>
+                            <option value="GuestIn">Guest-In</option>
+                        </select>
+                    </div>
+
+                    <!-- Description Here -->
+
+                    <!--  -->
+                </div>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="room.js"></script>
+    <script src="./room-app/room.js"></script>
+</body>
+
+</html>

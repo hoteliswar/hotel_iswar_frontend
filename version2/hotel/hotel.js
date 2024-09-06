@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     const dashboardContent = document.getElementById('hotel-content');
     const navItems = document.querySelectorAll('.dash-nav-item');
+    const insertAllModal = document.querySelector('.insert-all-modal');
 
-    // loadContent('DASHBOARD');   // Load the default content
+    loadContent('ROOM');   // Load the default content
 
     navItems.forEach(item => {
         item.addEventListener('click', function () {
@@ -11,11 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    function loadContent(navName) {
+    function loadContent2(navName) {
         let fileName;
         switch (navName) {
             case 'HOME':
-                fileName = './home-app/';
+                fileName = './home-app/home';
                 break;
             case 'ROOM':
                 fileName = './room-app/room';
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 fileName = './booking-app/booking';
                 break;
             case 'GUEST':
-                fileName = './guest-app';
+                fileName = './guest-app/guest';
                 break;
             default:
                 fileName = 'not-found';
@@ -66,5 +67,60 @@ document.addEventListener('DOMContentLoaded', function () {
                 dashboardContent.innerHTML = '<h2>Error Loading Content</h2>';
             });
     }
+
+    let currentScript = null;
+    function loadContent(navName) {
+        let fileName;
+        switch (navName) {
+            case 'HOME':
+                fileName = './home-app/home';
+                break;
+            case 'ROOM':
+                fileName = './room-app/room';
+                break;
+            case 'BOOKING':
+                fileName = './booking-app/booking';
+                break;
+            case 'GUEST':
+                fileName = './guest-app/guest';
+                break;
+            default:
+                fileName = 'not-found';
+        }
+
+        fetch(`${fileName}.html`)
+            .then(response => response.text())
+            .then(data => {
+                dashboardContent.innerHTML = data;
+                // console.log(data);
+
+                // // Move the modal out of hotel-content to the body
+                // const modal = document.getElementById('bookingModal');
+                // if (modal) {
+                //     // Remove it from the current parent (hotel-content)
+                //     dashboardContent.removeChild(modal);
+                //     insertAllModal.appendChild(modal); // Moves the modal to the body
+                // }
+
+                // Remove the previous script if it exists
+                if (currentScript) {
+                    document.body.removeChild(currentScript);
+                }
+
+                // Create and append the new script
+                const script = document.createElement('script');
+                script.src = `${fileName}.js`;
+                document.body.appendChild(script);
+                console.log(`${fileName}.js loaded and executed`);
+
+                // Update the reference to the current script
+                currentScript = script;
+            })
+            .catch(error => {
+                console.error('Error loading content:', error);
+                dashboardContent.innerHTML = '<h2>Error Loading Content</h2>';
+            });
+    }
+
 
 });
