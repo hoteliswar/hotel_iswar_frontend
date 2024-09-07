@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const navItems = document.querySelectorAll('.dash-nav-item');
     const insertAllModal = document.querySelector('.insert-all-modal');
 
-    loadContent('ROOM');   // Load the default content
+    loadContent('BOOKING');   // Load the default content
 
     navItems.forEach(item => {
         item.addEventListener('click', function () {
@@ -69,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     let currentScript = null;
+    
     function loadContent(navName) {
         let fileName;
         switch (navName) {
@@ -106,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (currentScript) {
                     document.body.removeChild(currentScript);
                 }
+
 
                 // Create and append the new script
                 const script = document.createElement('script');

@@ -9,7 +9,7 @@ document.addEventListener('click', function (e) {
 // Show booking modal
 function showBookingModal() {
 
-    const modal = document.getElementById('bookingModal');
+    const modal = document.getElementById('roomModal');
     // const modalBody = modal.querySelector('.modal-body');
     setTimeout(() => modal.classList.add('show'), 10);
 
@@ -20,7 +20,7 @@ function showBookingModal() {
 
 
 document.querySelector('.close').onclick = function () {
-    const modal = document.getElementById('bookingModal');
+    const modal = document.getElementById('roomModal');
     modal.classList.remove('show');
     setTimeout(() => modal.style.display = 'none', 300);
 }
@@ -57,7 +57,7 @@ function updateImagePreview() {
         img.src = imageSrc;
         
         const removeBtn = document.createElement('button');
-        removeBtn.textContent = 'Remove';
+        removeBtn.textContent = 'x';
         removeBtn.onclick = function() {
             uploadedImages.splice(index, 1);
             updateImagePreview();
@@ -68,4 +68,3 @@ function updateImagePreview() {
         preview.appendChild(imgContainer);
     });
 }
-

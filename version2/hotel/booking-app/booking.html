@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking</title>
+    <link rel="stylesheet" href="booking.css">
+    <link rel="stylesheet" href="./booking-app/booking.css">
+</head>
+
+<body>
+    <!-- <h1>Booking</h1> -->
+    <div class="calender-wrapper">
+        <div class="header-row">
+            <div id="currentMonth"></div>
+            <div class="calendar-view">
+                <div class="controls">
+                    <!-- <input type="button" id="newBooking-btn" class="newBooking" value="New Booking"> -->
+                    <button id="newBooking-btn" class="newBooking">New Booking</button>
+                    <button id="prevWeek" class="preWeek">Previous Week</button>
+                    <button id="nextWeek" class="nextWeek">Next Week</button>
+                    <select id="monthSelect" class="monthSelect">
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Modal: View Data from calendar -->
+    <div class="modal-container">
+        <div id="bookingModal" class="calendar-modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="modal-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-container-2">
+        <div id="newBookingModal" class="new-booking">
+            <div class="modal-content-2">
+                <div class="modal-header">
+                    <span class="close2">&times;</span>
+                    <div class="model-content-title">New Booking Modal</div>
+                </div>
+                <div class="modal-body-booking">
+                    <div class="m-room-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="booking.js"></script>
+    <script src="./booking-app/booking.js"></script>
+</body>
+
+</html>
