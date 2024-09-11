@@ -1,3 +1,5 @@
+baseURL = 'https://dineops.onrender.com/api/';
+
 // Helper function to set a cookie
 function setCookie(name, value, minutes) {
     const d = new Date();
@@ -13,7 +15,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
-    fetch('http://127.0.0.1:8000/api/accounts/token/', {
+    fetch(`${baseURL}accounts/token/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

@@ -20,20 +20,147 @@ function getBrowserHeaderHeight() {
 //     }
 // });
 
+getAllTablesRooms();
 
-// Disable all elements with class 'table-view-cell'
-document.querySelectorAll('.table-view-cell').forEach(element => {
-    element.style.cursor = 'not-allowed';
-    element.disabled = true;
-});
+function getAllTablesRooms() {
+    const tableInfo = [
+        {
+            table_number: 1,
+            occupied: true,
+            order_id: 2,
+            order_time: '2024-09-11T00:03:00',
+        },
+        {
+            table_number: 2,
+            occupied: false,
+            order_id: null,
+            order_time: null,
+        },
+        {
+            table_number: 3,
+            occupied: false,
+            order_id: null,
+            order_time: null,
+        },
+        {
+            table_number: 4,
+            occupied: false,
+            order_id: null,
+            order_time: null,
+        },
+        {
+            table_number: 5,
+            occupied: false,
+            order_id: null,
+            order_time: null,
+        }
+    ];
 
-// Disable all elements with class 'room-view-cell'
-document.querySelectorAll('.room-view-cell').forEach(element => {
-    element.style.cursor = 'not-allowed';
-    element.disabled = true;
-});
+    
+    const tableViewRow = document.querySelector('.table-view-row');
+    
+    tableInfo.forEach((table) => {
+        const tableViewCell = document.createElement('div');
+        tableViewCell.classList.add('table-view-cell');
+        
+        if (table.occupied && table.order_id && table.order_time) {
+            tableViewCell.classList.add('occupied-table');
+        }
 
-document.querySelector('.order-type-info').addEventListener('click', function(event) {
+        tableViewCell.addEventListener('click', function() {
+            if (!table.occupied) {
+                window.location.href = `./../takeorder/takeorder.html?table=${table.table_number}&orderType=dine_in`;
+            }
+        });
+                
+        const tableText = document.createElement('div');
+        tableText.classList.add('text');
+        
+        const orderMin = document.createElement('div');
+        orderMin.id = 'order-min';
+        const tableNo = document.createElement('div');
+        tableNo.id = 'table-no';
+        const amount = document.createElement('div');
+        amount.id = 'amount';
+        
+        tableNo.textContent = table.table_number;
+        amount.textContent = table.amount || '';
+        
+        if (table.order_time) {
+            const orderTime = new Date(table.order_time);
+            const currentTime = new Date();
+            console.log(currentTime);
+            const timeDiff = Math.floor((currentTime - orderTime) / 60000); // Difference in minutes
+            orderMin.textContent = `${timeDiff} Min`;
+        } else {
+            orderMin.textContent = '';
+        }
+        
+        tableText.appendChild(orderMin);
+        tableText.appendChild(tableNo);
+        tableText.appendChild(amount);
+        tableViewCell.appendChild(tableText);
+        tableViewRow.appendChild(tableViewCell);
+    });
+    
+    const roomInfo = [
+        {
+            room_number: 101,
+            occupied: true,
+        },
+        {
+            room_number: 202,
+            occupied: false,
+        },
+        {
+            room_number: 103,
+            occupied: false,
+        },
+        {
+            room_number: 107,
+            occupied: false,
+        },
+        {
+            room_number: 204,
+            occupied: false,
+        }
+    ];
+    
+    const roomViewRow = document.querySelector('.room-view-row');
+    
+    roomInfo.forEach((room) => {
+        const roomViewCell = document.createElement('div');
+        roomViewCell.classList.add('room-view-cell');
+
+        if (!room.occupied) {
+            roomViewCell.classList.add('occupied-room');
+        }
+
+        roomViewCell.addEventListener('click', function() {
+            if (room.occupied) {
+                window.location.href = `./../takeorder/takeorder.html?room=${room.room_number}&orderType=room_service`;
+            }
+        });
+
+        const roomText = document.createElement('div');
+        roomText.classList.add('text');
+
+        const roomNo = document.createElement('div');
+        roomNo.id = 'room-no';
+
+        roomNo.textContent = room.room_number;
+
+        roomText.appendChild(roomNo);
+        roomViewCell.appendChild(roomText);
+        roomViewRow.appendChild(roomViewCell);
+    });
+
+
+}
+
+
+
+document.querySelector('.order-type-info').addEventListener('click', function (event) {
     if (event.target.classList.contains('type-selectable')) {
         // Remove 'type-selected' class from all buttons
         this.querySelectorAll('.type-selectable').forEach(button => {
@@ -47,17 +174,7 @@ document.querySelector('.order-type-info').addEventListener('click', function(ev
         const selectedType = event.target;
 
         if (selectedType) {
-            if (selectedType.textContent === 'DINE-IN') {
-                // Action for DINE-IN
-                document.querySelectorAll('.table-view-cell').forEach(element => {
-                    element.style.cursor = 'pointer';
-                    element.disabled = false;
-                });
-                document.querySelectorAll('.room-view-cell').forEach(element => {
-                    element.style.cursor = 'not-allowed';
-                    element.disabled = true;
-                });
-            } else if (selectedType.textContent === 'DELIVERY') {
+            if (selectedType.textContent === 'DELIVERY') {
                 // Action for DELIVERY
                 document.querySelectorAll('.table-view-cell').forEach(element => {
                     element.style.cursor = 'not-allowed';
@@ -74,16 +191,6 @@ document.querySelector('.order-type-info').addEventListener('click', function(ev
                     element.disabled = true;
                 });
                 document.querySelectorAll('.room-view-cell').forEach(element => {
-                    element.style.cursor = 'not-allowed';
-                    element.disabled = true;
-                });
-            } else if (selectedType.textContent === 'ROOM SERVICE') {
-                // Action for ROOM SERVICE
-                document.querySelectorAll('.room-view-cell').forEach(element => {
-                    element.style.cursor = 'pointer';
-                    element.disabled = false;
-                });
-                document.querySelectorAll('.table-view-cell').forEach(element => {
                     element.style.cursor = 'not-allowed';
                     element.disabled = true;
                 });

@@ -1,9 +1,11 @@
 // Get all items from Local Storage
 allFoodItems = getAllFoodListFromStorage();
 console.table(allFoodItems);
+// Get all categories from Local Storage
 allCatgItems = getCategoryListFromStorage();
 console.table(allCatgItems);
 
+// Filter enabled items
 const enabledFoodItems = allFoodItems.filter(item => item.status === "enabled");
 console.table(enabledFoodItems);
 const enabledCatgItems = allCatgItems.filter(item => item.status === "enabled");
@@ -17,7 +19,7 @@ enabledCatgItems.forEach(item => {
         distinctCategories.push(item.name);
     }
 });
-console.table(distinctCategories);
+console.table(`distinctCategories : ${distinctCategories}`);
 
 const categorizedItems = {};
 enabledFoodItems.forEach(item => {
@@ -37,7 +39,7 @@ console.log(categorizedItems);
 
 // ----------------------------
 
-// Set all categories from local storage to Menu
+// Put Category names in the menu category section
 document.addEventListener('DOMContentLoaded', function () {
     const categoryDiv = document.querySelector('.menu-category');
 
@@ -83,7 +85,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     const billItems = [];
-
+    
+    // Adding click on Category Div
     menuCategories.forEach(category => {
         category.addEventListener('click', function () {
             menuCategories.forEach(cat => cat.classList.remove('selected'));
@@ -94,6 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
+    // Load Food Items on click at Category Div
     function loadMenuItems(category) {
         const items = menuItems[category] || [];
 
@@ -120,6 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Add Food Item to Bill Container
     function addItemToBill(itemId, itemName, itemPrice) {
         const existingItem = billItems.find(item => item.id === itemId);
         if (existingItem) {
@@ -130,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
         renderBillItems();
     }
 
+    // Update Quantity of Food Item in Bill Container
     function updateItemQuantity(itemId, change) {
         const item = billItems.find(item => item.id === itemId);
         if (item) {
@@ -142,7 +148,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-
+    // Configure plus/minus delete buttons in Bill Container
+    // and also calculate Total and Net Total
     function renderBillItems() {
         billContainer.innerHTML = '';
 
@@ -197,11 +204,12 @@ document.addEventListener('DOMContentLoaded', function () {
         updateNetTotal();
     }
 
+    // Calculate Total Amount
     function calculateTotal() {
         return billItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     }
 
-
+    // Remove Food Item from Bill Container on Delete btn click
     function removeItemFromBill(itemId) {
         const index = billItems.findIndex(item => item.id === itemId);
         if (index !== -1) {
@@ -210,6 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Calculate Net Total Amount
     function updateNetTotal() {
         const totalAmount = parseFloat(calculateTotal());
         const discountPercentage = parseFloat(discBox.value) || 0;
@@ -227,6 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
         netTotal.textContent = `₹${netAmount.toFixed(2)}`;
     }
 
+    // Select first category on page load
     function selectFirstCategory() {
         const firstCategory = menuCategories[0];
         if (firstCategory) {
@@ -243,8 +253,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // ----------------------------
 
+// Add selected class on category items
 const buttons = document.querySelectorAll('.selectable');
-
 buttons.forEach(button => {
     button.addEventListener('click', () => {
         buttons.forEach(btn => btn.classList.remove('selected'));
@@ -263,6 +273,7 @@ function getSelectedButton() {
 //     console.log(`Currently selected button: ${selected}`);
 // });
 
+// Get Browser Header Height
 function getBrowserHeaderHeight() {
     const screenHeight = window.screen.height; // Total screen height
     const screenWidth = window.screen.width; // Total screen width
@@ -276,7 +287,7 @@ function getBrowserHeaderHeight() {
 
 console.log(getBrowserHeaderHeight());
 
-
+// Configuring More Button
 document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('moreButton').addEventListener('click', function () {
         console.log('MORE button clicked');
@@ -323,6 +334,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Put Mobile Number from More to Main
 document.addEventListener('DOMContentLoaded', function () {
     var mobileInput = document.getElementById('mobile');
     var mobileInputCopy = document.getElementById('mobile-input');
@@ -353,7 +365,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 // Display the Table/Room list upon selction of Order Type
-
 let tableNumbersAppended = false;
 let roomNumbersAppended = false;
 
@@ -402,6 +413,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// Get all Table Numbers for Dine-In
 function getAllTableNumbers() {
     // Get all tables to add
     // Array of table numbers
@@ -429,6 +441,8 @@ function getAllTableNumbers() {
 
     return orderTypeOptions;
 }
+
+// Get all Room Numbers for Room Service
 function getAllRoomNumbers() {
     // Get all tables to add
     // Array of table numbers
@@ -456,6 +470,4 @@ function getAllRoomNumbers() {
 
     return orderTypeOptions;
 }
-
-
 

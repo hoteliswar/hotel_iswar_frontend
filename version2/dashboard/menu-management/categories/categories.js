@@ -1,3 +1,5 @@
+baseURL = 'https://dineops.onrender.com/api/';
+
 function addCatgeoryToList(name, description, status, imageSrc, id) {
     const itemsContainer = document.querySelector('.all-list-table-items');
 
@@ -47,7 +49,7 @@ function deleteCategory(id){
             'Content-Type': 'application/json'
         }
     }
-    const url = `http://127.0.0.1:8000/api/foods/categories/${id}/`;
+    const url = `${baseURL}foods/categories/${id}/`;
     refreshAccessToken2(url, option)
     // .then(response => response.json())
     .then(data => {
@@ -251,7 +253,7 @@ function createCategory(catgData) {
         })
     }
 
-    const url = 'http://127.0.0.1:8000/api/foods/categories/';
+    const url = `${baseURL}foods/categories/`;
 
     refreshAccessToken(url, option)
         // .then(response => response.json())
@@ -309,7 +311,7 @@ document.getElementById('update-category').addEventListener('click', function (e
         console.log(catgId);
 
 
-        const url = `http://127.0.0.1:8000/api/foods/categories/${updatedCatgData.id}/`
+        const url = `${baseURL}foods/categories/${updatedCatgData.id}/`
     
         // Send a PUT request to update the item
     

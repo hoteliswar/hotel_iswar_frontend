@@ -241,40 +241,76 @@ document.addEventListener('click', function(event) {
             newBookingModal.style.display = 'block';
         }
 
-        roomList = document.querySelector('.m-room-list');
+        roomList = document.querySelector('.m-room');
 
         if(roomList){
             roomList.textContent = 'Room List';
+            allRooms();
         }
     }
 });
 
 
-// Function to handle the new booking modal
-function newBooking(){
-    const newBookingButton = document.getElementById('newBooking-btn');
-    const newBookingModal = document.getElementById('newBookingModal');
-    const newBookingModalBody = document.querySelector('modal-body-booking');
-
-    newBookingButton.addEventListener('click', function() {
-        // newBookingModalBody.innerHTML = 'Booking';
-        setTimeout(() => newBookingModal.classList.add('show'), 10);
-        newBookingModal.style.display = 'block';
-    });
-}
-
+// Close the new booking modal
 document.querySelector('.close2').onclick = function () {
     const newBookingModal = document.getElementById('newBookingModal');
     newBookingModal.classList.remove('show');
     setTimeout(() => newBookingModal.style.display = 'none', 300);
 }
 
-
-document.addEventListener('DOMContentLoaded', function () {
-    
-    roomList = document.querySelector('.m-room-list');
-
-    if(roomList){
-        roomList.textContent = 'Room List';
+function allRooms(){
+    const roomList = {
+        101: "Available",
+        102: "Available",
+        201: "Available",
+        202: "Booked",
+        203: "Available",
+        301: "Booked",
+        302: "Occupied",
+        303: "Occupied",
+        401: "Occupied",
+        402: "Available",
     }
-});
+
+    const allRoomDiv = document.createElement('div');
+    allRoomDiv.className = 'all-room-available';
+
+    for (const [roomNumber, status] of Object.entries(roomList)) {
+        if (status === "Available") {
+            const roomButton = document.createElement('button');
+            roomButton.className = 'room-button available';
+            roomButton.id = roomNumber;
+            roomButton.textContent = `Room ${roomNumber}`;
+            roomButton.onclick = () => selectRoom(roomNumber);
+            allRoomDiv.appendChild(roomButton);
+        }
+        if (status === "Booked" || status === "Occupied")  {
+            const roomButton = document.createElement('button');
+            roomButton.className = `room-button ${status.toLowerCase()}`;
+            roomButton.id = roomNumber;
+            roomButton.textContent = `Room ${roomNumber}`;
+            roomButton.disabled = true;
+            allRoomDiv.appendChild(roomButton);
+        }
+        
+    }
+
+    const modalRoomList = document.querySelector('.m-room');
+    modalRoomList.innerHTML = '';
+    modalRoomList.appendChild(allRoomDiv);
+
+}
+
+function selectRoom(roomNumber) {
+    // You can add functionality here to handle room selection
+    console.log(`Room ${roomNumber} selected`);
+    // document.getElementById('roomNumberInput').value = roomNumber;
+
+    const modalRoomList = document.querySelector('.m-room');
+    modalRoomList.innerHTML = '';
+    newBookingForm(roomNumber);
+}
+
+function newBookingForm(roomNumber){
+    
+}

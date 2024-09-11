@@ -70,14 +70,15 @@ body{
 .type-selectable{
     /* padding: 8px 5px; */
     font-size: 0.7em;
-    border: 0px solid rgb(128, 128, 128);
-    background-color: rgb(128, 128, 128);
+    border: 0px;
+    background-color: rgb(150, 0, 0);
     color: #f9f9f9;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
-    height: 35px;
-    width: auto;
+    height: 40px;
+    width: 110px;
     border-radius: 2px;
+    font-size: 0.8em;
 }
 
 .type-selectable:hover {
@@ -94,7 +95,7 @@ body{
     height: auto;
 }
 
-.table-view-row{
+.table-view-row, .room-view-row{
     height: auto;
     margin-left: 20px;
     overflow-x: auto;
@@ -103,6 +104,10 @@ body{
 }
 
 .table-view-row::-webkit-scrollbar {
+    display: none;
+}
+
+.room-view-row::-webkit-scrollbar {
     display: none;
 }
 
@@ -124,8 +129,9 @@ body{
     margin-left: 5px;
     margin-right: 5px;
     border-style: dashed ;
-    border-color: rgb(176, 176, 176);
+    border-color: rgb(135, 135, 135);
     cursor: pointer;
+    margin-right: 1%;
 }
 
 .table-view-cell .text, .room-view-cell .text{
@@ -137,4 +143,14 @@ body{
     transform: translate(-50%, -50%);
     text-align: center;
 
+}
+
+.occupied-table {
+    background-color: #ffb7b7; 
+    cursor: not-allowed;
+}
+
+.occupied-room{
+    background-color: #ffb7b7; 
+    cursor: not-allowed;
 }

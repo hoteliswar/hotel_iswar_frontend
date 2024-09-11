@@ -1,3 +1,5 @@
+baseURL = 'https://dineops.onrender.com/api/';
+
 // Putting Options in category list
 function putCategoryInSelect(){
     let selectCategory = document.getElementById('new-item-catg');     // Create
@@ -82,7 +84,7 @@ function deleteFood(id){
             'Content-Type': 'application/json'
         }
     }
-    const url = `http://127.0.0.1:8000/api/foods/fooditems/${id}/`;
+    const url = `${baseURL}foods/fooditems/${id}/`;
     refreshAccessToken2(url, option)
     // .then(response => response.json())
     .then(data => {
@@ -101,7 +103,6 @@ function getCatgIdByName(name) {
     const category = categoryData.find(category => category.name === name);
     return category ? category.id : null;
 }
-
 
 // Open Update Modal
 function openEditModal(name, price, category, description, imageSrc, status, id, veg) {
@@ -185,7 +186,6 @@ function updateModalVegNon(checkbox) {
 
 
 // PUT API call after click(Update button)
-
 document.getElementById('update-item').addEventListener('click', function (e) {
     e.preventDefault();
     // Get the item details from the form
@@ -230,7 +230,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
             })
         }
 
-        const url = `http://127.0.0.1:8000/api/foods/fooditems/${updatedItem.id}/`
+        const url = `${baseURL}foods/fooditems/${updatedItem.id}/`
 
         // Send a PUT request to update the item
 
@@ -239,6 +239,8 @@ document.getElementById('update-item').addEventListener('click', function (e) {
             .then(data => {
                 console.log('Item updated successfully:', data);
                 getFooditems();
+                document.querySelector('.close').click();
+                coldReload();
                 // alert('Item updated successfully:', data);
                 // Optionally, update the UI or show a success message
             })
@@ -252,7 +254,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
 
 
 // addItemToList('Chicken Masala Biriyani Masala', 10.00, 'South Indian - Veg', 'Description 1', 'https://via.placeholder.com/150');
-addItemToList('Item 2', 20.00, 'Category 2', 'Description 2', '','enabled', '1', true);
+// addItemToList('Item 2', 20.00, 'Category 2', 'Description 2', '','enabled', '1', true);
 // addItemToList('Item 3', 30.00, 'Category 3', 'Description 3', '');
 // getFooditems();
 
@@ -307,7 +309,6 @@ function passToFoodList(data) {
     });
 }
 
-
 // API Call POST Food Items - Create
 document.getElementById('add-item').addEventListener('click', function (e) {
     e.preventDefault();
@@ -359,7 +360,6 @@ function updateVegNon(checkbox) {
 }
 
 // API Call POST Food Items - Create
-
 function createFood(itemData) {
     console.log(itemData);
     const option = {
@@ -378,7 +378,7 @@ function createFood(itemData) {
         })
     }
 
-    const url = 'http://127.0.0.1:8000/api/foods/fooditems/';
+    const url = `${baseURL}foods/fooditems/`;
 
     refreshAccessToken(url, option)
         // .then(response => response.json())
@@ -388,7 +388,10 @@ function createFood(itemData) {
             getFooditems();
             // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status, data.veg);
             alert("Food Item Created Successfully");
+            // window.location.reload();
+            coldReload();
         })
+        
         .catch(error => {
             console.log('Error fetching data:', error);
         });
@@ -405,4 +408,14 @@ function getCookie(name) {
     let value = "; " + document.cookie;
     let parts = value.split("; " + name + "=");
     if (parts.length === 2) return parts.pop().split(";").shift();
+}
+
+function coldReload() {
+    const page = document.getElementById('nav-item-items');
+    if (page) {
+        page.click();
+    }
+    else{
+        page.click();
+    }
 }

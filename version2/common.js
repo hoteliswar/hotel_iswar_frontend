@@ -1,3 +1,5 @@
+baseURL = 'https://dineops.onrender.com/api/';
+
 // Helper function to save a cookie value
 function setCookie(name, value, minutes) {
     const d = new Date();
@@ -22,7 +24,8 @@ function refreshAccessToken(url, option) {
         console.log(response.status);
         if (response.status === 401) {
             console.log('Status: 401');
-            fetch('http://127.0.0.1:8000/api/accounts/token/refresh/', {
+            fetch(`${baseURL}accounts/token/refresh/`, {
+            // fetch('http://127.0.0.1:8000/api/accounts/token/refresh/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -83,7 +86,7 @@ async function refreshAccessToken2(url, option) {
         const response = await fetch(url, option);
         if (response.status === 401) {
             console.log('Status: 401');
-            fetch('http://127.0.0.1:8000/api/accounts/token/refresh/', {
+            fetch(`${baseURL}accounts/token/refresh/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -150,9 +153,9 @@ function getCategoryList() {
         }
     }
 
-    const url = 'http://127.0.0.1:8000/api/foods/categories/';
+    const url = `${baseURL}foods/categories/`;
 
-    refreshAccessToken(url, option)
+    refreshAccessToken2(url, option)
         // .then(response => response.json())
         .then(data => {
             console.log('Data:', data);
@@ -200,9 +203,9 @@ function getFooditems() {
             'Content-Type': 'application/json'
         }
     }
-    const url = 'http://127.0.0.1:8000/api/foods/fooditems/';
+    const url = `${baseURL}foods/fooditems/`;
 
-    refreshAccessToken2(url, option)
+    refreshAccessToken(url, option)
         // .then(response => response.json())
         .then(data => {
             console.log('Data:', data);
@@ -212,7 +215,7 @@ function getFooditems() {
 
             // const preElement = document.getElementById('foods_data');
             // preElement.textContent = JSON.stringify(data, null, 2);
-            passToList(data);
+            // passToList(data);
         })
         .catch(error => {
             console.log('Error fetching data:', error);
