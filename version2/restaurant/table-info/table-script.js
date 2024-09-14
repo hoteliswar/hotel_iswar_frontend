@@ -184,6 +184,11 @@ document.querySelector('.order-type-info').addEventListener('click', function (e
                     element.style.cursor = 'not-allowed';
                     element.disabled = true;
                 });
+                document.addEventListener('click', function (event) {
+                    if (event.target.id.includes('delivery')) {
+                        window.location.href = `./../takeorder/takeorder.html?orderType=DELIVERY`;
+                    }
+                });
             } else if (selectedType.textContent === 'PICKUP') {
                 // Action for PICKUP
                 document.querySelectorAll('.table-view-cell').forEach(element => {
@@ -193,6 +198,11 @@ document.querySelector('.order-type-info').addEventListener('click', function (e
                 document.querySelectorAll('.room-view-cell').forEach(element => {
                     element.style.cursor = 'not-allowed';
                     element.disabled = true;
+                });
+                document.addEventListener('click', function (event) {
+                    if (event.target.id.includes('pickup')) {
+                        window.location.href = `./../takeorder/takeorder.html?orderType=PICKUP`;
+                    }
                 });
             } else {
                 // Default action or handling for other cases

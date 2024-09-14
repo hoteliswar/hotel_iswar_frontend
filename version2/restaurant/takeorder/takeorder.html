@@ -46,7 +46,7 @@
                             Starters
                         </div>
                     </div> -->
-                    
+
 
                 </div>
             </div>
@@ -65,8 +65,8 @@
                             </div>
                             <div class="order-type row">
                                 Order Type: &nbsp;
-                                <div class="get-order-type col-5"> DINE-IN </div>
-                                <div class="get-order-type-info col-3"> T02 </div>
+                                <div class="get-order-type col-5"></div>
+                                <div class="get-order-type-info col-3"></div>
                             </div>
                         </div>
                         <div class="col-3">
@@ -75,18 +75,31 @@
                                     <i class="fa-solid fa-circle-arrow-left"></i> &nbsp; MORE
                                 </div>
                             </div>
+
                             <!-- More Modal -->
+                            <div id="overlay" class="overlay"></div>
+
                             <div id="morePopup" class="popup">
                                 <div class="popup-content">
-                                    <div class="popup-title">More Info</div>
+                                    <div class="popup-title">Customer Info</div>
+                                    <span class="close-btn">&times;</span>
 
                                     <div class="input-group">
                                         <label for="mobile">Mobile: </label>
                                         <input type="text" id="mobile" placeholder="Customer Mobile">
                                     </div>
                                     <div class="input-group">
+                                        <label for="name">Name: </label>
+                                        <input type="text" id="name" placeholder="Customer Name">
+                                    </div>
+                                    <div class="input-group">
                                         <label for="email">Email: </label>
                                         <input type="email" id="email" placeholder="Customer Email">
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="address">Address: </label>
+                                        <!-- <input type="email" id="address" placeholder="Customer Email"> -->
+                                        <textarea name="address" id="address" placeholder="Full Address" cols="50" rows="3"></textarea>
                                     </div>
 
                                     <div class="button-group">
@@ -120,7 +133,7 @@
                             Total: <span class="ta-price">₹0.00</span>
                         </div>
                         <div class="discount ">
-                            Discount (in %):
+                            Discount:
                             <input type="number" class="disc-box" name="discount" id="discount">
                         </div>
                         <div class="net-amt">

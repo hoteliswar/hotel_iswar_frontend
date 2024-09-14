@@ -1,3 +1,5 @@
+let finalBillItems = [];
+
 // Get all items from Local Storage
 allFoodItems = getAllFoodListFromStorage();
 console.table(allFoodItems);
@@ -85,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     const billItems = [];
-    
+
     // Adding click on Category Div
     menuCategories.forEach(category => {
         category.addEventListener('click', function () {
@@ -126,13 +128,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Add Food Item to Bill Container
     function addItemToBill(itemId, itemName, itemPrice) {
+        // console.log(`bill items: ${billItems}`);
         const existingItem = billItems.find(item => item.id === itemId);
         if (existingItem) {
             existingItem.quantity++;
         } else {
             billItems.push({ id: itemId, name: itemName, price: itemPrice, quantity: 1 });
         }
+        // console.log(`Current bill items:`, billItems);
+        sendDataToSave();
         renderBillItems();
+    }
+
+    function sendDataToSave(){
+        finalBillItems = []
+        finalBillItems = [...billItems];
     }
 
     // Update Quantity of Food Item in Bill Container
@@ -197,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             billContainer.appendChild(billItemElement);
         });
-
+        
         // Update the bill total
         billTotal.textContent = `₹${calculateTotal()}`;
         discBox.addEventListener('input', updateNetTotal);
@@ -206,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Calculate Total Amount
     function calculateTotal() {
+        
         return billItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     }
 
@@ -218,8 +229,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Calculate Net Total Amount
-    function updateNetTotal() {
+    // Calculate Net Total Amount wrt Discount Percentage
+    function updateNetTotal2() {
         const totalAmount = parseFloat(calculateTotal());
         const discountPercentage = parseFloat(discBox.value) || 0;
 
@@ -236,6 +247,18 @@ document.addEventListener('DOMContentLoaded', function () {
         netTotal.textContent = `₹${netAmount.toFixed(2)}`;
     }
 
+    // Calculate Net Total Amount wrt Discount Amount
+    function updateNetTotal() {
+        const totalAmount = parseFloat(calculateTotal());
+        const discountAmount = parseFloat(discBox.value) || 0;
+
+        let netAmount = totalAmount - discountAmount;
+        if (netAmount < 0) netAmount = 0; // Ensure net amount doesn't go below zero
+
+        netTotal.textContent = `₹${netAmount.toFixed(2)}`;
+    }
+
+
     // Select first category on page load
     function selectFirstCategory() {
         const firstCategory = menuCategories[0];
@@ -250,8 +273,6 @@ document.addEventListener('DOMContentLoaded', function () {
     selectFirstCategory();
 
 });
-
-// ----------------------------
 
 // Add selected class on category items
 const buttons = document.querySelectorAll('.selectable');
@@ -294,22 +315,33 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('morePopup').style.display = 'flex';
     });
 
-    // const doneButton = document.getElementById('doneButton');
-    // doneButton.disabled = true;
-    // if ((document.querySelector('order-type-option-select')).value) {
-    //     doneButton.disabled = false;
-    // }
-
-    // document.getElementById('doneButton').addEventListener('click', function () {
-    //     console.log('Done button clicked');
-    //     document.getElementById('morePopup').style.display = 'none';
-    // });
-
     const getOrderType = document.querySelector('.get-order-type');
     const getOrderTypeInfo = document.querySelector('.get-order-type-info');
 
 
     doneButton.addEventListener('click', function (e) {
+
+        const selectedOrderType = document.querySelector('.type-selected');
+        const mobileInput = document.getElementById('mobile');
+        const nameInput = document.getElementById('name');
+        const addressInput = document.getElementById('address');
+
+        if (selectedOrderType && selectedOrderType.textContent === 'DELIVERY') {
+            if (!mobileInput.value || !nameInput.value || !addressInput.value) {
+                e.preventDefault();
+                alert('For delivery orders, please provide mobile number, name, and address.');
+                return;
+            }
+        }
+
+        if (selectedOrderType && selectedOrderType.textContent === 'PICKUP') {
+            if (!mobileInput.value || !nameInput.value) {
+                e.preventDefault();
+                alert('For delivery orders, please provide mobile number and name.');
+                return;
+            }
+        }
+
         const selectElement = document.querySelector('.order-type-option-select');
         if (selectElement && selectElement.value === "") {
             e.preventDefault();
@@ -324,13 +356,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // alert('Selected a table or room before proceeding');
             document.getElementById('morePopup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
             // Optionally, you can add some visual feedback here
         } else {
             console.log('Done button clicked');
             getOrderType.textContent = document.querySelector('.type-selected').textContent;
             getOrderTypeInfo.textContent = '';
             document.getElementById('morePopup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
         }
+
     });
 });
 
@@ -360,9 +395,6 @@ document.addEventListener('DOMContentLoaded', function () {
         validateAndSyncMobile(this, mobileInput);
     });
 });
-
-// --------------
-
 
 // Display the Table/Room list upon selction of Order Type
 let tableNumbersAppended = false;
@@ -458,7 +490,7 @@ function getAllRoomNumbers() {
         return `<select id="room-select" class="order-type-option-select" required>    
             <option value="">Select a room</option>
             ${roomNumbers.map(number =>
-            `<option value="${number}">Table ${number}</option>`
+            `<option value="${number}">Room ${number}</option>`
         ).join('')}
         </select>`;
     }
@@ -471,3 +503,104 @@ function getAllRoomNumbers() {
     return orderTypeOptions;
 }
 
+// Get data from Parameters from URL
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Parse URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const tableNumber = urlParams.get('table');
+    const roomNumber = urlParams.get('room');
+    const orderType = urlParams.get('orderType');
+
+    // Use the parameters as needed
+    if (tableNumber && orderType === 'dine_in') {
+        console.log(`Dine-in order for table ${tableNumber}`);
+        // Set the order type to DINE-IN and select the table
+        setOrderType('DINE-IN');
+        selectTable(tableNumber);
+    } else if (roomNumber && orderType === 'room_service') {
+        console.log(`Room service order for room ${roomNumber}`);
+        // Set the order type to ROOM SERVICE and select the room
+        setOrderType('ROOM SERVICE');
+        selectRoom(roomNumber);
+    } else if (orderType === 'PICKUP' || orderType === 'DELIVERY') {
+        console.log(`Pickup or Delivery`);
+        // Set the order type to ROOM SERVICE and select the room
+        document.getElementById('moreButton').click();
+        setOrderType(orderType);
+        selectRoom(roomNumber);
+    }
+
+
+    // Helper functions to set order type and select table/room
+    function setOrderType(type) {
+        const typeButtons = document.querySelectorAll('.type-selectable');
+        typeButtons.forEach(button => {
+            if (button.textContent === type) {
+                button.click();
+            }
+        });
+    }
+
+    function selectTable(number) {
+        const getOrderType = document.querySelector('.get-order-type');
+        const getOrderTypeInfo = document.querySelector('.get-order-type-info');
+        const tableSelect = document.getElementById('table-select');
+        if (tableSelect) {
+            tableSelect.value = number;
+        }
+        getOrderType.textContent = 'DINE IN';
+        getOrderTypeInfo.textContent = number;
+    }
+
+    function selectRoom(number) {
+        const getOrderType = document.querySelector('.get-order-type');
+        const getOrderTypeInfo = document.querySelector('.get-order-type-info');
+        const roomSelect = document.getElementById('room-select');
+        if (roomSelect) {
+            roomSelect.value = number;
+        }
+        getOrderType.textContent = 'ROOM SERVICE';
+        getOrderTypeInfo.textContent = number;
+    }
+
+
+});
+
+// Close button for the More Modal
+document.addEventListener('DOMContentLoaded', function () {
+    const closeBtn = document.querySelector('.close-btn');
+    const morePopup = document.getElementById('morePopup');
+
+    closeBtn.addEventListener('click', function () {
+        morePopup.style.display = 'none';
+    });
+});
+
+// More Button for the More Modal to Open & Close
+document.addEventListener('DOMContentLoaded', function () {
+    const moreButton = document.getElementById('moreButton');
+    const morePopup = document.getElementById('morePopup');
+    const closeBtn = document.querySelector('.close-btn');
+    const overlay = document.getElementById('overlay');
+
+    moreButton.addEventListener('click', function () {
+        morePopup.classList.add('show');
+        overlay.style.display = 'block';
+    });
+
+    closeBtn.addEventListener('click', function () {
+        morePopup.classList.remove('show');
+        overlay.style.display = 'none';
+    });
+});
+
+// Getting all items data that are in bill after clicking Save Button
+const savebtn = document.querySelector('.save-btn')
+savebtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    if(savebtn.click){
+        console.log('save button clicked');
+        console.table(finalBillItems);
+    }
+});
