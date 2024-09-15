@@ -1,3 +1,4 @@
+baseURL = 'https://dineops.onrender.com/api/';
 let finalBillItems = [];
 
 // Get all items from Local Storage
@@ -140,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
         renderBillItems();
     }
 
-    function sendDataToSave(){
+    function sendDataToSave() {
         finalBillItems = []
         finalBillItems = [...billItems];
     }
@@ -207,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             billContainer.appendChild(billItemElement);
         });
-        
+
         // Update the bill total
         billTotal.textContent = `₹${calculateTotal()}`;
         discBox.addEventListener('input', updateNetTotal);
@@ -216,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Calculate Total Amount
     function calculateTotal() {
-        
+
         return billItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     }
 
@@ -595,12 +596,85 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Getting all items data that are in bill after clicking Save Button
+function getOrderDetails() {
+    const mobileNumber = document.getElementById('mobile-input').value || document.getElementById('mobile').value;
+    const orderType = document.querySelector('.get-order-type').textContent;
+    const tableOrRoom = document.querySelector('.get-order-type-info').textContent;
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const address = document.getElementById('address').value;
+
+    return {
+        mobileNumber,
+        orderType,
+        tableOrRoom,
+        name,
+        email,
+        address
+    };
+}
+
+// SAVE: Getting all items data that are in bill after clicking Save Button
 const savebtn = document.querySelector('.save-btn')
 savebtn.addEventListener('click', function (e) {
     e.preventDefault();
-    if(savebtn.click){
+    if (savebtn.click) {
         console.log('save button clicked');
         console.table(finalBillItems);
+        const orderDetails = getOrderDetails();
+        console.table('Order Details:', orderDetails);
+
+        const orderData = {
+            phone: orderDetails.mobileNumber,
+            email: orderDetails.email,
+            first_name: orderDetails.name,
+            address: orderDetails.address,
+            order_type: orderDetails.orderType,
+            table: orderDetails.tableOrRoom,
+            status: 'in_progress',
+            food_items: finalBillItems.map(item => item.id)
+
+        };
+
+        console.log('Order Data:', orderData);
+        saveOrder(orderData);
+
+        function saveOrder(orderData) {
+            console.table(orderData);
+            const option = {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ orderData })
+            }
+
+            const url = `${baseURL}orders/order/`;
+
+            refreshAccessToken(url, option)
+                // .then(response => response.json())
+                .then(data => {
+                    console.log('Data:', data);
+                    console.table(data);
+                    alert("Saved Order Successfully");
+                })
+                .catch(error => {
+                    console.log('Error Saving Order:', error);
+                });
+        }
+    }
+});
+
+
+// HOLD: Getting all items data that are in bill after clicking Hold Button
+const holdbtn = document.querySelector('.hold-btn')
+holdbtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (holdbtn.click) {
+        console.log('hold button clicked');
+        console.table(finalBillItems);
+        const orderDetails = getOrderDetails();
+        console.table('Order Details:', orderDetails);
     }
 });
