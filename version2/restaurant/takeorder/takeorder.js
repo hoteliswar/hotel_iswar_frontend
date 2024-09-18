@@ -1,6 +1,14 @@
 baseURL = 'https://dineops.onrender.com/api/';
 let finalBillItems = [];
 
+
+// Helper function to get a cookie value
+function getCookie(name) {
+    let value = "; " + document.cookie;
+    let parts = value.split("; " + name + "=");
+    if (parts.length === 2) return parts.pop().split(";").shift();
+}
+
 // Get all items from Local Storage
 allFoodItems = getAllFoodListFromStorage();
 console.table(allFoodItems);
@@ -628,16 +636,38 @@ savebtn.addEventListener('click', function (e) {
             phone: orderDetails.mobileNumber,
             email: orderDetails.email,
             first_name: orderDetails.name,
-            address: orderDetails.address,
-            order_type: orderDetails.orderType,
-            table: orderDetails.tableOrRoom,
+            // address: orderDetails.address,
+            order_type: 'dine_in',
+            // order_type: orderDetails.orderType,
+            table: 8,
+            // table: orderDetails.tableOrRoom,
             status: 'in_progress',
-            food_items: finalBillItems.map(item => item.id)
+            food_items: [9, 5, 4, 10]
+            // food_items: finalBillItems.map(item => item.id)
 
         };
 
+        const orderData2 = {
+            "phone": "3333333333",
+            "email": "cust@example.com",
+            "first_name": "SouravDeb",
+            "order_type": "dine_in",
+            "table": 19,
+            "food_items": [9, 5, 10, 4],
+            "status": "in_progress"
+        }
+
         console.log('Order Data:', orderData);
-        saveOrder(orderData);
+        saveOrder(orderData)
+            .then(data => {
+                console.log('Data:', data);
+                console.table(data);
+                alert("Saved Order Successfully");
+                holdBtn.disabled = false; // Enable the Hold button
+            })
+            .catch(error => {
+                console.log('Error Saving Order:', error);
+            });
 
         function saveOrder(orderData) {
             console.table(orderData);
@@ -652,16 +682,16 @@ savebtn.addEventListener('click', function (e) {
 
             const url = `${baseURL}orders/order/`;
 
-            refreshAccessToken(url, option)
-                // .then(response => response.json())
-                .then(data => {
-                    console.log('Data:', data);
-                    console.table(data);
-                    alert("Saved Order Successfully");
-                })
-                .catch(error => {
-                    console.log('Error Saving Order:', error);
-                });
+            // refreshAccessToken(url, option)
+            //     // .then(response => response.json())
+            //     .then(data => {
+            //         console.log('Data:', data);
+            //         console.table(data);
+            //         alert("Saved Order Successfully");
+            //     })
+            //     .catch(error => {
+            //         console.log('Error Saving Order:', error);
+            //     });
         }
     }
 });

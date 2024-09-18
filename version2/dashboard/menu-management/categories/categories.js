@@ -41,7 +41,7 @@ function addCatgeoryToList(name, description, status, imageSrc, id) {
 }
 
 // API Call to delete category - DELETE
-function deleteCategory(id){
+function deleteCategory(id) {
     const option = {
         method: 'DELETE',
         headers: {
@@ -51,15 +51,15 @@ function deleteCategory(id){
     }
     const url = `${baseURL}foods/categories/${id}/`;
     refreshAccessToken2(url, option)
-    // .then(response => response.json())
-    .then(data => {
-        console.log('Data:', data);
-        getCategoryList();
-        alert("Category Deleted..");
-    })
-    .catch(error => {
-        console.log('Error fetching data:', error);
-    });
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Data:', data);
+            getCategoryList();
+            alert("Category Deleted..");
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
 
 }
 
@@ -72,14 +72,21 @@ function openUpdateModal(name, description, status, imageSrc, id) {
     const statusModalText = document.getElementById('statusModalText');
     const editImage = document.getElementById('editCatgImg');
 
-    const catgId = document.createElement('input');
-    catgId.type = 'hidden';
-    catgId.id = 'catgId';
-    catgId.value = id;
-    modal.appendChild(catgId);
+    // Check if itemId input already exists
+    let catgIdInput = modal.querySelector('#catgId');
+    if (catgIdInput) {
+        // If it exists, update its value
+        catgIdInput.value = id;
+    } else {
+        const catgId = document.createElement('input');
+        catgId.type = 'hidden';
+        catgId.id = 'catgId';
+        catgId.value = id;
+        modal.appendChild(catgId);
+    }
 
-    console.log('Name in Open Update Modal:', name);   
-    console.log('ID in Open Update Modal:', id);   
+    console.log('Name in Open Update Modal:', name);
+    console.log('ID in Open Update Modal:', id);
 
     editName.value = name;
     editDescription.value = description;
@@ -188,7 +195,7 @@ function updateDisableStatus(checkbox) {
 // getCategoryList();
 // getCategoryListFromStorage();
 
-if( categoryData =  getCategoryListFromStorage()){
+if (categoryData = getCategoryListFromStorage()) {
     passToCategoryList(categoryData);
 } else {
     console.log('No data in storage');
@@ -263,6 +270,7 @@ function createCategory(catgData) {
             getCategoryList();
             // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status);
             alert("Category Created Successfully");
+            coldReload();
         })
         .catch(error => {
             console.log('Error fetching data:', error);
@@ -292,9 +300,9 @@ document.getElementById('update-category').addEventListener('click', function (e
 
     updatedCatg(updatedCatgData);
 
-    function updatedCatg(updatedCatgData){
+    function updatedCatg(updatedCatgData) {
         option = {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Authorization': 'Bearer ' + getCookie('access_token'),
                 'Content-Type': 'application/json'
@@ -303,24 +311,26 @@ document.getElementById('update-category').addEventListener('click', function (e
                 name: updatedCatgData.name,
                 description: updatedCatgData.description,
                 status: updatedCatgData.status
-                
+
             })
         }
-    
+
         console.log(updatedCatgData.id);
         console.log(catgId);
 
 
         const url = `${baseURL}foods/categories/${updatedCatgData.id}/`
-    
-        // Send a PUT request to update the item
-    
+
+        // Send a PATCH request to update the item
+
         refreshAccessToken(url, option)
             // .then(response => response.json())
             .then(data => {
+                console.log("Category Updated Successfully")
                 getCategoryList();
                 console.log('Category updated successfully:', data);
-                // alert('Item updated successfully:', data);
+                alert('Category updated successfully:', data);
+                coldReload();
                 // Optionally, update the UI or show a success message
             })
             .catch(error => {
@@ -331,3 +341,14 @@ document.getElementById('update-category').addEventListener('click', function (e
     }
 
 });
+
+
+function coldReload() {
+    const page = document.getElementById('nav-item-categories');
+    if (page) {
+        page.click();
+    }
+    else {
+        page.click();
+    }
+}

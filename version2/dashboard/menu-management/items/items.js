@@ -1,7 +1,7 @@
 baseURL = 'https://dineops.onrender.com/api/';
 
 // Putting Options in category list
-function putCategoryInSelect(){
+function putCategoryInSelect() {
     let selectCategory = document.getElementById('new-item-catg');     // Create
     categoryData = getCategoryListFromStorage();
     console.log('Items.js called........')
@@ -29,7 +29,7 @@ function putCategoryInSelect(){
         option.textContent = category.name;
         editModalCategory.appendChild(option);
     });
-    
+
 }
 
 putCategoryInSelect();
@@ -38,10 +38,10 @@ putCategoryInSelect();
 function addItemToList(name, price, category, description, imageSrc, status, id, veg) {
     const itemsContainer = document.querySelector('.all-list-table-items');
 
-    console.log('Veg / NonVeg: ',veg);
-    if(veg === true){
+    console.log('Veg / NonVeg: ', veg);
+    if (veg === true) {
         var vegData = 'Veg'
-    }else{
+    } else {
         var vegData = 'Non-Veg'
     }
 
@@ -76,7 +76,7 @@ function addItemToList(name, price, category, description, imageSrc, status, id,
 
 
 // API Call to delete food item - DELETE
-function deleteFood(id){
+function deleteFood(id) {
     const option = {
         method: 'DELETE',
         headers: {
@@ -86,14 +86,16 @@ function deleteFood(id){
     }
     const url = `${baseURL}foods/fooditems/${id}/`;
     refreshAccessToken2(url, option)
-    // .then(response => response.json())
-    .then(data => {
-        console.log('Data:', data);
-        getFooditems();
-    })
-    .catch(error => {
-        console.log('Error fetching data:', error);
-    });
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Data Deleted:', data);
+            getFooditems();
+            alert('Item Deleted Successfully');
+            coldReload();
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
 
 }
 
@@ -117,13 +119,20 @@ function openEditModal(name, price, category, description, imageSrc, status, id,
     const editVegNon = document.getElementById('editVegNon');
     const editVegNonText = document.getElementById('vegnonTextModal');
 
-    const itemId = document.createElement('input');
-    itemId.type = 'hidden';
-    itemId.name = 'itemId';
-    itemId.id = 'itemId';
-    itemId.value = id;
-    modal.appendChild(itemId);
-
+    // Check if itemId input already exists
+    let itemIdInput = modal.querySelector('#itemId');
+    if (itemIdInput) {
+        // If it exists, update its value
+        itemIdInput.value = id;
+    } else {
+        // If it doesn't exist, create a new one
+        itemIdInput = document.createElement('input');
+        itemIdInput.type = 'hidden';
+        itemIdInput.name = 'itemId';
+        itemIdInput.id = 'itemId';
+        itemIdInput.value = id;
+        modal.appendChild(itemIdInput);
+    }
     editName.value = name;
     editPrice.value = price;
     editCategory.value = getCatgIdByName(category);
@@ -143,7 +152,7 @@ function openEditModal(name, price, category, description, imageSrc, status, id,
         // var statusText = 'disabled';
     }
 
-    if (veg === true){
+    if (veg === true) {
         editVegNon.checked = false;
         editVegNonText.textContent = 'Veg';
     } else {
@@ -185,7 +194,7 @@ function updateModalVegNon(checkbox) {
 
 
 
-// PUT API call after click(Update button)
+// PATCH API call after click(Update button)
 document.getElementById('update-item').addEventListener('click', function (e) {
     e.preventDefault();
     // Get the item details from the form
@@ -215,7 +224,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
 
     function updateItem(updatedItem) {
         option = {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Authorization': 'Bearer ' + getCookie('access_token'),
                 'Content-Type': 'application/json'
@@ -224,7 +233,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
                 name: updatedItem.name,
                 price: updatedItem.price,
                 description: updatedItem.description,
-                category_id: updatedItem.category_id,
+                category: updatedItem.category_id,
                 status: updatedItem.status,
                 veg: updatedItem.veg
             })
@@ -232,13 +241,14 @@ document.getElementById('update-item').addEventListener('click', function (e) {
 
         const url = `${baseURL}foods/fooditems/${updatedItem.id}/`
 
-        // Send a PUT request to update the item
+        // Send a PATCH request to update the item
 
         refreshAccessToken(url, option)
             // .then(response => response.json())
             .then(data => {
                 console.log('Item updated successfully:', data);
                 getFooditems();
+                alert("Food Item Created Successfully");
                 document.querySelector('.close').click();
                 coldReload();
                 // alert('Item updated successfully:', data);
@@ -297,7 +307,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
 // getAllFoodListFromStorage();
 
 
-if( foodData =  getAllFoodListFromStorage()){
+if (foodData = getAllFoodListFromStorage()) {
     passToFoodList(foodData);
 } else {
     console.log('No data in storage');
@@ -372,7 +382,7 @@ function createFood(itemData) {
             name: itemData.name,
             description: itemData.description,
             price: itemData.price,
-            category_id: itemData.category,
+            category: itemData.category,
             status: itemData.status,
             veg: itemData.veg
         })
@@ -380,7 +390,7 @@ function createFood(itemData) {
 
     const url = `${baseURL}foods/fooditems/`;
 
-    refreshAccessToken(url, option)
+    refreshAccessToken2(url, option)
         // .then(response => response.json())
         .then(data => {
             console.log('Data:', data);
@@ -391,7 +401,7 @@ function createFood(itemData) {
             // window.location.reload();
             coldReload();
         })
-        
+
         .catch(error => {
             console.log('Error fetching data:', error);
         });
@@ -415,7 +425,7 @@ function coldReload() {
     if (page) {
         page.click();
     }
-    else{
+    else {
         page.click();
     }
 }

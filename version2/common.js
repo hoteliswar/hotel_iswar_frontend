@@ -136,6 +136,53 @@ async function refreshAccessToken2(url, option) {
     // }
 }
 
+async function refreshAccessToken3(url, option) {
+    console.log('refreshAccessToken() called !!');
+
+    try {
+        const response = await fetch(url, option);
+
+        if (response.status === 401) {
+            console.log('Status: 401');
+            const refreshResponse = await fetch(`${baseURL}accounts/token/refresh/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    refresh: getCookie('refresh_token')
+                })
+            });
+
+            if (refreshResponse.status === 401) {
+                window.location.href = 'index.html';
+            } else if (refreshResponse.status === 200) {
+                console.log('Access Token:', getCookie('access_token'));
+                console.log('Refresh Token:', getCookie('refresh_token'));
+                console.log('Refresh Status: 200');
+
+                const data = await refreshResponse.json();
+                if (data.access) {
+                    setCookie('access_token', data.access, 5);
+                }
+
+                return refreshAccessToken3(url, option);
+            }
+        } else if (response.status === 200 || response.status === 201 || response.ok) {
+            console.log(`Status: ${response.status} OK`);
+            console.log(response.json());
+            return response.json();
+        } else {
+            console.log(`Unexpected status code: ${response.status}`);
+            const err = await response.json();
+            throw new Error(err.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
 
 
 // Local Storage
@@ -178,6 +225,10 @@ function getCategoryList() {
 function getCategoryListFromStorage() {
     const storedData = localStorage.getItem('categoryList');
     if (storedData) {
+        if (storedData === 'undefined') {
+            console.log('No category list found in local storage');
+            getCategoryList();
+        }
         const categoryList = JSON.parse(storedData);
         console.log('Category list from local storage:', categoryList);
         // passToCategoryList(categoryList);
@@ -190,7 +241,6 @@ function getCategoryListFromStorage() {
     }
     
 }
-
 
 getFooditems();
 
@@ -205,7 +255,7 @@ function getFooditems() {
     }
     const url = `${baseURL}foods/fooditems/`;
 
-    refreshAccessToken(url, option)
+    refreshAccessToken2(url, option)
         // .then(response => response.json())
         .then(data => {
             console.log('Data:', data);
@@ -236,7 +286,7 @@ function getAllFoodListFromStorage() {
             getFooditems();
         }
         const foodList = JSON.parse(storedFoodData);
-        console.log('Category list from local storage:', foodList);
+        console.log('Food list from local storage:', foodList);
         // passToCategoryList(categoryList);
         return foodList;
     } else {
@@ -245,4 +295,48 @@ function getAllFoodListFromStorage() {
         getFooditems();
     }
     
+}
+
+
+getTablesData();
+// API Call to GET Tables data
+function getTablesData() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+    const url = `${baseURL}foods/tables/`;
+    refreshAccessToken2(url, option)
+    // .then(response => response.json())
+    .then(data => {
+            console.log('Data:', data);
+            localStorage.setItem('tablesList', JSON.stringify(data));
+            getTablesListFromStorage();
+        })
+        .catch(error => {
+            console.log('Error fetching table:', error);
+        });
+
+}
+
+function getTablesListFromStorage() {
+    const storedData = localStorage.getItem('tablesList');
+    if (storedData) {
+        if (storedData === 'undefined') {
+            console.log('No table list found in local storage');
+            getTablesData();
+        }
+        const tablesList = JSON.parse(storedData);
+        console.log('Table list from local storage:', tablesList);
+        // passToCategoryList(categoryList);
+        return tablesList;
+    } else {
+        console.log('No category list found in local storage');
+        // Optionally, you can call getCategoryList() here to fetch from API if not in storage
+        getTablesData();
+    }
+
 }
