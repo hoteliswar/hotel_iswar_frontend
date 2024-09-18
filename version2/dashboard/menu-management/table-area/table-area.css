@@ -46,3 +46,36 @@
 .new-item-card-body-item button:hover {
     background-color: rgb(255, 140, 0);
 }
+
+.table-list-head-text{
+    font-size: large;
+    text-transform: uppercase;
+    font-weight: bold;
+    border-bottom: 2px solid black;
+}
+
+.table-item {
+    display: inline-block;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    height: 100px;
+    width: 100px;
+    background-color: #cda3a3;
+    margin: 10px;
+    border: 3px dotted #7d7d7d;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.table-block {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    font-weight: 500;
+    font-size: 16px;
+    color: #0c0c0c;
+    text-align: center;
+}

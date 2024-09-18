@@ -49,10 +49,10 @@ function addItemToList(name, price, category, description, imageSrc, status, id,
         <div class="record-row">
             <div class="col-2" id="name">${name}</div>
             <div class="col-1" id="price">${price}</div>
-            <div class="col-1" id="category">${category}</div>
+            <div class="col-2" id="category">${category}</div>
             <div class="col-2" id="description">${description}</div>
-            <div class="col-2" id="imagesrc"><img src="${imageSrc}" alt="${name}" width="50"></div>
-            <div class="col-1" id="itemStatus">${status}</div>
+            <!-- <div class="col-2" id="imagesrc"><img src="${imageSrc}" alt="${name}" width="50"></div> -->
+            <div class="col-2" id="itemStatus">${status}</div>
             <div class="col-2" id="itemStatus">${vegData}</div>
             <div class="col-1">
                 <i class="edit-btn fa-solid fa-pen-to-square"></i>

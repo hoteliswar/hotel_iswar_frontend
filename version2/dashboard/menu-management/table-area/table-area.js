@@ -15,36 +15,88 @@ function renderTableList() {
     const tableContainer = document.querySelector('.load-table-blocks');
     
     tableContainer.innerHTML = '';
+
+    const tableListHead = document.createElement('div');
+    tableListHead.classList.add('table-list-head');
+    tableListHead.innerHTML = '<div class="table-list-head-text">Table List</div>';
+    tableContainer.appendChild(tableListHead);
+
     
     tableList.forEach(table => {
         const tableElement = document.createElement('div');
         tableElement.classList.add('table-item');
         tableElement.innerHTML = `
-            <span>Table ${table.table_number}</span>
-            <span>Status: ${table.occupied}</span>
+            <div class="table-block" id= "${table.id}">T ${table.table_number}</div>
         `;
         tableContainer.appendChild(tableElement);
     });
 }
+renderTableList();
 
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOMContentLoaded event fired');
-    try {
-        console.log('DOMContentLoaded event fired');
+
+// API - POST Request to add a new table
+function addTable(tableData) {
+    const tableList = getTableListFromLocalStorage();
+    const existingTable = tableList.find(table => table.table_number === tableData.table_number);
+    
+    if (!existingTable) {
+
+        const option = {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(tableData)
+        }
+
+        const url = `${baseURL}foods/tables/`;
+
+        refreshAccessToken2(url, option)
+            // .then(response => response.json())
+            .then(data => {
+                console.log('Data:', data);
+                getTablesData();
+                coldReload();
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            });
+
+
+        tableList.push(tableData);
+        localStorage.setItem('tablesList', JSON.stringify(tableList));
         renderTableList();
-    } catch (error) {
-        console.error('Error rendering table list:', error);
+    } else {
+        alert(`Table ${tableData.table_number} already exists.`);
+        console.log(`Table ${tableData.table_number} already exists.`);
+    }
+}
+
+// Take table input and pass to POST method
+document.getElementById('add-table').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const tableLocal = getTableListFromLocalStorage();
+
+    const tableNumInput = document.getElementById('tableNumberInput').value;
+
+    if (tableNumInput === ''){
+        alert('Please enter a table number');
+    } else {
+        const tableData = {
+            table_number: parseInt(tableNumInput),
+        };
+        addTable(tableData);
     }
 });
 
-
-// You can also add functions to update the localStorage when tables are added or modified
-function addTable(tableData) {
-    const tableList = getTableListFromLocalStorage();
-    tableList.push(tableData);
-    localStorage.setItem('tablesList', JSON.stringify(tableList));
-    renderTableList();
+function coldReload() {
+    const page = document.getElementById('nav-item-tableArea');
+    if (page) {
+        page.click();
+    }
+    else {
+        page.click();
+    }
 }
-
-// Example usage:
-// addTable({ number: 5, capacity: 4, status: 'available' });
