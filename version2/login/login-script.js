@@ -1,4 +1,4 @@
-baseURL = 'https://dineops.onrender.com/api/';
+// baseURL = 'https://dineops.onrender.com/api/';
 
 // Helper function to set a cookie
 function setCookie(name, value, minutes) {
