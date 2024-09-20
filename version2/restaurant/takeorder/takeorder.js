@@ -609,7 +609,13 @@ document.addEventListener('DOMContentLoaded', function () {
 // GET basic order details: Name, Phone, Order Type, Email, Address, Tbale/Room
 function getOrderDetails() {
     const mobileNumber = document.getElementById('mobile-input').value || document.getElementById('mobile').value;
-    const orderType = document.querySelector('.get-order-type').textContent;
+    // const orderType = document.querySelector('.get-order-type').textContent;
+
+    let orderType = document.querySelector('.get-order-type').textContent;
+    if (orderType === 'DINE-IN') {
+        orderType = 'dine_in';
+    }
+
     const tableOrRoom = document.querySelector('.get-order-type-info').textContent;
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
@@ -635,21 +641,23 @@ savebtn.addEventListener('click', function (e) {
         const orderDetails = getOrderDetails();
         console.table('Order Details:', orderDetails);
 
+        const totalAmount = parseFloat(document.querySelector('.ta-price').textContent.replace('₹', ''));
+        const netTotalAmount = parseFloat(document.querySelector('.na-price').textContent.replace('₹', ''));
+        const discountAmount = parseFloat(document.querySelector('.disc-box').value) || 0;
+
         const orderData = {
             phone: orderDetails.mobileNumber,
             email: orderDetails.email,
             first_name: orderDetails.name,
             last_name: orderDetails.name,
-            address: orderDetails.address,
-            order_type: 'dine_in',
+            address_line_1: orderDetails.address,
             order_type: orderDetails.orderType,
-            table: 3,
-            // table: orderDetails.tableOrRoom,
+            table: parseInt(orderDetails.tableOrRoom),
             status: 'in_progress',
-            // food_items: [9, 5, 4, 10]
             food_items: finalBillItems.map(item => item.id),
-            quantity: [2, 3, 4, 5]
-
+            quantity: finalBillItems.map(item => item.quantity),
+            total_price: totalAmount,
+            discount : discountAmount
         };
 
         const orderData2 = {
@@ -670,15 +678,15 @@ savebtn.addEventListener('click', function (e) {
 
         console.log('Order Data:', orderData);
         saveOrder(orderData);
-            // .then(data => {
-            //     console.log('Data:', data);
-            //     console.table(data);
-            //     alert("Saved Order Successfully");
-            //     holdBtn.disabled = false; // Enable the Hold button
-            // })
-            // .catch(error => {
-            //     console.log('Error Saving Order:', error);
-            // });
+        // .then(data => {
+        //     console.log('Data:', data);
+        //     console.table(data);
+        //     alert("Saved Order Successfully");
+        //     holdBtn.disabled = false; // Enable the Hold button
+        // })
+        // .catch(error => {
+        //     console.log('Error Saving Order:', error);
+        // });
 
         function saveOrder(orderData) {
             console.table(orderData);
