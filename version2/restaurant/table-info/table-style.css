@@ -100,7 +100,7 @@ body{
     margin-left: 20px;
     overflow-x: auto;
     overflow-y: hidden;
-    white-space: nowrap;
+    /* white-space: nowrap; */
 }
 
 .table-view-row::-webkit-scrollbar {
@@ -132,6 +132,7 @@ body{
     border-color: rgb(135, 135, 135);
     cursor: pointer;
     margin-right: 1%;
+    margin-bottom: 5px;
 }
 
 .table-view-cell .text, .room-view-cell .text{

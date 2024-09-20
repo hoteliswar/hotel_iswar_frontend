@@ -2,6 +2,7 @@ baseURL = 'https://dineops.onrender.com/api/';
 let finalBillItems = [];
 
 
+
 // Helper function to get a cookie value
 function getCookie(name) {
     let value = "; " + document.cookie;
@@ -65,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-
+// Put Foods in the menu items section
 document.addEventListener('DOMContentLoaded', function () {
     const menuCategories = document.querySelectorAll('.menu-category-item');
     const menuItemsContainer = document.querySelector('.menu-items');
@@ -225,7 +226,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Calculate Total Amount
     function calculateTotal() {
-
         return billItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
     }
 
@@ -302,6 +302,7 @@ function getSelectedButton() {
 //     const selected = getSelectedButton();
 //     console.log(`Currently selected button: ${selected}`);
 // });
+
 
 // Get Browser Header Height
 function getBrowserHeaderHeight() {
@@ -408,7 +409,6 @@ document.addEventListener('DOMContentLoaded', function () {
 // Display the Table/Room list upon selction of Order Type
 let tableNumbersAppended = false;
 let roomNumbersAppended = false;
-
 document.addEventListener('DOMContentLoaded', function () {
     const buttons = document.querySelectorAll('.type-selectable');
     const orderTypeOptions = document.querySelector('.order-type-options');
@@ -512,7 +512,7 @@ function getAllRoomNumbers() {
     return orderTypeOptions;
 }
 
-// Get data from Parameters from URL
+// Get data from Parameters of URL & using helper functions to set order type and select table/room
 document.addEventListener('DOMContentLoaded', function () {
 
     // Parse URL parameters
@@ -520,6 +520,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tableNumber = urlParams.get('table');
     const roomNumber = urlParams.get('room');
     const orderType = urlParams.get('orderType');
+    const orderId = urlParams.get('orderId');
 
     // Use the parameters as needed
     if (tableNumber && orderType === 'dine_in') {
@@ -538,7 +539,10 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('moreButton').click();
         setOrderType(orderType);
         selectRoom(roomNumber);
-    }
+    } else if(orderId){
+        console.log(`Order ID: ${orderId}`);
+        getDataEditOrder(orderId);
+    } 
 
 
     // Helper functions to set order type and select table/room
@@ -604,6 +608,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+// GET basic order details: Name, Phone, Order Type, Email, Address, Tbale/Room
 function getOrderDetails() {
     const mobileNumber = document.getElementById('mobile-input').value || document.getElementById('mobile').value;
     const orderType = document.querySelector('.get-order-type').textContent;
@@ -636,14 +641,15 @@ savebtn.addEventListener('click', function (e) {
             phone: orderDetails.mobileNumber,
             email: orderDetails.email,
             first_name: orderDetails.name,
+            last_name: orderDetails.name,
             // address: orderDetails.address,
-            order_type: 'dine_in',
-            // order_type: orderDetails.orderType,
-            table: 8,
+            // order_type: 'dine_in',
+            order_type: orderDetails.orderType,
+            table: 72,
             // table: orderDetails.tableOrRoom,
             status: 'in_progress',
-            food_items: [9, 5, 4, 10]
-            // food_items: finalBillItems.map(item => item.id)
+            // food_items: [9, 5, 4, 10]
+            food_items: finalBillItems.map(item => item.id)
 
         };
 
@@ -682,16 +688,16 @@ savebtn.addEventListener('click', function (e) {
 
             const url = `${baseURL}orders/order/`;
 
-            // refreshAccessToken(url, option)
-            //     // .then(response => response.json())
-            //     .then(data => {
-            //         console.log('Data:', data);
-            //         console.table(data);
-            //         alert("Saved Order Successfully");
-            //     })
-            //     .catch(error => {
-            //         console.log('Error Saving Order:', error);
-            //     });
+            refreshAccessToken(url, option)
+                // .then(response => response.json())
+                .then(data => {
+                    console.log('Data:', data);
+                    console.table(data);
+                    alert("Saved Order Successfully");
+                })
+                .catch(error => {
+                    console.log('Error Saving Order:', error);
+                });
         }
     }
 });
@@ -708,3 +714,30 @@ holdbtn.addEventListener('click', function (e) {
         console.table('Order Details:', orderDetails);
     }
 });
+
+
+function getDataEditOrder(orderId) {
+
+    const option = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderId)
+    }
+
+    const url = `${baseURL}orders/order/`;
+
+    refreshAccessToken2(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Getting Data with OrderID:', data);
+            alert("Data received with OrderID");
+            // coldReload();
+        })
+
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+}

@@ -20,35 +20,44 @@ function getBrowserHeaderHeight() {
 //     }
 // });
 
+getTablesData();
+
 getAllTablesRooms();
 
 function getAllTablesRooms() {
-    const tableInfo = [
+    const tableInfo = JSON.parse(localStorage.getItem('tablesList')) || [];
+
+    const tableInfo2 = [
         {
+            id: 1,
             table_number: 1,
             occupied: true,
             order_id: 2,
-            order_time: '2024-09-11T00:03:00',
+            order_time: '2024-09-19T23:23:00',
         },
         {
+            id: 2,
             table_number: 2,
             occupied: false,
             order_id: null,
             order_time: null,
         },
         {
+            id: 3,
             table_number: 3,
             occupied: false,
             order_id: null,
             order_time: null,
         },
         {
+            id: 4,
             table_number: 4,
             occupied: false,
             order_id: null,
             order_time: null,
         },
         {
+            id: 5,
             table_number: 5,
             occupied: false,
             order_id: null,
@@ -63,7 +72,9 @@ function getAllTablesRooms() {
         const tableViewCell = document.createElement('div');
         tableViewCell.classList.add('table-view-cell');
         
-        if (table.occupied && table.order_id && table.order_time) {
+        // Uncomment after connection to database
+        // if (table.occupied && table.order_id && table.order_time) {
+        if (table.occupied) {
             tableViewCell.classList.add('occupied-table');
         }
 
