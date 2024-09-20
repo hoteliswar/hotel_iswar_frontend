@@ -125,9 +125,9 @@ async function refreshAccessToken2(url, option) {
                 console.error('Error:', error);
             });
         }
-        // else if (response.ok) {
-        else if (response.status === 200) {
-            console.log('Statuss: 200 OK');
+        else if (response.ok) {
+        // else if (response.status =) {
+            console.log('Statuss: ', response.status);
             return response.json();
             
         }

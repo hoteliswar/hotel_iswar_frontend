@@ -1,8 +1,6 @@
 // baseURL = 'https://dineops.onrender.com/api/';
 let finalBillItems = [];
 
-
-
 // Helper function to get a cookie value
 function getCookie(name) {
     let value = "; " + document.cookie;
@@ -457,8 +455,8 @@ document.addEventListener('DOMContentLoaded', function () {
 // Get all Table Numbers for Dine-In
 function getAllTableNumbers() {
     // Get all tables to add
-    // Array of table numbers
-    const tableNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    // const tableNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const tableNumbers = getTablesListFromStorage();
 
     function createDineInOptions2() {
         return tableNumbers.map(number =>
@@ -468,9 +466,9 @@ function getAllTableNumbers() {
 
     function createDineInOptions() {
         return `<select id="table-select" class="order-type-option-select" required>
-            <option value="">Select a table</option>
-            ${tableNumbers.map(number =>
-            `<option value="${number}">Table ${number}</option>`
+            <option value="" disabled selected>Select a table</option>
+            ${tableNumbers.map(table =>
+            `<option value="${table.id}" ${table.occupied ? 'disabled' : ''}>Table ${table.table_number} ${table.occupied ? ' (Occupied)' : ''}</option>`
         ).join('')}
         </select>`;
     }
@@ -539,10 +537,10 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('moreButton').click();
         setOrderType(orderType);
         selectRoom(roomNumber);
-    } else if(orderId){
+    } else if (orderId) {
         console.log(`Order ID: ${orderId}`);
         getDataEditOrder(orderId);
-    } 
+    }
 
 
     // Helper functions to set order type and select table/room
@@ -642,38 +640,45 @@ savebtn.addEventListener('click', function (e) {
             email: orderDetails.email,
             first_name: orderDetails.name,
             last_name: orderDetails.name,
-            // address: orderDetails.address,
-            // order_type: 'dine_in',
+            address: orderDetails.address,
+            order_type: 'dine_in',
             order_type: orderDetails.orderType,
-            table: 72,
+            table: 3,
             // table: orderDetails.tableOrRoom,
             status: 'in_progress',
             // food_items: [9, 5, 4, 10]
-            food_items: finalBillItems.map(item => item.id)
+            food_items: finalBillItems.map(item => item.id),
+            quantity: [2, 3, 4, 5]
 
         };
 
         const orderData2 = {
-            "phone": "3333333333",
-            "email": "cust@example.com",
-            "first_name": "SouravDeb",
+            "phone": "1674564521",
+            "email": "sourav@example.com",
+            "dob": "2024-06-03",
+            "address_line_1": "",
+            "address_line_2": "",
+            "first_name": "Sourav",
             "order_type": "dine_in",
-            "table": 19,
-            "food_items": [9, 5, 10, 4],
-            "status": "in_progress"
+            "table": 8,
+            "food_items": [1, 2, 3, 4],
+            "quantity": [5],
+            "status": "in_progress",
+            "notes": "zubi zubi",
+            "coupon_used": ["69"]
         }
 
         console.log('Order Data:', orderData);
-        saveOrder(orderData)
-            .then(data => {
-                console.log('Data:', data);
-                console.table(data);
-                alert("Saved Order Successfully");
-                holdBtn.disabled = false; // Enable the Hold button
-            })
-            .catch(error => {
-                console.log('Error Saving Order:', error);
-            });
+        saveOrder(orderData);
+            // .then(data => {
+            //     console.log('Data:', data);
+            //     console.table(data);
+            //     alert("Saved Order Successfully");
+            //     holdBtn.disabled = false; // Enable the Hold button
+            // })
+            // .catch(error => {
+            //     console.log('Error Saving Order:', error);
+            // });
 
         function saveOrder(orderData) {
             console.table(orderData);
@@ -683,12 +688,12 @@ savebtn.addEventListener('click', function (e) {
                     'Authorization': 'Bearer ' + getCookie('access_token'),
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ orderData })
+                body: JSON.stringify(orderData)
             }
 
             const url = `${baseURL}orders/order/`;
 
-            refreshAccessToken(url, option)
+            refreshAccessToken2(url, option)
                 // .then(response => response.json())
                 .then(data => {
                     console.log('Data:', data);

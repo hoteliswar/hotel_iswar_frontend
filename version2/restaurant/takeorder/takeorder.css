@@ -77,8 +77,8 @@ body {
     width: auto;
     height: 50px;
     background-color: rgb(255, 175, 2);
-    border-bottom: 1px solid #fff;
-    border-top: 1px solid #fff;
+    /* border-bottom: 1px solid #fff; */
+    /* border-top: 1px solid #dddddd; */
     position: relative;
     color: #fff;
     cursor: pointer;
@@ -88,10 +88,17 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0 50px 0 50px;
+    /* new */
+    margin: 10px;
+    border-radius: 15px;
 }
 
 .menu-category-item.selected{
     background-color: #ffcb20;
+    border-bottom: 1px solid #b78c00;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1) 0.8s;
+    color: #4d3b00;
+
 }
 
 .menu-category-head {
@@ -113,6 +120,7 @@ body {
 .menu-category {
     height: 70.5vh;
     overflow-y: auto;
+    background-color: rgb(255, 175, 2);
 }
 
 .menu-category::-webkit-scrollbar {
@@ -141,12 +149,13 @@ body {
     margin-right: -50%;
     transform: translate(-50%, -50%);
     text-align: center;
-    font-size: 0.8em;
+    font-size: 0.9em;
+    font-weight: 700;
 }
 
 @media screen and (max-width: 768px) {
     .category-name {
-        font-size: 0.5em;
+        font-size: 0.55em;
     }
 }
 
