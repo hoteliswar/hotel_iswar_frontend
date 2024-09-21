@@ -151,8 +151,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function sendDataToSave() {
-        finalBillItems = []
+        // finalBillItems = []
         finalBillItems = [...billItems];
+        // finalBillItems = [...finalBillItems, ...billItems];
+
+        console.log(`Final bill items 1:`, finalBillItems);
     }
 
     // Update Quantity of Food Item in Bill Container
@@ -746,7 +749,7 @@ function getDataEditOrder(orderId) {
         // .then(response => response.json())
         .then(data => {
             console.log('Getting Data with OrderID:', data);
-            alert("Data received with OrderID");
+            // alert("Data received with OrderID");
             populateBillContainer(data);
             // coldReload();
         })
@@ -756,24 +759,142 @@ function getDataEditOrder(orderId) {
         });
 }
 
+// New function to populate the bill container
 function populateBillContainer(orderData) {
-    billItems.length = 0; // Clear existing bill items
+    const billContainer = document.querySelector('.bill-container');
+    billContainer.innerHTML = ''; // Clear existing items
+
+    const allFoodsList = JSON.parse(localStorage.getItem('allFoodList')) || [];
+
+    orderData.food_items.forEach((itemId, index) => {
+        const foodItem = allFoodsList.find(food => food.id === itemId);
+        if (foodItem) {
+            const quantity = orderData.quantity[index] || 1; // Assuming quantity is provided in the same order as food_items
+            const billItemElement = createBillItem({
+                ...foodItem,
+                quantity: quantity
+            });
+
+            // Add to finalBillItems
+            billItems.push({
+                id: foodItem.id,
+                name: foodItem.name,
+                price: foodItem.price,
+                quantity: quantity
+            });
+
+            console.log('Bill Item Element:', foodItem);
+            billContainer.appendChild(billItemElement);
+        }
+    });
+
+    // finalBillItems = [...billItems];
+    console.log('Final Bill Items2 :', billItems);
+
+    updateTotals(orderData);
+}
+
+function populateBillContainer2(orderData) {
+    billItems = []; // Clear existing bill items
     
-    orderData.food_items.forEach(item => {
-        addItemToBill(item.id, item.name, item.price, item.quantity);
+    orderData.food_items.forEach((itemId, index) => {
+        const foodItem = allFoodItems.find(food => food.id === itemId);
+        if (foodItem) {
+            const quantity = orderData.quantity[index] || 1;
+            billItems.push({
+                id: foodItem.id,
+                name: foodItem.name,
+                price: foodItem.price,
+                quantity: quantity
+            });
+        }
     });
 
     renderBillItems();
-    updateNetTotal();
+    updateTotals(orderData);
+
+    
 }
 
-function addItemToBill(itemId, itemName, itemPrice, quantity = 1) {
-    const existingItem = billItems.find(item => item.id === itemId);
-    if (existingItem) {
-        existingItem.quantity += quantity;
-    } else {
-        billItems.push({ id: itemId, name: itemName, price: itemPrice, quantity: quantity });
-    }
-    sendDataToSave();
-    renderBillItems();
+function populateBillContainer3(orderData) {
+    const allFoodsList = JSON.parse(localStorage.getItem('allFoodsList')) || [];
+
+    orderData.food_items.forEach((itemId, index) => {
+        const foodItem = allFoodsList.find(food => food.id === itemId);
+        if (foodItem) {
+            const quantity = orderData.quantity[index] || 1;
+            const existingItem = billItems.find(item => item.id === itemId);
+            if (existingItem) {
+                existingItem.quantity = quantity;
+            } else {
+                billItems.push({
+                    id: foodItem.id,
+                    name: foodItem.name,
+                    price: foodItem.price,
+                    quantity: quantity
+                });
+            }
+        }
+    });
+
+    // Update finalBillItems
+    finalBillItems = [...billItems];
+    console.log('Final Bill Items:', finalBillItems);
+
+    createBillItem(billItems);
+    updateTotals(orderData);
+}
+
+
+// Helper function to create a bill item element
+function createBillItem(item) {
+    const billItemElement = document.createElement('div');
+    billItemElement.classList.add('bill-item');
+
+    const itemNameDiv = document.createElement('div');
+    itemNameDiv.classList.add('bill-item-name');
+    itemNameDiv.textContent = item.name;
+
+    const minusButton = document.createElement('button');
+    minusButton.classList.add('minus-btn');
+    minusButton.textContent = '-';
+    minusButton.addEventListener('click', () => updateItemQuantity(item.id, -1));
+
+    const itemQtyDiv = document.createElement('div');
+    itemQtyDiv.classList.add('bill-item-qty');
+    itemQtyDiv.textContent = item.quantity;
+
+    const plusButton = document.createElement('button');
+    plusButton.classList.add('plus-btn');
+    plusButton.textContent = '+';
+    plusButton.addEventListener('click', () => updateItemQuantity(item.id, 1));
+
+    const itemPriceDiv = document.createElement('div');
+    itemPriceDiv.classList.add('bill-item-price');
+    itemPriceDiv.textContent = `₹${(item.price * item.quantity).toFixed(2)}`;
+
+    const deleteIcon = document.createElement('div');
+    deleteIcon.classList.add('delete-icon');
+    deleteIcon.innerHTML = '&#10006;'; // X symbol
+    deleteIcon.addEventListener('click', () => removeItemFromBill(item.id));
+
+    billItemElement.appendChild(itemNameDiv);
+    billItemElement.appendChild(minusButton);
+    billItemElement.appendChild(itemQtyDiv);
+    billItemElement.appendChild(plusButton);
+    billItemElement.appendChild(itemPriceDiv);
+    billItemElement.appendChild(deleteIcon);
+
+    return billItemElement;
+}
+
+// Function to update totals
+function updateTotals(orderData) {
+    const billTotal = document.querySelector('.ta-price');
+    const netTotal = document.querySelector('.na-price');
+    const discBox = document.querySelector('.disc-box');
+
+    billTotal.textContent = `₹${orderData.total_price}`;
+    discBox.value = orderData.discount || 0;
+    netTotal.textContent = `₹${(orderData.total_price - orderData.discount).toFixed(2)}`;
 }
