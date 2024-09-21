@@ -49,6 +49,8 @@ console.log(categorizedItems);
 
 // ----------------------------
 
+let billItems = [];
+
 // Put Category names in the menu category section
 document.addEventListener('DOMContentLoaded', function () {
     const categoryDiv = document.querySelector('.menu-category');
@@ -94,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // };
 
 
-    const billItems = [];
+    // const billItems = [];
 
     // Adding click on Category Div
     menuCategories.forEach(category => {
@@ -264,7 +266,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         netTotal.textContent = `₹${netAmount.toFixed(2)}`;
     }
-
 
     // Select first category on page load
     function selectFirstCategory() {
@@ -732,25 +733,47 @@ holdbtn.addEventListener('click', function (e) {
 function getDataEditOrder(orderId) {
 
     const option = {
-        method: 'POST',
+        method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + getCookie('access_token'),
             'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(orderId)
+        }
     }
 
-    const url = `${baseURL}orders/order/`;
+    const url = `${baseURL}orders/order/${orderId}/`;
 
     refreshAccessToken2(url, option)
         // .then(response => response.json())
         .then(data => {
             console.log('Getting Data with OrderID:', data);
             alert("Data received with OrderID");
+            populateBillContainer(data);
             // coldReload();
         })
 
         .catch(error => {
             console.log('Error fetching data:', error);
         });
+}
+
+function populateBillContainer(orderData) {
+    billItems.length = 0; // Clear existing bill items
+    
+    orderData.food_items.forEach(item => {
+        addItemToBill(item.id, item.name, item.price, item.quantity);
+    });
+
+    renderBillItems();
+    updateNetTotal();
+}
+
+function addItemToBill(itemId, itemName, itemPrice, quantity = 1) {
+    const existingItem = billItems.find(item => item.id === itemId);
+    if (existingItem) {
+        existingItem.quantity += quantity;
+    } else {
+        billItems.push({ id: itemId, name: itemName, price: itemPrice, quantity: quantity });
+    }
+    sendDataToSave();
+    renderBillItems();
 }

@@ -65,38 +65,57 @@ function getAllTablesRooms() {
         }
     ];
 
-    
     const tableViewRow = document.querySelector('.table-view-row');
-    
+
     tableInfo.forEach((table) => {
         const tableViewCell = document.createElement('div');
         tableViewCell.classList.add('table-view-cell');
-        
+
         // Uncomment after connection to database
         // if (table.occupied && table.order_id && table.order_time) {
         if (table.occupied) {
             tableViewCell.classList.add('occupied-table');
-        }
 
-        tableViewCell.addEventListener('click', function() {
+            // Create eye button
+            const eyeButton = document.createElement('button');
+            eyeButton.classList.add('eye-button');
+            eyeButton.innerHTML = '<i class="fas fa-eye"></i>';
+            eyeButton.style.position = 'absolute';
+            eyeButton.style.bottom = '5px';
+            eyeButton.style.right = '5px';
+            eyeButton.style.background = 'transparent';
+            eyeButton.style.border = 'none';
+            eyeButton.style.color =  'rgb(150,0,0)';
+            eyeButton.style.cursor = 'pointer';
+
+            eyeButton.addEventListener('click', function (event) {
+                event.stopPropagation(); // Prevent triggering the tableViewCell click event
+                // window.location.href = `./../takeorder/takeorder.html?orderId=${table.order_id}`;
+                window.location.href = `./../takeorder/takeorder.html?orderId=1`;
+            });
+
+            tableViewCell.appendChild(eyeButton);
+        }
+        // 👁️ eye
+        tableViewCell.addEventListener('click', function () {
             if (!table.occupied) {
                 window.location.href = `./../takeorder/takeorder.html?table=${table.table_number}&orderType=dine_in`;
             }
         });
-                
+
         const tableText = document.createElement('div');
         tableText.classList.add('text');
-        
+
         const orderMin = document.createElement('div');
         orderMin.id = 'order-min';
         const tableNo = document.createElement('div');
         tableNo.id = 'table-no';
         const amount = document.createElement('div');
         amount.id = 'amount';
-        
+
         tableNo.textContent = table.table_number;
         amount.textContent = table.amount || '';
-        
+
         if (table.order_time) {
             const orderTime = new Date(table.order_time);
             const currentTime = new Date();
@@ -106,14 +125,14 @@ function getAllTablesRooms() {
         } else {
             orderMin.textContent = '';
         }
-        
+
         tableText.appendChild(orderMin);
         tableText.appendChild(tableNo);
         tableText.appendChild(amount);
         tableViewCell.appendChild(tableText);
         tableViewRow.appendChild(tableViewCell);
     });
-    
+
     const roomInfo = [
         {
             room_number: 101,
@@ -136,9 +155,9 @@ function getAllTablesRooms() {
             occupied: false,
         }
     ];
-    
+
     const roomViewRow = document.querySelector('.room-view-row');
-    
+
     roomInfo.forEach((room) => {
         const roomViewCell = document.createElement('div');
         roomViewCell.classList.add('room-view-cell');
@@ -147,7 +166,7 @@ function getAllTablesRooms() {
             roomViewCell.classList.add('occupied-room');
         }
 
-        roomViewCell.addEventListener('click', function() {
+        roomViewCell.addEventListener('click', function () {
             if (room.occupied) {
                 window.location.href = `./../takeorder/takeorder.html?room=${room.room_number}&orderType=room_service`;
             }
@@ -170,7 +189,7 @@ function getAllTablesRooms() {
 }
 
 
-
+// Onclick Enable/Disable on Table/Room block
 document.querySelector('.order-type-info').addEventListener('click', function (event) {
     if (event.target.classList.contains('type-selectable')) {
         // Remove 'type-selected' class from all buttons
