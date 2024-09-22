@@ -680,8 +680,19 @@ savebtn.addEventListener('click', function (e) {
             "coupon_used": ["69"]
         }
 
+        const urlParams = new URLSearchParams(window.location.search);
         console.log('Order Data:', orderData);
-        saveOrder(orderData);
+        const orderId = urlParams.get('orderId');
+
+        if(orderId){
+            saveOrderPATCH(orderData, orderId);
+        }else{
+            saveOrderPOST(orderData);
+        }
+
+        // saveOrderPOST(orderData);
+
+
         // .then(data => {
         //     console.log('Data:', data);
         //     console.table(data);
@@ -692,7 +703,7 @@ savebtn.addEventListener('click', function (e) {
         //     console.log('Error Saving Order:', error);
         // });
 
-        function saveOrder(orderData) {
+        function saveOrderPOST(orderData) {
             console.table(orderData);
             const option = {
                 method: 'POST',
@@ -710,11 +721,35 @@ savebtn.addEventListener('click', function (e) {
                 .then(data => {
                     console.log('Data:', data);
                     console.table(data);
-                    alert("Saved Order Successfully");
+                    alert("POST: Saved Order Successfully");
                 })
                 .catch(error => {
                     console.log('Error Saving Order:', error);
                 });
+        }
+
+        function saveOrderPATCH(orderData, orderId) {
+            console.table(orderData);
+            const option = {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
+            }
+
+            const url = `${baseURL}orders/order/${orderId}/`;
+            refreshAccessToken2(url, option)
+            // .then(response => response.json())
+            .then(data => {
+                    console.log('Data:', data);
+                    console.table(data);
+                    alert("PATCH: Saved Order Successfully");
+                })
+                .catch(error => {
+                    console.log('Error Saving Order:', error);
+                })
         }
     }
 });
@@ -750,6 +785,8 @@ function getDataEditOrder(orderId) {
         .then(data => {
             console.log('Getting Data with OrderID:', data);
             // alert("Data received with OrderID");
+
+            populateMoreModal(data);
             populateBillContainer(data);
             // coldReload();
         })
@@ -758,6 +795,68 @@ function getDataEditOrder(orderId) {
             console.log('Error fetching data:', error);
         });
 }
+
+function populateMoreModal2(data) {
+    // Populate the "more" modal input fields
+    document.getElementById('mobile').value = data.phone || '';
+    document.getElementById('name').value = data.first_name || '';
+    document.getElementById('address').value = data.address_line_1 || '';
+    document.getElementById('email').value = data.email || '';
+    
+    // Set order type
+    const orderTypeButtons = document.querySelectorAll('.type-selectable');
+    orderTypeButtons.forEach(button => {
+        if (button.textContent.toLowerCase() === data.order_type.replace('_', '-')) {
+            button.classList.add('type-selected');
+        }
+    });
+    
+    // Set table or room number based on order type
+    const orderTypeOptions = document.querySelector('.order-type-options');
+    if (data.order_type === 'dine_in') {
+        orderTypeOptions.innerHTML = `<select id="table-select" class="order-type-option-select">
+            <option value="${data.table_number}">Table ${data.table}</option>
+        </select>`;
+    } else if (data.order_type === 'room_service') {
+        orderTypeOptions.innerHTML = `<select id="room-select" class="order-type-option-select">
+            <option value="${data.table}">Room ${data.table}</option>
+        </select>`;
+    }
+}
+
+function populateMoreModal(data) {
+    // Populate the "more" modal input fields
+    document.getElementById('mobile').value = data.phone || '';
+    document.getElementById('name').value = data.first_name || '';
+    document.getElementById('address').value = data.address_line_1 || '';
+    document.getElementById('email').value = data.email || '';
+    
+    // Set order type
+    const orderTypeButtons = document.querySelectorAll('.type-selectable');
+    orderTypeButtons.forEach(button => {
+        if (button.textContent.toLowerCase() === data.order_type.replace('_', '-')) {
+            button.classList.add('type-selected');
+            button.click();
+        } else {
+            button.classList.remove('type-selected');
+        }
+    });
+    
+    // Set table or room number based on order type
+    if (data.order_type === 'dine_in') {
+        const tableSelect = document.getElementById('table-select');
+        if (tableSelect) {
+            tableSelect.value = data.table;
+        }
+    } else if (data.order_type === 'room_service') {
+        const roomSelect = document.getElementById('room-select');
+        if (roomSelect) {
+            roomSelect.value = data.table;
+        }
+    }
+}
+
+
 
 // New function to populate the bill container
 function populateBillContainer(orderData) {
