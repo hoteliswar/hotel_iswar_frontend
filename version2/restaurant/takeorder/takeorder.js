@@ -729,7 +729,7 @@ savebtn.addEventListener('click', function (e) {
         }
 
         function saveOrderPATCH(orderData, orderId) {
-            console.table(orderData);
+            console.table(`PATCH: Order Data:`, orderData);
             const option = {
                 method: 'PUT',
                 headers: {
@@ -738,6 +738,8 @@ savebtn.addEventListener('click', function (e) {
                 },
                 body: JSON.stringify(orderData)
             }
+
+            console.log(option.body)
 
             const url = `${baseURL}orders/order/${orderId}/`;
             refreshAccessToken2(url, option)
