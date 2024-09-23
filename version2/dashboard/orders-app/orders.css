@@ -1,0 +1,137 @@
+* {
+    box-sizing: border-box;
+}
+
+.body-wrapper {
+    padding-bottom: 150px;
+}
+
+.orders-head {
+    display: flrx;
+    background-color: rgb(255, 225, 170);
+    height: 50px;
+    justify-content: space-between;
+    margin: 10px;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: large;
+    font-weight: bold;
+}
+
+.col-1 {
+    flex: 0 0 8.333333%;
+}
+
+.col-2 {
+    flex: 0 0 16.666667%;
+}
+
+.col-3 {
+    flex: 0 0 25%;
+}
+
+.col-4 {
+    flex: 0 0 33.333333%;
+}
+
+.col-6 {
+    flex: 0 0 50%;
+}
+
+.col-12 {
+    flex: 0 0 100%;
+}
+
+.orders-wrapper {
+    padding: 10px 15px;
+    background-color: rgb(255, 225, 170);
+    margin: 10px;
+    border-radius: 15px;
+    overflow-y: auto;
+    max-height: calc(100vh - 150px);
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+    /* height: 65vh; */
+    padding-bottom: 90px;
+}
+
+.orders-wrapper::-webkit-scrollbar {
+    width: 2px;
+}
+
+.orders-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.orders-wrapper::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+.orders-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.orders-list-head {
+    display: flex;
+    font-size: 1em;
+    flex-wrap: wrap;
+    font-weight: bold;
+    border-bottom: 1px solid black;
+}
+
+
+
+.olhead-item {
+    display: inline-block;
+}
+
+.order-item {
+    display: flex;
+    padding: 10px 0px;
+    /* border-bottom: 1px solid #eee; */
+}
+
+.order-item-col {
+    padding: 0 10px;
+}
+
+.order-item button {
+    margin-right: 5px;
+}
+
+/* modal */
+.modal {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    background-color: white;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    transition: right 0.3s ease-out;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.modal-content {
+    padding: 20px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+/* end modal */
