@@ -1,6 +1,9 @@
 baseURL = 'https://dineops.onrender.com/api/';
 
+
 getAllOrders();
+
+
 
 function getAllOrders() {
     url = `${baseURL}orders/order/`;
@@ -12,13 +15,14 @@ function getAllOrders() {
             'Content-Type': 'application/json'
         }
     }
+    // console.log(allData.push("hello"));
 
     refreshAccessToken2(url, option)
         // .then(response => response.json())
         .then(data => {
             console.log('Get Orders Data:', data);
             renderOrders(data);
-            renderOrders(data);
+
         })
         .catch(error => {
             console.log('Error fetching data:', error);
@@ -69,6 +73,53 @@ function renderOrders2(orders) {
     });
 }
 
+function renderOrders(orders) {
+    const ordersContainer = document.querySelector('.load-orders');
+    ordersContainer.innerHTML = '';
+
+    orders.forEach(order => {
+        let displayOrderType;
+        switch (order.order_type) {
+            case 'dine_in':
+                displayOrderType = 'DINE IN';
+                break;
+            case 'pickup':
+                displayOrderType = 'PICKUP';
+                break;
+            case 'delivery':
+                displayOrderType = 'DELIVERY';
+                break;
+            case 'room_service':
+                displayOrderType = 'ROOM SERVICE';
+                break;
+            default:
+                displayOrderType = order.order_type.toUpperCase();
+        }
+
+        const orderElement = document.createElement('div');
+        orderElement.classList.add('order-item');
+
+        orderElement.innerHTML = `
+            <div class="order-item-col col-1">${order.id}</div>
+            <div class="order-item-col col-2">${order.phone ? order.phone : 'N/A'}</div>
+            <div class="order-item-col col-2">${new Date(order.created_at).toLocaleDateString()}</div>
+            <div class="order-item-col col-3"> 
+                ${order.order_type.replace('_', ' ').toUpperCase()}
+                ${order.table ? ` -T ${order.table}` : order.room ? ` -R ${order.room}` : ''}
+            
+            </div>
+            <div class="order-item-col col-2">${order.total_price}</div>
+            <div class="order-item-col col-2">
+                <!-- <i class="fas fa-eye col-4" id="view-btn" onclick="viewOrder(JSON.stringify(${JSON.stringify(order)}))"></i> -->
+                <i class="fas fa-eye col-4" id="view-btn" onclick="viewOrder(${order.id})"></i>
+                <i class="fa-solid fa-pen-to-square col-4" id="edit-btn" onclick="editOrder(${order.id})"></i>
+            </div>
+        `;
+
+        ordersContainer.appendChild(orderElement);
+    });
+}
+
 function viewOrder(orderId) {
     const modalContainer = document.querySelector('.modal-container');
     const modal = document.getElementById('orderModal');
@@ -87,7 +138,7 @@ function viewOrder(orderId) {
 
     refreshAccessToken2(url, option)
         .then(data => {
-            renderData(data);
+            renderDataModal(data);
         })
         .catch(error => {
             console.log('Error fetching order details:', error);
@@ -95,12 +146,18 @@ function viewOrder(orderId) {
         });
 }
 
-function renderData(data) {
+function viewOrder2(orderString) {
+    const order = JSON.parse(orderString);
+    console.log(order);
+    renderDataModal(order);
+}
+
+function renderDataModal(data) {
     const orderDetails = document.getElementById('orderDetails');
     orderDetails.innerHTML = `
         <div class="order-detail-item">
             <span class="detail-label">Order ID:</span>
-            <span class="detail-value">${data.id}</span>
+            <span class="detail-value">000${data.id}</span>
         </div>
         <div class="order-detail-item">
             <span class="detail-label">Phone:</span>
@@ -112,26 +169,51 @@ function renderData(data) {
         </div>
         <div class="order-detail-item">
             <span class="detail-label">Order Type:</span>
-            <span class="detail-value">${data.order_type.toUpperCase()} - ${data.table}</span>
+            <span class="detail-value">
+                ${data.order_type.replace('_', ' ').toUpperCase()}
+                ${data.table ? ` -T ${data.table}` : data.room ? ` -R ${data.room}` : ''}
+            </span>
         </div>
+        
+        <div class="order-detail-item">
+            <span class="detail-label">Food Items:</span>
+            <span class="detail-value">
+                ${(() => {
+                    const allFoodsList = JSON.parse(localStorage.getItem('allFoodList'));
+                    return data.food_items.map((foodId, index) => {
+                        const foodName = allFoodsList.find(food => food.id === foodId)?.name || 'Unknown Food';
+                        const quantity = data.quantity[index];
+                        return `<div>${quantity}x ${foodName} </div>`;
+                    }).join('');
+                })()}
+            </span>
+        </div>
+
+
+
+
         <div class="order-detail-item">
             <span class="detail-label">Total Price:</span>
-            <span class="detail-value">${data.total_price}</span>
+            <span class="detail-value">₹${data.total_price}</span>
         </div>
         <div class="order-detail-item">
             <span class="detail-label">Order Status:</span>
-            <span class="detail-value">${data.order_status}</span>
+            <span class="detail-value">
+                ${data.status === 'in_progress' ? 'In Progress' :
+            data.status === 'hold' ? 'Hold' :
+                data.status === 'kot' ? 'KOT' :
+                    data.status === 'completed' ? 'Settled' :
+                        data.status}
+            </span>
         </div>
-        <div class="order-detail-item">
-            <span class="detail-label">Payment Status:</span>
-            <span class="detail-value">${data.payment_status}</span>
-        </div>
+        
         <div class="order-detail-item">
             <span class="detail-label">Payment Method:</span>
-            <span class="detail-value">${data.payment_method}</span>
+            <span class="detail-value">${data.payment_method ? data.payment_method : `pending`}</span>
         </div>
     `;
 }
+
 document.addEventListener('click', function (e) {
     if (e.target && e.target.id === 'view-btn') {
         const newOrderModal = document.getElementById('orderModal');
@@ -148,22 +230,20 @@ document.querySelector('.close').onclick = function () {
     setTimeout(() => newOrderModal.style.display = 'none', 300);
 }
 
-console.log("Hello");
 // Filter Orders
-document.addEventListener('click', function() {
+document.addEventListener('click', function () {
     const filterType = document.getElementById('filterType');
     const filterInputs = document.getElementById('filterInputs');
     const mobileInput = document.getElementById('mobileInput');
     const dateInputs = document.getElementById('dateInputs');
     const orderTypeSelect = document.getElementById('orderTypeSelect');
-    console.log(filterType);
 
-    filterType.addEventListener('change', function() {
+    filterType.addEventListener('change', function () {
         mobileInput.style.display = 'none';
         dateInputs.style.display = 'none';
         orderTypeSelect.style.display = 'none';
 
-        switch(this.value) {
+        switch (this.value) {
             case 'mobile':
                 mobileInput.style.display = 'block';
                 break;
@@ -207,7 +287,7 @@ function filterOrders() {
         .then(data => {
             let filteredOrders = data;
 
-            switch(filterType) {
+            switch (filterType) {
                 case 'mobile':
                     filteredOrders = data.filter(order => order.phone && order.phone.includes(mobileInput));
                     break;
@@ -215,7 +295,7 @@ function filterOrders() {
                     filteredOrders = data.filter(order => {
                         const orderDate = new Date(order.created_at);
                         return (!startDate || orderDate >= new Date(startDate)) &&
-                               (!endDate || orderDate <= new Date(endDate));
+                            (!endDate || orderDate <= new Date(endDate));
                     });
                     break;
                 case 'orderType':
@@ -230,47 +310,6 @@ function filterOrders() {
         });
 }
 
-function renderOrders(orders) {
-    const ordersContainer = document.querySelector('.load-orders');
-    // ordersContainer.innerHTML = '';
-
-    orders.forEach(order => {
-        let displayOrderType;
-        switch (order.order_type) {
-            case 'dine_in':
-                displayOrderType = 'DINE IN';
-                break;
-            case 'pickup':
-                displayOrderType = 'PICKUP';
-                break;
-            case 'delivery':
-                displayOrderType = 'DELIVERY';
-                break;
-            case 'room_service':
-                displayOrderType = 'ROOM SERVICE';
-                break;
-            default:
-                displayOrderType = order.order_type.toUpperCase();
-        }
-
-        const orderElement = document.createElement('div');
-        orderElement.classList.add('order-item');
-
-        orderElement.innerHTML = `
-            <div class="order-item-col col-1">${order.id}</div>
-            <div class="order-item-col col-2">${order.phone ? order.phone : 'N/A'}</div>
-            <div class="order-item-col col-2">${new Date(order.created_at).toLocaleDateString()}</div>
-            <div class="order-item-col col-3">${displayOrderType} - ${order.table}</div>
-            <div class="order-item-col col-2">${order.total_price}</div>
-            <div class="order-item-col col-2">
-                <i class="fas fa-eye col-4" id="view-btn" onclick="viewOrder(${order.id})"></i>
-                <i class="fa-solid fa-pen-to-square col-4" id="edit-btn" onclick="editOrder(${order.id})"></i>
-            </div>
-        `;
-
-        ordersContainer.appendChild(orderElement);
-    });
-}
 
 function resetFilter() {
     document.getElementById('filterType').selectedIndex = 0;
@@ -287,4 +326,5 @@ function resetFilter() {
     // Fetch and display all orders
     getAllOrders();
 }
+
 
