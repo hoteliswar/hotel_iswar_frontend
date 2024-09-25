@@ -553,6 +553,7 @@ document.addEventListener('DOMContentLoaded', function () {
         typeButtons.forEach(button => {
             if (button.textContent === type) {
                 button.click();
+                button.click();
             }
         });
     }
@@ -656,7 +657,8 @@ savebtn.addEventListener('click', function (e) {
             last_name: orderDetails.name,
             address_line_1: orderDetails.address,
             order_type: orderDetails.orderType,
-            table: parseInt(orderDetails.tableOrRoom),
+            tables: [parseInt(orderDetails.tableOrRoom)],
+            
             status: 'in_progress',
             food_items: finalBillItems.map(item => item.id),
             quantity: finalBillItems.map(item => item.quantity),
@@ -731,7 +733,7 @@ savebtn.addEventListener('click', function (e) {
         function saveOrderPATCH(orderData, orderId) {
             console.table(`PATCH: Order Data:`, orderData);
             const option = {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
                     'Authorization': 'Bearer ' + getCookie('access_token'),
                     'Content-Type': 'application/json'
@@ -843,17 +845,21 @@ function populateMoreModal(data) {
             button.classList.remove('type-selected');
         }
     });
+
+    console.log('Order Type:', data.order_type);
+    console.log(`table_number: ${data.table_number}`);
     
     // Set table or room number based on order type
     if (data.order_type === 'dine_in') {
         const tableSelect = document.getElementById('table-select');
         if (tableSelect) {
-            tableSelect.value = data.table;
+            tableSelect.value = data.tables[0];
         }
+        document.querySelector('.doneButton').click();
     } else if (data.order_type === 'room_service') {
         const roomSelect = document.getElementById('room-select');
         if (roomSelect) {
-            roomSelect.value = data.table;
+            roomSelect.value = data.room;
         }
     }
 }
@@ -945,7 +951,6 @@ function populateBillContainer3(orderData) {
     createBillItem(billItems);
     updateTotals(orderData);
 }
-
 
 // Helper function to create a bill item element
 function createBillItem(item) {
