@@ -1,60 +1,58 @@
-// baseURL = 'https://dineops.onrender.com/api/';
-let finalBillItems = [];
-
-// Helper function to get a cookie value
-function getCookie(name) {
-    let value = "; " + document.cookie;
-    let parts = value.split("; " + name + "=");
-    if (parts.length === 2) return parts.pop().split(";").shift();
-}
-
-// Get all items from Local Storage
-allFoodItems = getAllFoodListFromStorage();
-console.table(allFoodItems);
-// Get all categories from Local Storage
-allCatgItems = getCategoryListFromStorage();
-console.table(allCatgItems);
-
-// Filter enabled items
-const enabledFoodItems = allFoodItems.filter(item => item.status === "enabled");
-console.table(enabledFoodItems);
-const enabledCatgItems = allCatgItems.filter(item => item.status === "enabled");
-console.table(enabledCatgItems);
-
-// console.table(allFoodItems.map(item => item.name));
-
-const distinctCategories = [];
-enabledCatgItems.forEach(item => {
-    if (item.name && !distinctCategories.includes(item.name)) {
-        distinctCategories.push(item.name);
-    }
-});
-console.table(`distinctCategories : ${distinctCategories}`);
-
-const categorizedItems = {};
-enabledFoodItems.forEach(item => {
-    if (item.category_name) {
-        if (!categorizedItems[item.category_name]) {
-            categorizedItems[item.category_name] = [];
-        }
-        categorizedItems[item.category_name].push({
-            id: item.id,
-            name: item.name,
-            price: item.price
-        });
-    }
-});
-
-console.log(categorizedItems);
-
-// ----------------------------
-
-let billItems = [];
-
-// Put Category names in the menu category section
 document.addEventListener('DOMContentLoaded', function () {
-    const categoryDiv = document.querySelector('.menu-category');
+    // baseURL = 'https://dineops.onrender.com/api/';
+    let finalBillItems = [];
 
+    // Helper function to get a cookie value
+    function getCookie(name) {
+        let value = "; " + document.cookie;
+        let parts = value.split("; " + name + "=");
+        if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+
+    // Get all items from Local Storage
+    allFoodItems = getAllFoodListFromStorage();
+    console.table(allFoodItems);
+    // Get all categories from Local Storage
+    allCatgItems = getCategoryListFromStorage();
+    console.table(allCatgItems);
+
+    // Filter enabled items
+    const enabledFoodItems = allFoodItems.filter(item => item.status === "enabled");
+    console.table(enabledFoodItems);
+    const enabledCatgItems = allCatgItems.filter(item => item.status === "enabled");
+    console.table(enabledCatgItems);
+
+    // console.table(allFoodItems.map(item => item.name));
+
+    const distinctCategories = [];
+    enabledCatgItems.forEach(item => {
+        if (item.name && !distinctCategories.includes(item.name)) {
+            distinctCategories.push(item.name);
+        }
+    });
+    console.table(`distinctCategories : ${distinctCategories}`);
+
+
+    const categorizedItems = {};
+    enabledFoodItems.forEach(item => {
+        if (item.category_name) {
+            if (!categorizedItems[item.category_name]) {
+                categorizedItems[item.category_name] = [];
+            }
+            categorizedItems[item.category_name].push({
+                id: item.id,
+                name: item.name,
+                price: item.price
+            });
+        }
+    });
+
+    console.log(categorizedItems);
+
+    let billItems = [];
+
+    // Put Category names in the menu category section & manage the items adding in bill
+    const categoryDiv = document.querySelector('.menu-category');
     distinctCategories.forEach(category => {
         const categoryDivItems = document.createElement('div');
         categoryDivItems.classList.add('menu-category-item');
@@ -64,10 +62,9 @@ document.addEventListener('DOMContentLoaded', function () {
         categoryDivItems.appendChild(categoryDivItemsName);
         categoryDiv.appendChild(categoryDivItems);
     });
-});
 
-// Put Foods in the menu items section
-document.addEventListener('DOMContentLoaded', function () {
+
+    // Put Foods in the menu items section
     const menuCategories = document.querySelectorAll('.menu-category-item');
     const menuItemsContainer = document.querySelector('.menu-items');
     const billContainer = document.querySelector('.bill-container');
@@ -76,27 +73,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const discBox = document.querySelector('.disc-box');
 
     const menuItems = categorizedItems;
-
-    // const menuItems = {
-    //     'Category 1': [
-    //         { id: 11, name: 'Item 1', price: 99.99 },
-    //         { id: 15, name: 'Item 2', price: 7.99 },
-    //         { id: 16, name: 'Item 2', price: 7.99 },
-    //     ],
-    //     'Category 2': [
-    //         { id: 4, name: 'Item 4', price: 12.99 },
-    //         { id: 5, name: 'Item 5', price: 8.99 },
-    //         { id: 6, name: 'Item 6', price: 6.99 },
-    //     ],
-    //     'Category 4': [
-    //         { id: 10, name: 'Item 7', price: 10.99 },
-    //         { id: 11, name: 'Item 8', price: 11.99 },
-    //         { id: 12, name: 'Item 9', price: 9.99 }
-    //     ]
-    // };
-
-
-    // const billItems = [];
 
     // Adding click on Category Div
     menuCategories.forEach(category => {
@@ -107,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function () {
             loadMenuItems(categoryName);
         });
     });
-
 
     // Load Food Items on click at Category Div
     function loadMenuItems(category) {
@@ -283,45 +258,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
     selectFirstCategory();
 
-});
-
-// Add selected class on category items
-const buttons = document.querySelectorAll('.selectable');
-buttons.forEach(button => {
-    button.addEventListener('click', () => {
-        buttons.forEach(btn => btn.classList.remove('selected'));
-        button.classList.add('selected');
-        console.log(`Selected button: ${button.textContent}`);
+    // Add selected class on category items
+    const buttons = document.querySelectorAll('.selectable');
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            buttons.forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            console.log(`Selected button: ${button.textContent}`);
+        });
     });
-});
 
-function getSelectedButton() {
-    const selectedButton = document.querySelector('.selectable.selected');
-    return selectedButton ? selectedButton.textContent : null;
-}
+    function getSelectedButton() {
+        const selectedButton = document.querySelector('.selectable.selected');
+        return selectedButton ? selectedButton.textContent : null;
+    }
 
-// document.querySelector('.button-group').addEventListener('click', () => {
-//     const selected = getSelectedButton();
-//     console.log(`Currently selected button: ${selected}`);
-// });
+    // document.querySelector('.button-group').addEventListener('click', () => {
+    //     const selected = getSelectedButton();
+    //     console.log(`Currently selected button: ${selected}`);
+    // });
 
 
-// Get Browser Header Height
-function getBrowserHeaderHeight() {
-    const screenHeight = window.screen.height; // Total screen height
-    const screenWidth = window.screen.width; // Total screen width
-    const viewportHeight = window.innerHeight; // Viewport height (excluding browser UI)
-    const headerHeight = screenHeight - viewportHeight;
-    const string = `Screen height: ${screenHeight}px, Viewport height: ${viewportHeight}px, Browser header height: ${headerHeight}px`;
-    const string2 = `Screen width: ${screenWidth}px`;
-    document.body.style.height = (viewportHeight - 1) + 'px';
-    return string;
-}
+    // Get Browser Header Height
+    function getBrowserHeaderHeight() {
+        const screenHeight = window.screen.height; // Total screen height
+        const screenWidth = window.screen.width; // Total screen width
+        const viewportHeight = window.innerHeight; // Viewport height (excluding browser UI)
+        const headerHeight = screenHeight - viewportHeight;
+        const string = `Screen height: ${screenHeight}px, Viewport height: ${viewportHeight}px, Browser header height: ${headerHeight}px`;
+        const string2 = `Screen width: ${screenWidth}px`;
+        document.body.style.height = (viewportHeight - 1) + 'px';
+        return string;
+    }
 
-console.log(getBrowserHeaderHeight());
+    console.log(getBrowserHeaderHeight());
 
-// Configuring More Button
-document.addEventListener('DOMContentLoaded', function () {
+    // Configuring More Button
     document.getElementById('moreButton').addEventListener('click', function () {
         console.log('MORE button clicked');
         document.getElementById('morePopup').style.display = 'flex';
@@ -329,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const getOrderType = document.querySelector('.get-order-type');
     const getOrderTypeInfo = document.querySelector('.get-order-type-info');
-
+    const doneButton = document.querySelector('.doneButton');
 
     doneButton.addEventListener('click', function (e) {
 
@@ -379,10 +351,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     });
-});
 
-// Put Mobile Number from More to Main
-document.addEventListener('DOMContentLoaded', function () {
+    // Put Mobile Number from More to Main
     var mobileInput = document.getElementById('mobile');
     var mobileInputCopy = document.getElementById('mobile-input');
 
@@ -406,117 +376,116 @@ document.addEventListener('DOMContentLoaded', function () {
     mobileInputCopy.addEventListener('input', function () {
         validateAndSyncMobile(this, mobileInput);
     });
-});
 
-// Display the Table/Room list upon selction of Order Type
-let tableNumbersAppended = false;
-let roomNumbersAppended = false;
-document.addEventListener('DOMContentLoaded', function () {
-    const buttons = document.querySelectorAll('.type-selectable');
-    const orderTypeOptions = document.querySelector('.order-type-options');
+    // Display the Table/Room list upon selction of Order Type
+    let tableNumbersAppended = false;
+    let roomNumbersAppended = false;
+    // document.addEventListener('DOMContentLoaded', function () {
+        const buttons2 = document.querySelectorAll('.type-selectable');
+        const orderTypeOptions = document.querySelector('.order-type-options');
 
-    buttons.forEach(button => {
-        button.addEventListener('click', function () {
+        buttons2.forEach(button => {
+            button.addEventListener('click', function () {
+                console.log('Button clicked:', this.textContent);
 
-            // Remove 'selected' class from all buttons
-            buttons.forEach(btn => btn.classList.remove('type-selected'));
+                // Remove 'selected' class from all buttons
+                buttons2.forEach(btn => btn.classList.remove('type-selected'));
 
-            // Add 'selected' class to clicked button
-            this.classList.add('type-selected');
+                // Add 'selected' class to clicked button
+                this.classList.add('type-selected');
 
-            // Update order-type-options based on selection
-            switch (this.textContent) {
-                case 'DINE-IN':
-                    // orderTypeOptions.appendChild(getAllTableNumbers());
-                    if (!tableNumbersAppended) {
-                        orderTypeOptions.innerHTML = '';
-                        roomNumbersAppended = false;
-                        orderTypeOptions.appendChild(getAllTableNumbers());
-                        tableNumbersAppended = true;
-                    }
-                    break;
-                case 'ROOM SERVICE':
-                    // orderTypeOptions.innerHTML = getAllRoomNumbers();
-                    if (!roomNumbersAppended) {
+                // Update order-type-options based on selection
+                switch (this.textContent) {
+                    case 'DINE-IN':
+                        // orderTypeOptions.appendChild(getAllTableNumbers());
+                        if (!tableNumbersAppended) {
+                            orderTypeOptions.innerHTML = '';
+                            roomNumbersAppended = false;
+                            orderTypeOptions.appendChild(getAllTableNumbers());
+                            tableNumbersAppended = true;
+                        }
+                        break;
+                    case 'ROOM SERVICE':
+                        // orderTypeOptions.innerHTML = getAllRoomNumbers();
+                        if (!roomNumbersAppended) {
+                            orderTypeOptions.innerHTML = '';
+                            tableNumbersAppended = false;
+                            orderTypeOptions.appendChild(getAllRoomNumbers());
+                            roomNumbersAppended = true;
+                        }
+                        break;
+                    case 'DELIVERY':
+                    case 'PICKUP':
                         orderTypeOptions.innerHTML = '';
                         tableNumbersAppended = false;
-                        orderTypeOptions.appendChild(getAllRoomNumbers());
-                        roomNumbersAppended = true;
-                    }
-                    break;
-                case 'DELIVERY':
-                case 'PICKUP':
-                    orderTypeOptions.innerHTML = '';
-                    tableNumbersAppended = false;
-                    roomNumbersAppended = false;
-                    orderTypeOptions.innerHTML = '';
-                    break;
-            }
+                        roomNumbersAppended = false;
+                        orderTypeOptions.innerHTML = '';
+                        break;
+                }
+            });
         });
-    });
-});
+    // });
 
-// Get all Table Numbers for Dine-In
-function getAllTableNumbers() {
-    // Get all tables to add
-    // const tableNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-    const tableNumbers = getTablesListFromStorage();
+    // Get all Table Numbers for Dine-In
+    function getAllTableNumbers() {
+        // Get all tables to add
+        // const tableNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        const tableNumbers = getTablesListFromStorage();
 
-    function createDineInOptions2() {
-        return tableNumbers.map(number =>
-            `<button class="table-button" data-table="${number}">Table ${number}</button>`
-        ).join('');
-    }
+        function createDineInOptions2() {
+            return tableNumbers.map(number =>
+                `<button class="table-button" data-table="${number}">Table ${number}</button>`
+            ).join('');
+        }
 
-    function createDineInOptions() {
-        return `<select id="table-select" class="order-type-option-select" required>
+        function createDineInOptions() {
+            return `<select id="table-select" class="order-type-option-select" required>
             <option value="" disabled selected>Select a table</option>
             ${tableNumbers.map(table =>
-            `<option value="${table.id}" ${table.occupied ? 'disabled' : ''}>Table ${table.table_number} ${table.occupied ? ' (Occupied)' : ''}</option>`
-        ).join('')}
+                `<option value="${table.id}" ${table.occupied ? 'disabled' : ''}>Table ${table.table_number} ${table.occupied ? ' (Occupied)' : ''}</option>`
+            ).join('')}
         </select>`;
+        }
+
+        // Usage
+        const orderTypeOptions = document.createElement('div');
+        orderTypeOptions.className = 'table-numbers-group';
+        orderTypeOptions.innerHTML = createDineInOptions();
+
+        return orderTypeOptions;
     }
 
-    // Usage
-    const orderTypeOptions = document.createElement('div');
-    orderTypeOptions.className = 'table-numbers-group';
-    orderTypeOptions.innerHTML = createDineInOptions();
+    // Get all Room Numbers for Room Service
+    function getAllRoomNumbers() {
+        // Get all tables to add
+        // Array of table numbers
+        const roomNumbers = [101, 201, 301, 401];
 
-    return orderTypeOptions;
-}
+        function createRoomServiceOptions2() {
+            return roomNumbers.map(number =>
+                `<button class="room-button" data-table="${number}">Room ${number}</button>`
+            ).join('');
+        }
 
-// Get all Room Numbers for Room Service
-function getAllRoomNumbers() {
-    // Get all tables to add
-    // Array of table numbers
-    const roomNumbers = [101, 201, 301, 401];
-
-    function createRoomServiceOptions2() {
-        return roomNumbers.map(number =>
-            `<button class="room-button" data-table="${number}">Room ${number}</button>`
-        ).join('');
-    }
-
-    function createRoomServiceOptions() {
-        return `<select id="room-select" class="order-type-option-select" required>    
+        function createRoomServiceOptions() {
+            return `<select id="room-select" class="order-type-option-select" required>    
             <option value="">Select a room</option>
             ${roomNumbers.map(number =>
-            `<option value="${number}">Room ${number}</option>`
-        ).join('')}
+                `<option value="${number}">Room ${number}</option>`
+            ).join('')}
         </select>`;
+        }
+
+        // Usage
+        const orderTypeOptions = document.createElement('div');
+        orderTypeOptions.className = 'table-numbers-group';
+        orderTypeOptions.innerHTML = createRoomServiceOptions();
+
+        return orderTypeOptions;
     }
 
-    // Usage
-    const orderTypeOptions = document.createElement('div');
-    orderTypeOptions.className = 'table-numbers-group';
-    orderTypeOptions.innerHTML = createRoomServiceOptions();
 
-    return orderTypeOptions;
-}
-
-// Get data from Parameters of URL & using helper functions to set order type and select table/room
-document.addEventListener('DOMContentLoaded', function () {
-
+    // Get data from Parameters of URL & using helper functions to set order type and select table/room
     // Parse URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const tableNumber = urlParams.get('table');
@@ -581,23 +550,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-});
-
-// Close button for the More Modal
-document.addEventListener('DOMContentLoaded', function () {
+    // Close button for the More Modal
     const closeBtn = document.querySelector('.close-btn');
     const morePopup = document.getElementById('morePopup');
 
     closeBtn.addEventListener('click', function () {
         morePopup.style.display = 'none';
     });
-});
 
-// More Button for the More Modal to Open & Close
-document.addEventListener('DOMContentLoaded', function () {
+    // More Button for the More Modal to Open & Close
     const moreButton = document.getElementById('moreButton');
-    const morePopup = document.getElementById('morePopup');
-    const closeBtn = document.querySelector('.close-btn');
+    // const morePopup = document.getElementById('morePopup');
+    // const closeBtn = document.querySelector('.close-btn');
     const overlay = document.getElementById('overlay');
 
     moreButton.addEventListener('click', function () {
@@ -609,398 +573,288 @@ document.addEventListener('DOMContentLoaded', function () {
         morePopup.classList.remove('show');
         overlay.style.display = 'none';
     });
-});
 
-// GET basic order details: Name, Phone, Order Type, Email, Address, Tbale/Room
-function getOrderDetails() {
-    const mobileNumber = document.getElementById('mobile-input').value || document.getElementById('mobile').value;
-    // const orderType = document.querySelector('.get-order-type').textContent;
 
-    let orderType = document.querySelector('.get-order-type').textContent;
-    if (orderType === 'DINE-IN') {
-        orderType = 'dine_in';
+
+    // GET basic order details: Name, Phone, Order Type, Email, Address, Tbale/Room
+    function getOrderDetails() {
+        const mobileNumber = document.getElementById('mobile-input').value || document.getElementById('mobile').value;
+        // const orderType = document.querySelector('.get-order-type').textContent;
+
+        let orderType = document.querySelector('.get-order-type').textContent;
+        if (orderType === 'DINE-IN') {
+            orderType = 'dine_in';
+        }
+
+        const tableOrRoom = document.querySelector('.get-order-type-info').textContent;
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const address = document.getElementById('address').value;
+
+        return {
+            mobileNumber,
+            orderType,
+            tableOrRoom,
+            name,
+            email,
+            address
+        };
     }
 
-    const tableOrRoom = document.querySelector('.get-order-type-info').textContent;
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
-    const address = document.getElementById('address').value;
+    // SAVE: Getting all items data that are in bill after clicking Save Button
+    const savebtn = document.querySelector('.save-btn')
+    savebtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (savebtn.click) {
+            console.log('save button clicked');
+            console.table(finalBillItems);
+            const orderDetails = getOrderDetails();
+            console.table('Order Details:', orderDetails);
 
-    return {
-        mobileNumber,
-        orderType,
-        tableOrRoom,
-        name,
-        email,
-        address
-    };
-}
+            const totalAmount = parseFloat(document.querySelector('.ta-price').textContent.replace('₹', ''));
+            const netTotalAmount = parseFloat(document.querySelector('.na-price').textContent.replace('₹', ''));
+            const discountAmount = parseFloat(document.querySelector('.disc-box').value) || 0;
 
-// SAVE: Getting all items data that are in bill after clicking Save Button
-const savebtn = document.querySelector('.save-btn')
-savebtn.addEventListener('click', function (e) {
-    e.preventDefault();
-    if (savebtn.click) {
-        console.log('save button clicked');
-        console.table(finalBillItems);
-        const orderDetails = getOrderDetails();
-        console.table('Order Details:', orderDetails);
+            const orderData = {
+                phone: orderDetails.mobileNumber,
+                email: orderDetails.email,
+                first_name: orderDetails.name,
+                last_name: orderDetails.name,
+                address_line_1: orderDetails.address,
+                order_type: orderDetails.orderType,
+                tables: [parseInt(orderDetails.tableOrRoom)],
 
-        const totalAmount = parseFloat(document.querySelector('.ta-price').textContent.replace('₹', ''));
-        const netTotalAmount = parseFloat(document.querySelector('.na-price').textContent.replace('₹', ''));
-        const discountAmount = parseFloat(document.querySelector('.disc-box').value) || 0;
+                status: 'in_progress',
+                food_items: finalBillItems.map(item => item.id),
+                quantity: finalBillItems.map(item => item.quantity),
+                total_price: totalAmount,
+                discount: discountAmount
+            };
 
-        const orderData = {
-            phone: orderDetails.mobileNumber,
-            email: orderDetails.email,
-            first_name: orderDetails.name,
-            last_name: orderDetails.name,
-            address_line_1: orderDetails.address,
-            order_type: orderDetails.orderType,
-            tables: [parseInt(orderDetails.tableOrRoom)],
-            
-            status: 'in_progress',
-            food_items: finalBillItems.map(item => item.id),
-            quantity: finalBillItems.map(item => item.quantity),
-            total_price: totalAmount,
-            discount : discountAmount
-        };
-
-        const orderData2 = {
-            "phone": "1674564521",
-            "email": "sourav@example.com",
-            "dob": "2024-06-03",
-            "address_line_1": "",
-            "address_line_2": "",
-            "first_name": "Sourav",
-            "order_type": "dine_in",
-            "table": 8,
-            "food_items": [1, 2, 3, 4],
-            "quantity": [5],
-            "status": "in_progress",
-            "notes": "zubi zubi",
-            "coupon_used": ["69"]
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        console.log('Order Data:', orderData);
-        const orderId = urlParams.get('orderId');
-
-        if(orderId){
-            saveOrderPATCH(orderData, orderId);
-        }else{
-            saveOrderPOST(orderData);
-        }
-
-        // saveOrderPOST(orderData);
-
-
-        // .then(data => {
-        //     console.log('Data:', data);
-        //     console.table(data);
-        //     alert("Saved Order Successfully");
-        //     holdBtn.disabled = false; // Enable the Hold button
-        // })
-        // .catch(error => {
-        //     console.log('Error Saving Order:', error);
-        // });
-
-        function saveOrderPOST(orderData) {
-            console.table(orderData);
-            const option = {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + getCookie('access_token'),
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(orderData)
+            const orderData2 = {
+                "phone": "1674564521",
+                "email": "sourav@example.com",
+                "dob": "2024-06-03",
+                "address_line_1": "",
+                "address_line_2": "",
+                "first_name": "Sourav",
+                "order_type": "dine_in",
+                "table": 8,
+                "food_items": [1, 2, 3, 4],
+                "quantity": [5],
+                "status": "in_progress",
+                "notes": "zubi zubi",
+                "coupon_used": ["69"]
             }
 
-            const url = `${baseURL}orders/order/`;
+            const urlParams = new URLSearchParams(window.location.search);
+            console.log('Order Data:', orderData);
+            const orderId = urlParams.get('orderId');
 
-            refreshAccessToken2(url, option)
-                // .then(response => response.json())
-                .then(data => {
-                    console.log('Data:', data);
-                    console.table(data);
-                    alert("POST: Saved Order Successfully");
-                })
-                .catch(error => {
-                    console.log('Error Saving Order:', error);
-                });
-        }
-
-        function saveOrderPATCH(orderData, orderId) {
-            console.table(`PATCH: Order Data:`, orderData);
-            const option = {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': 'Bearer ' + getCookie('access_token'),
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(orderData)
+            if (orderId) {
+                saveOrderPATCH(orderData, orderId);
+            } else {
+                saveOrderPOST(orderData);
             }
 
-            console.log(option.body)
+            // saveOrderPOST(orderData);
 
-            const url = `${baseURL}orders/order/${orderId}/`;
-            refreshAccessToken2(url, option)
+
+            // .then(data => {
+            //     console.log('Data:', data);
+            //     console.table(data);
+            //     alert("Saved Order Successfully");
+            //     holdBtn.disabled = false; // Enable the Hold button
+            // })
+            // .catch(error => {
+            //     console.log('Error Saving Order:', error);
+            // });
+
+            function saveOrderPOST(orderData) {
+                console.table(orderData);
+                const option = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + getCookie('access_token'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                }
+
+                const url = `${baseURL}orders/order/`;
+
+                refreshAccessToken2(url, option)
+                    // .then(response => response.json())
+                    .then(data => {
+                        console.log('Data:', data);
+                        console.table(data);
+                        alert("POST: Saved Order Successfully");
+                    })
+                    .catch(error => {
+                        console.log('Error Saving Order:', error);
+                    });
+            }
+
+            function saveOrderPATCH(orderData, orderId) {
+                console.table(`PATCH: Order Data:`, orderData);
+                const option = {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': 'Bearer ' + getCookie('access_token'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                }
+
+                console.log(option.body)
+
+                const url = `${baseURL}orders/order/${orderId}/`;
+                refreshAccessToken2(url, option)
+                    // .then(response => response.json())
+                    .then(data => {
+                        console.log('Data:', data);
+                        console.table(data);
+                        alert("PATCH: Saved Order Successfully");
+                    })
+                    .catch(error => {
+                        console.log('Error Saving Order:', error);
+                    })
+            }
+        }
+    });
+
+
+    // HOLD: Getting all items data that are in bill after clicking Hold Button
+    const holdbtn = document.querySelector('.hold-btn')
+    holdbtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (holdbtn.click) {
+            console.log('hold button clicked');
+            console.table(finalBillItems);
+            const orderDetails = getOrderDetails();
+            console.table('Order Details:', orderDetails);
+        }
+    });
+
+
+    function getDataEditOrder(orderId) {
+
+        const option = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            }
+        }
+
+        const url = `${baseURL}orders/order/${orderId}/`;
+
+        refreshAccessToken2(url, option)
             // .then(response => response.json())
             .then(data => {
-                    console.log('Data:', data);
-                    console.table(data);
-                    alert("PATCH: Saved Order Successfully");
-                })
-                .catch(error => {
-                    console.log('Error Saving Order:', error);
-                })
-        }
-    }
-});
+                console.log('Getting Data with OrderID:', data);
+                // alert("Data received with OrderID");
 
+                populateMoreModal(data);
+                populateBillContainer(data);
+                // coldReload();
+            })
 
-// HOLD: Getting all items data that are in bill after clicking Hold Button
-const holdbtn = document.querySelector('.hold-btn')
-holdbtn.addEventListener('click', function (e) {
-    e.preventDefault();
-    if (holdbtn.click) {
-        console.log('hold button clicked');
-        console.table(finalBillItems);
-        const orderDetails = getOrderDetails();
-        console.table('Order Details:', orderDetails);
-    }
-});
-
-
-function getDataEditOrder(orderId) {
-
-    const option = {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + getCookie('access_token'),
-            'Content-Type': 'application/json'
-        }
+            .catch(error => {
+                console.log('Error fetching data:', error);
+            });
     }
 
-    const url = `${baseURL}orders/order/${orderId}/`;
+    function populateMoreModal2(data) {
+        // Populate the "more" modal input fields
+        document.getElementById('mobile').value = data.phone || '';
+        document.getElementById('name').value = data.first_name || '';
+        document.getElementById('address').value = data.address_line_1 || '';
+        document.getElementById('email').value = data.email || '';
 
-    refreshAccessToken2(url, option)
-        // .then(response => response.json())
-        .then(data => {
-            console.log('Getting Data with OrderID:', data);
-            // alert("Data received with OrderID");
-
-            populateMoreModal(data);
-            populateBillContainer(data);
-            // coldReload();
-        })
-
-        .catch(error => {
-            console.log('Error fetching data:', error);
+        // Set order type
+        const orderTypeButtons = document.querySelectorAll('.type-selectable');
+        orderTypeButtons.forEach(button => {
+            if (button.textContent.toLowerCase() === data.order_type.replace('_', '-')) {
+                button.classList.add('type-selected');
+            }
         });
-}
 
-function populateMoreModal2(data) {
-    // Populate the "more" modal input fields
-    document.getElementById('mobile').value = data.phone || '';
-    document.getElementById('name').value = data.first_name || '';
-    document.getElementById('address').value = data.address_line_1 || '';
-    document.getElementById('email').value = data.email || '';
-    
-    // Set order type
-    const orderTypeButtons = document.querySelectorAll('.type-selectable');
-    orderTypeButtons.forEach(button => {
-        if (button.textContent.toLowerCase() === data.order_type.replace('_', '-')) {
-            button.classList.add('type-selected');
-        }
-    });
-    
-    // Set table or room number based on order type
-    const orderTypeOptions = document.querySelector('.order-type-options');
-    if (data.order_type === 'dine_in') {
-        orderTypeOptions.innerHTML = `<select id="table-select" class="order-type-option-select">
+        // Set table or room number based on order type
+        const orderTypeOptions = document.querySelector('.order-type-options');
+        if (data.order_type === 'dine_in') {
+            orderTypeOptions.innerHTML = `<select id="table-select" class="order-type-option-select">
             <option value="${data.table_number}">Table ${data.table}</option>
         </select>`;
-    } else if (data.order_type === 'room_service') {
-        orderTypeOptions.innerHTML = `<select id="room-select" class="order-type-option-select">
+        } else if (data.order_type === 'room_service') {
+            orderTypeOptions.innerHTML = `<select id="room-select" class="order-type-option-select">
             <option value="${data.table}">Room ${data.table}</option>
         </select>`;
-    }
-}
-
-function populateMoreModal(data) {
-    // Populate the "more" modal input fields
-    document.getElementById('mobile').value = data.phone || '';
-    document.getElementById('name').value = data.first_name || '';
-    document.getElementById('address').value = data.address_line_1 || '';
-    document.getElementById('email').value = data.email || '';
-    
-    // Set order type
-    const orderTypeButtons = document.querySelectorAll('.type-selectable');
-    orderTypeButtons.forEach(button => {
-        if (button.textContent.toLowerCase() === data.order_type.replace('_', '-')) {
-            button.classList.add('type-selected');
-            button.click();
-        } else {
-            button.classList.remove('type-selected');
-        }
-    });
-
-    console.log('Order Type:', data.order_type);
-    console.log(`table_number: ${data.table_number}`);
-    
-    // Set table or room number based on order type
-    if (data.order_type === 'dine_in') {
-        const tableSelect = document.getElementById('table-select');
-        if (tableSelect) {
-            tableSelect.value = data.tables[0];
-        }
-        document.querySelector('.doneButton').click();
-    } else if (data.order_type === 'room_service') {
-        const roomSelect = document.getElementById('room-select');
-        if (roomSelect) {
-            roomSelect.value = data.room;
         }
     }
-}
 
+    function populateMoreModal(data) {
+        // Populate the "more" modal input fields
+        document.getElementById('mobile').value = data.phone || '';
+        document.getElementById('name').value = data.first_name || '';
+        document.getElementById('address').value = data.address_line_1 || '';
+        document.getElementById('email').value = data.email || '';
 
-
-// New function to populate the bill container
-function populateBillContainer(orderData) {
-    const billContainer = document.querySelector('.bill-container');
-    billContainer.innerHTML = ''; // Clear existing items
-
-    const allFoodsList = JSON.parse(localStorage.getItem('allFoodList')) || [];
-
-    orderData.food_items.forEach((itemId, index) => {
-        const foodItem = allFoodsList.find(food => food.id === itemId);
-        if (foodItem) {
-            const quantity = orderData.quantity[index] || 1; // Assuming quantity is provided in the same order as food_items
-            const billItemElement = createBillItem({
-                ...foodItem,
-                quantity: quantity
-            });
-
-            // Add to finalBillItems
-            billItems.push({
-                id: foodItem.id,
-                name: foodItem.name,
-                price: foodItem.price,
-                quantity: quantity
-            });
-
-            console.log('Bill Item Element:', foodItem);
-            billContainer.appendChild(billItemElement);
-        }
-    });
-
-    // finalBillItems = [...billItems];
-    console.log('Final Bill Items2 :', billItems);
-
-    updateTotals(orderData);
-}
-
-function populateBillContainer2(orderData) {
-    billItems = []; // Clear existing bill items
-    
-    orderData.food_items.forEach((itemId, index) => {
-        const foodItem = allFoodItems.find(food => food.id === itemId);
-        if (foodItem) {
-            const quantity = orderData.quantity[index] || 1;
-            billItems.push({
-                id: foodItem.id,
-                name: foodItem.name,
-                price: foodItem.price,
-                quantity: quantity
-            });
-        }
-    });
-
-    renderBillItems();
-    updateTotals(orderData);
-
-    
-}
-
-function populateBillContainer3(orderData) {
-    const allFoodsList = JSON.parse(localStorage.getItem('allFoodsList')) || [];
-
-    orderData.food_items.forEach((itemId, index) => {
-        const foodItem = allFoodsList.find(food => food.id === itemId);
-        if (foodItem) {
-            const quantity = orderData.quantity[index] || 1;
-            const existingItem = billItems.find(item => item.id === itemId);
-            if (existingItem) {
-                existingItem.quantity = quantity;
+        // Set order type
+        const orderTypeButtons = document.querySelectorAll('.type-selectable');
+        orderTypeButtons.forEach(button => {
+            if (button.textContent.toLowerCase() === data.order_type.replace('_', '-')) {
+                button.classList.add('type-selected');
+                button.click();
             } else {
+                button.classList.remove('type-selected');
+            }
+        });
+
+        console.log('Order Type:', data.order_type);
+        console.log(`table_number: ${data.table_number}`);
+
+        // Set table or room number based on order type
+        if (data.order_type === 'dine_in') {
+            const tableSelect = document.getElementById('table-select');
+            if (tableSelect) {
+                tableSelect.value = data.tables[0];
+            }
+            document.querySelector('.doneButton').click();
+        } else if (data.order_type === 'room_service') {
+            const roomSelect = document.getElementById('room-select');
+            if (roomSelect) {
+                roomSelect.value = data.room;
+            }
+        }
+    }
+
+    function populateBillContainer(orderData) {
+
+        console.log('Populating Bill Container with Order Data:', orderData);
+        billItems = []; // Clear existing billItems
+    
+        orderData.food_items.forEach((foodId, index) => {
+            const foodItem = allFoodItems.find(item => item.id === foodId);
+            if (foodItem) {
+                const quantity = orderData.quantity[index];
                 billItems.push({
-                    id: foodItem.id,
+                    id: foodId,
                     name: foodItem.name,
                     price: foodItem.price,
                     quantity: quantity
                 });
             }
-        }
-    });
+        });
+    
+        sendDataToSave();
+        renderBillItems();
+        updateNetTotal();
+    }
+    
+    
 
-    // Update finalBillItems
-    finalBillItems = [...billItems];
-    console.log('Final Bill Items:', finalBillItems);
 
-    createBillItem(billItems);
-    updateTotals(orderData);
-}
 
-// Helper function to create a bill item element
-function createBillItem(item) {
-    const billItemElement = document.createElement('div');
-    billItemElement.classList.add('bill-item');
 
-    const itemNameDiv = document.createElement('div');
-    itemNameDiv.classList.add('bill-item-name');
-    itemNameDiv.textContent = item.name;
-
-    const minusButton = document.createElement('button');
-    minusButton.classList.add('minus-btn');
-    minusButton.textContent = '-';
-    minusButton.addEventListener('click', () => updateItemQuantity(item.id, -1));
-
-    const itemQtyDiv = document.createElement('div');
-    itemQtyDiv.classList.add('bill-item-qty');
-    itemQtyDiv.textContent = item.quantity;
-
-    const plusButton = document.createElement('button');
-    plusButton.classList.add('plus-btn');
-    plusButton.textContent = '+';
-    plusButton.addEventListener('click', () => updateItemQuantity(item.id, 1));
-
-    const itemPriceDiv = document.createElement('div');
-    itemPriceDiv.classList.add('bill-item-price');
-    itemPriceDiv.textContent = `₹${(item.price * item.quantity).toFixed(2)}`;
-
-    const deleteIcon = document.createElement('div');
-    deleteIcon.classList.add('delete-icon');
-    deleteIcon.innerHTML = '&#10006;'; // X symbol
-    deleteIcon.addEventListener('click', () => removeItemFromBill(item.id));
-
-    billItemElement.appendChild(itemNameDiv);
-    billItemElement.appendChild(minusButton);
-    billItemElement.appendChild(itemQtyDiv);
-    billItemElement.appendChild(plusButton);
-    billItemElement.appendChild(itemPriceDiv);
-    billItemElement.appendChild(deleteIcon);
-
-    return billItemElement;
-}
-
-// Function to update totals
-function updateTotals(orderData) {
-    const billTotal = document.querySelector('.ta-price');
-    const netTotal = document.querySelector('.na-price');
-    const discBox = document.querySelector('.disc-box');
-
-    billTotal.textContent = `₹${orderData.total_price}`;
-    discBox.value = orderData.discount || 0;
-    netTotal.textContent = `₹${(orderData.total_price - orderData.discount).toFixed(2)}`;
-}
+});

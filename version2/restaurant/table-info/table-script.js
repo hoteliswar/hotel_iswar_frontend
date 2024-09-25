@@ -90,8 +90,8 @@ function getAllTablesRooms() {
 
             eyeButton.addEventListener('click', function (event) {
                 event.stopPropagation(); // Prevent triggering the tableViewCell click event
-                // window.location.href = `./../takeorder/takeorder.html?orderId=${table.order_id}`;
-                window.location.href = `./../takeorder/takeorder.html?orderId=1`;
+                window.location.href = `./../takeorder/takeorder.html?orderId=${table.order}`;
+                // window.location.href = `./../takeorder/takeorder.html?orderId=1`;
             });
 
             tableViewCell.appendChild(eyeButton);
