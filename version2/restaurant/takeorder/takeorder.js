@@ -1,3 +1,8 @@
+// Disable all console statements
+// console.log = function() {};
+// console.table = function() {};
+
+
 document.addEventListener('DOMContentLoaded', function () {
     // baseURL = 'https://dineops.onrender.com/api/';
     let finalBillItems = [];
@@ -693,7 +698,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         }
 
-        
+
         function saveOrderPATCH(orderData, orderId) {
             console.table(`PATCH: Order Data:`, orderData);
             const option = {
@@ -721,7 +726,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
         }
     });
-  
+
     // HOLD: Getting all items data that are in bill after clicking Hold Button
     const holdbtn = document.querySelector('.hold-btn')
     holdbtn.addEventListener('click', function (e) {
@@ -779,7 +784,7 @@ document.addEventListener('DOMContentLoaded', function () {
             console.table(finalBillItems);
             const orderDetails = getOrderDetails();
             // console.table('Order Details:', orderDetails);
-            
+
             // const urlParams = new URLSearchParams(window.location.search);
             // const orderId = urlParams.get('orderId');
             console.log('Order ID:', orderId);
@@ -874,11 +879,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function printKOT(orderData) {
             let kotHead = ``;
-            if (orderData.kot_count > 0){
+            if (orderData.kot_count > 0) {
                 kotHead = `<h5>Re-KOT: #${orderData.kot_count}</h5>`;
-            }else if(orderData.kot_count === 0){
+            } else if (orderData.kot_count === 0) {
                 kotHead = `<h5>KOT</h5>`;
-            }else{
+            } else {
                 console.log('Error: Invalid kot_count value');
             }
 
@@ -907,7 +912,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <h5>* * * *</h5>
                 </div>
             `;
-        
+
             printJS({
                 printable: kotContent,
                 type: 'raw-html',
@@ -932,7 +937,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function printKOT3(orderData) {
             const printWindow = window.open('', '_blank');
-            
+
             const kotContent = `
                 <!DOCTYPE html>
                 <html>
@@ -977,7 +982,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </body>
                 </html>
             `;
-            
+
             printWindow.document.write(kotContent);
             printWindow.document.close();
         }
@@ -1005,7 +1010,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <p style="text-align: center; margin-top: 10px;">* * * *</p>
                 </div>
             `;
-        
+
             printJS({
                 printable: kotContent,
                 type: 'raw-html',
@@ -1023,8 +1028,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
-        
-        
+
+
     });
 
     // CANC: Clicking Cancel Button to cancel the order
@@ -1078,6 +1083,49 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
+    // SETLLE: Clicking Settle Button to settle the order
+    const settlebtn = document.querySelector('.settle-btn')
+    settlebtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const paymentMethod = getSelectedPaymentMethod();
+
+        if (settlebtn.click) {
+            console.log('settle button clicked');
+            console.table('final bill items', finalBillItems);
+            const orderDetails = getOrderDetails();
+            console.table('Order Details:', orderDetails);
+            console.log('takeOrderData:', takeDataToKOT);
+            console.log('Order ID:', orderId);
+            console.log('Selected payment method:', paymentMethod);
+
+            settleOrder(orderId, paymentMethod);
+        }
+
+        function settleOrder(orderId, paymentMethod) {
+            const option = {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: 'settled',
+                    payment_method: paymentMethod
+                })
+            }
+            const url = `${baseURL}orders/order/${orderId}/`;
+            refreshAccessToken2(url, option)
+                // .then(response => response.json())
+                .then(data => {
+                    console.log('Data:', data);
+                    console.table(data);
+                    alert("PATCH: Order Settled Successfully");
+                })
+                .catch(error => {
+                    console.log('Error KOT Order:', error);
+                })
+        }
+    });
 
     function getDataEditOrder(orderId) {
 
@@ -1195,6 +1243,13 @@ document.addEventListener('DOMContentLoaded', function () {
         updateNetTotal();
 
     }
+
+    function getSelectedPaymentMethod() {
+        const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+        return selectedPaymentMethod ? selectedPaymentMethod.value : null;
+    }
+
+
 
 
 
