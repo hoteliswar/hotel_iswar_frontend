@@ -575,8 +575,6 @@ document.addEventListener('DOMContentLoaded', function () {
         overlay.style.display = 'none';
     });
 
-
-
     // GET basic order details: Name, Phone, Order Type, Email, Address, Tbale/Room
     function getOrderDetails() {
         const mobileNumber = document.getElementById('mobile-input').value || document.getElementById('mobile').value;
@@ -601,6 +599,8 @@ document.addEventListener('DOMContentLoaded', function () {
             address
         };
     }
+
+    globalThis.takeDataToKOT = [];
 
     // SAVE: Getting all items data that are in bill after clicking Save Button
     const savebtn = document.querySelector('.save-btn')
@@ -685,6 +685,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     console.log('Data:', data);
                     console.table(data);
+                    takeDataToKOT = data;
                     alert("POST: Saved Order Successfully");
                 })
                 .catch(error => {
@@ -692,6 +693,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         }
 
+        
         function saveOrderPATCH(orderData, orderId) {
             console.table(`PATCH: Order Data:`, orderData);
             const option = {
@@ -710,6 +712,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // .then(response => response.json())
                 .then(data => {
                     console.log('Data:', data);
+                    takeDataToKOT = data;
                     console.table(data);
                     alert("PATCH: Saved Order Successfully");
                 })
@@ -718,8 +721,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
         }
     });
-
-
+  
     // HOLD: Getting all items data that are in bill after clicking Hold Button
     const holdbtn = document.querySelector('.hold-btn')
     holdbtn.addEventListener('click', function (e) {
@@ -777,14 +779,25 @@ document.addEventListener('DOMContentLoaded', function () {
             console.table(finalBillItems);
             const orderDetails = getOrderDetails();
             // console.table('Order Details:', orderDetails);
-
+            
             // const urlParams = new URLSearchParams(window.location.search);
             // const orderId = urlParams.get('orderId');
             console.log('Order ID:', orderId);
+            console.log(`takeDataToKOT:`, takeDataToKOT);
+
+
             if (orderId) {
-                kotOrder(orderId);
+                if (takeDataToKOT.kot_count > 0) {
+                    // Show Re-KOT confirmation
+                    if (confirm('This is a Re-KOT. Do you want to proceed?')) {
+                        kotOrder(orderId);
+                    }
+                } else {
+                    kotOrder(orderId);
+                }
             }
         }
+
 
         function kotOrder(orderId) {
             const option = {
@@ -806,7 +819,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     console.log('Data:', data);
                     console.table(data);
-                    alert("PATCH: Order KOT Successfully");
+                    // alert("PATCH: Order KOT Successfully");
 
                     // Print KOT
                     printKOT(data);
@@ -860,8 +873,83 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function printKOT(orderData) {
+            let kotHead = ``;
+            if (orderData.kot_count > 0){
+                kotHead = `<h5>Re-KOT: #${orderData.kot_count}</h5>`;
+            }else if(orderData.kot_count === 0){
+                kotHead = `<h5>KOT</h5>`;
+            }else{
+                console.log('Error: Invalid kot_count value');
+            }
+
+            // const kotHead = `<h5>Re-KOT: #${orderData.kot_count}</h5>`;
             const kotContent = `
                 <div>
+                    <h5>Hotel Iswar & Family Restaurants</h5>
+                    <p class="orderId">Order ID: 00${orderData.id}</p>
+                    <h5>${kotHead}</h5>
+                    <p class="table-room">Table No: ${orderData.tables[0] || '-'}</p>
+                    <p class="table-room">Room No: ${orderData.room || '-'}</p>
+                    <p>Date: ${new Date().toLocaleString()}</p>
+                    <table>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                        </tr>
+                        ${orderData.food_items.map((item, index) => `
+                            <tr>
+                                <td>${allFoodItems.find(food => food.id === item).name}</td>
+                                <td>x ${orderData.quantity[index]}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+
+                    <h5>* * * *</h5>
+                </div>
+            `;
+        
+            printJS({
+                printable: kotContent,
+                type: 'raw-html',
+                style: `
+                    body { font-family: Arial, sans-serif; }
+                    h4, h5 { text-align: center; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th, td { border: 0px solid black; padding: 5px; text-align: left; }
+                    .orderId { font-size: 10px; font-weight: bold; text-align: center; }
+                    .table-room { display: inline-block; width: 45%;  }
+                `,
+                targetStyles: ['*'],
+                documentTitle: 'Kitchen Order Ticket',
+                onPrintDialogClose: () => {
+                    console.log('KOT printed successfully');
+                },
+                onError: (error) => {
+                    console.error('Error printing KOT:', error);
+                }
+            });
+        }
+
+        function printKOT3(orderData) {
+            const printWindow = window.open('', '_blank');
+            
+            const kotContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Kitchen Order Ticket</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        h2 { text-align: center; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid black; padding: 5px; text-align: left; }
+                        @media print {
+                            @page { margin: 0; }
+                            body { margin: 1cm; }
+                        }
+                    </style>
+                </head>
+                <body>
                     <h2>Kitchen Order Ticket</h2>
                     <p>Order ID: ${orderData.id}</p>
                     <p>Table: ${orderData.tables[0]}</p>
@@ -878,6 +966,43 @@ document.addEventListener('DOMContentLoaded', function () {
                             </tr>
                         `).join('')}
                     </table>
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            window.onafterprint = function() {
+                                window.close();
+                            };
+                        };
+                    </script>
+                </body>
+                </html>
+            `;
+            
+            printWindow.document.write(kotContent);
+            printWindow.document.close();
+        }
+
+        function printKOT5(orderData) {
+            const kotContent = `
+                <div style="padding: 10px; width: 74mm; font-size: 12px; font-family: 'Courier New', monospace;">
+                    <h4 style="text-align: center; margin: 0;">Hotel Iswar & Family Restaurants</h4>
+                    <h5 style="text-align: center; margin: 5px 0;">KOT</h5>
+                    <h5 style="text-align: center; margin: 2px 0; font-size: 10px; ">Order ID: 00${orderData.id}</h5>
+                    <p style="margin: 2px 0;">Table: ${orderData.tables[0] || '-'} | Room: ${orderData.room || '-'}</p>
+                    <p style="margin: 2px 0;">Date: ${new Date().toLocaleString()}</p>
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
+                        <tr>
+                            <th style="border-top: 1px dashed #000; border-bottom: 1px dashed #000; text-align: left; padding: 2px;">Item</th>
+                            <th style="border-top: 1px dashed #000; border-bottom: 1px dashed #000; text-align: right; padding: 2px;">Qty</th>
+                        </tr>
+                        ${orderData.food_items.map((item, index) => `
+                            <tr>
+                                <td style="padding: 2px;">${allFoodItems.find(food => food.id === item).name}</td>
+                                <td style="text-align: right; padding: 2px;">x ${orderData.quantity[index]}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                    <p style="text-align: center; margin-top: 10px;">* * * *</p>
                 </div>
             `;
         
@@ -885,10 +1010,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 printable: kotContent,
                 type: 'raw-html',
                 style: `
-                    body { font-family: Arial, sans-serif; }
-                    h2 { text-align: center; }
-                    table { width: 100%; border-collapse: collapse; }
-                    th, td { border: 1px solid black; padding: 5px; text-align: left; }
+                    @page { size: 74mm 105mm; margin: 0; }
+                    body { margin: 0; padding: 5px; }
                 `,
                 targetStyles: ['*'],
                 documentTitle: 'Kitchen Order Ticket',
@@ -900,6 +1023,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
+        
+        
     });
 
     // CANC: Clicking Cancel Button to cancel the order
