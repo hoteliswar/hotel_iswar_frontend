@@ -10,6 +10,11 @@
     <!-- Font Awesome Free Icons CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="takeorder.css">
+
+
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <link rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css">
+
 </head>
 
 <body>
@@ -87,7 +92,8 @@
 
                                     <div class="input-group">
                                         <label for="mobile">Mobile: </label>
-                                        <input type="text" id="mobile" placeholder="Customer Mobile" autocomplete="mobile">
+                                        <input type="text" id="mobile" placeholder="Customer Mobile"
+                                            autocomplete="mobile">
                                     </div>
                                     <div class="input-group">
                                         <label for="name">Name: </label>
@@ -95,12 +101,14 @@
                                     </div>
                                     <div class="input-group">
                                         <label for="email">Email: </label>
-                                        <input type="email" id="email" placeholder="Customer Email" autocomplete="email">
+                                        <input type="email" id="email" placeholder="Customer Email"
+                                            autocomplete="email">
                                     </div>
                                     <div class="input-group">
                                         <label for="address">Address: </label>
                                         <!-- <input type="email" id="address" placeholder="Customer Email"> -->
-                                        <textarea name="address" id="address" placeholder="Full Address" cols="50" rows="3" autocomplete="address"></textarea>
+                                        <textarea name="address" id="address" placeholder="Full Address" cols="50"
+                                            rows="3" autocomplete="address"></textarea>
                                     </div>
 
                                     <div class="button-group">
@@ -143,9 +151,10 @@
                     </div>
                     <div class="button-groups">
                         <button class="save-btn">Save</button>
-                        <button class="print-btn">Save & Print</button>
-                        <button class="kot-btn" disabled>KOT Print</button>
+                        <button class="print-btn">Print</button>
+                        <button class="kot-btn" disabled>KOT</button>
                         <button class="hold-btn" disabled>Hold</button>
+                        <button class="cancelled-btn" disabled>Canc.</button>
                     </div>
                     <div class="payment-method">
                         <div class="pm-check pm-check-inline">
@@ -181,21 +190,21 @@
     <script src="./../../session.js"></script>
     <script src="takeorder.js"></script>
 
-    
+
     <script>
         document.addEventListener('keydown', function (event) {
             if (event.ctrlKey && (event.key === '+' || event.key === '-' || event.key === '=')) {
                 event.preventDefault();
             }
         });
-    
+
         document.addEventListener('wheel', function (event) {
             if (event.ctrlKey) {
                 event.preventDefault();
             }
         }, { passive: false });
     </script>
-    
+
 </body>
 
 </html>

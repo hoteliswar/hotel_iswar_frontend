@@ -610,15 +610,16 @@ body {
 .save-btn,
 .print-btn,
 .kot-btn,
-.hold-btn {
+.hold-btn,
+.cancelled-btn {
     display: inline-block;
-    min-width: 20%;
+    min-width: 18%;
     background-color: #e2a600;
     font-size: 1em;
     font-weight: 500;
     border: 0px;
     border-radius: 3px;
-    margin-left: 15px;
+    margin-left: 10px;
 }
 
 .payment-method {

@@ -381,49 +381,49 @@ document.addEventListener('DOMContentLoaded', function () {
     let tableNumbersAppended = false;
     let roomNumbersAppended = false;
     // document.addEventListener('DOMContentLoaded', function () {
-        const buttons2 = document.querySelectorAll('.type-selectable');
-        const orderTypeOptions = document.querySelector('.order-type-options');
+    const buttons2 = document.querySelectorAll('.type-selectable');
+    const orderTypeOptions = document.querySelector('.order-type-options');
 
-        buttons2.forEach(button => {
-            button.addEventListener('click', function () {
-                console.log('Button clicked:', this.textContent);
+    buttons2.forEach(button => {
+        button.addEventListener('click', function () {
+            console.log('Button clicked:', this.textContent);
 
-                // Remove 'selected' class from all buttons
-                buttons2.forEach(btn => btn.classList.remove('type-selected'));
+            // Remove 'selected' class from all buttons
+            buttons2.forEach(btn => btn.classList.remove('type-selected'));
 
-                // Add 'selected' class to clicked button
-                this.classList.add('type-selected');
+            // Add 'selected' class to clicked button
+            this.classList.add('type-selected');
 
-                // Update order-type-options based on selection
-                switch (this.textContent) {
-                    case 'DINE-IN':
-                        // orderTypeOptions.appendChild(getAllTableNumbers());
-                        if (!tableNumbersAppended) {
-                            orderTypeOptions.innerHTML = '';
-                            roomNumbersAppended = false;
-                            orderTypeOptions.appendChild(getAllTableNumbers());
-                            tableNumbersAppended = true;
-                        }
-                        break;
-                    case 'ROOM SERVICE':
-                        // orderTypeOptions.innerHTML = getAllRoomNumbers();
-                        if (!roomNumbersAppended) {
-                            orderTypeOptions.innerHTML = '';
-                            tableNumbersAppended = false;
-                            orderTypeOptions.appendChild(getAllRoomNumbers());
-                            roomNumbersAppended = true;
-                        }
-                        break;
-                    case 'DELIVERY':
-                    case 'PICKUP':
+            // Update order-type-options based on selection
+            switch (this.textContent) {
+                case 'DINE-IN':
+                    // orderTypeOptions.appendChild(getAllTableNumbers());
+                    if (!tableNumbersAppended) {
+                        orderTypeOptions.innerHTML = '';
+                        roomNumbersAppended = false;
+                        orderTypeOptions.appendChild(getAllTableNumbers());
+                        tableNumbersAppended = true;
+                    }
+                    break;
+                case 'ROOM SERVICE':
+                    // orderTypeOptions.innerHTML = getAllRoomNumbers();
+                    if (!roomNumbersAppended) {
                         orderTypeOptions.innerHTML = '';
                         tableNumbersAppended = false;
-                        roomNumbersAppended = false;
-                        orderTypeOptions.innerHTML = '';
-                        break;
-                }
-            });
+                        orderTypeOptions.appendChild(getAllRoomNumbers());
+                        roomNumbersAppended = true;
+                    }
+                    break;
+                case 'DELIVERY':
+                case 'PICKUP':
+                    orderTypeOptions.innerHTML = '';
+                    tableNumbersAppended = false;
+                    roomNumbersAppended = false;
+                    orderTypeOptions.innerHTML = '';
+                    break;
+            }
         });
+    });
     // });
 
     // Get all Table Numbers for Dine-In
@@ -511,6 +511,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setOrderType(orderType);
         selectRoom(roomNumber);
     } else if (orderId) {
+        document.querySelector('.cancelled-btn').disabled = false;
         console.log(`Order ID: ${orderId}`);
         getDataEditOrder(orderId);
     }
@@ -653,73 +654,68 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (orderId) {
                 saveOrderPATCH(orderData, orderId);
+                document.querySelector('.cancelled-btn').disabled = false;
+                document.querySelector('.hold-btn').disabled = false;
+                document.querySelector('.kot-btn').disabled = false;
+
             } else {
                 saveOrderPOST(orderData);
+                document.querySelector('.hold-btn').disabled = false;
+                document.querySelector('.kot-btn').disabled = false;
+
             }
 
-            // saveOrderPOST(orderData);
+        }
 
-
-            // .then(data => {
-            //     console.log('Data:', data);
-            //     console.table(data);
-            //     alert("Saved Order Successfully");
-            //     holdBtn.disabled = false; // Enable the Hold button
-            // })
-            // .catch(error => {
-            //     console.log('Error Saving Order:', error);
-            // });
-
-            function saveOrderPOST(orderData) {
-                console.table(orderData);
-                const option = {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + getCookie('access_token'),
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(orderData)
-                }
-
-                const url = `${baseURL}orders/order/`;
-
-                refreshAccessToken2(url, option)
-                    // .then(response => response.json())
-                    .then(data => {
-                        console.log('Data:', data);
-                        console.table(data);
-                        alert("POST: Saved Order Successfully");
-                    })
-                    .catch(error => {
-                        console.log('Error Saving Order:', error);
-                    });
+        function saveOrderPOST(orderData) {
+            console.table(orderData);
+            const option = {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
             }
 
-            function saveOrderPATCH(orderData, orderId) {
-                console.table(`PATCH: Order Data:`, orderData);
-                const option = {
-                    method: 'PATCH',
-                    headers: {
-                        'Authorization': 'Bearer ' + getCookie('access_token'),
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(orderData)
-                }
+            const url = `${baseURL}orders/order/`;
 
-                console.log(option.body)
+            refreshAccessToken2(url, option)
+                // .then(response => response.json())
+                .then(data => {
+                    console.log('Data:', data);
+                    console.table(data);
+                    alert("POST: Saved Order Successfully");
+                })
+                .catch(error => {
+                    console.log('Error Saving Order:', error);
+                });
+        }
 
-                const url = `${baseURL}orders/order/${orderId}/`;
-                refreshAccessToken2(url, option)
-                    // .then(response => response.json())
-                    .then(data => {
-                        console.log('Data:', data);
-                        console.table(data);
-                        alert("PATCH: Saved Order Successfully");
-                    })
-                    .catch(error => {
-                        console.log('Error Saving Order:', error);
-                    })
+        function saveOrderPATCH(orderData, orderId) {
+            console.table(`PATCH: Order Data:`, orderData);
+            const option = {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(orderData)
             }
+
+            console.log(option.body)
+
+            const url = `${baseURL}orders/order/${orderId}/`;
+            refreshAccessToken2(url, option)
+                // .then(response => response.json())
+                .then(data => {
+                    console.log('Data:', data);
+                    console.table(data);
+                    alert("PATCH: Saved Order Successfully");
+                })
+                .catch(error => {
+                    console.log('Error Saving Order:', error);
+                })
         }
     });
 
@@ -733,7 +729,228 @@ document.addEventListener('DOMContentLoaded', function () {
             console.table(finalBillItems);
             const orderDetails = getOrderDetails();
             console.table('Order Details:', orderDetails);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            // console.log('Order Data:', orderData);
+            const orderId = urlParams.get('orderId');
+            console.log('Order ID:', orderId);
+
+            if (orderId) {
+                holdOrder(orderId);
+            }
         }
+
+        function holdOrder(orderId) {
+            const option = {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: 'hold'
+                })
+            }
+
+            console.log(option.body)
+
+            const url = `${baseURL}orders/order/${orderId}/`;
+            refreshAccessToken2(url, option)
+                // .then(response => response.json())
+                .then(data => {
+                    console.log('Data:', data);
+                    console.table(data);
+                    alert("PATCH: Order Hold Successfully");
+                })
+                .catch(error => {
+                    console.log('Error Holding Order:', error);
+                })
+        }
+    });
+
+    // KOT: Getting all items data that are in bill after clicking KOT Button
+    const kotbtn = document.querySelector('.kot-btn')
+    kotbtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (kotbtn.click) {
+            console.log('KOT button clicked');
+            console.table(finalBillItems);
+            const orderDetails = getOrderDetails();
+            // console.table('Order Details:', orderDetails);
+
+            // const urlParams = new URLSearchParams(window.location.search);
+            // const orderId = urlParams.get('orderId');
+            console.log('Order ID:', orderId);
+            if (orderId) {
+                kotOrder(orderId);
+            }
+        }
+
+        function kotOrder(orderId) {
+            const option = {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: 'kot'
+                })
+            }
+
+            console.log(option.body)
+
+            const url = `${baseURL}orders/order/${orderId}/`;
+            refreshAccessToken2(url, option)
+                // .then(response => response.json())
+                .then(data => {
+                    console.log('Data:', data);
+                    console.table(data);
+                    alert("PATCH: Order KOT Successfully");
+
+                    // Print KOT
+                    printKOT(data);
+                })
+                .catch(error => {
+                    console.log('Error KOT Order:', error);
+                })
+        }
+
+        function printKOT2(orderData) {
+            // Create a new window for printing
+            const printWindow = window.open('', '_blank');
+
+            // Generate KOT HTML content
+            const kotContent = `
+                <html>
+                <head>
+                    <title>Kitchen Order Ticket</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        h2 { text-align: center; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid black; padding: 5px; text-align: left; }
+                    </style>
+                </head>
+                <body>
+                    <h2>Kitchen Order Ticket</h2>
+                    <p>Order ID: ${orderData.id}</p>
+                    <p>Table: ${orderData.tables[0]}</p>
+                    <p>Date: ${new Date().toLocaleString()}</p>
+                    <table>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                        </tr>
+                        ${orderData.food_items.map((item, index) => `
+                            <tr>
+                                <td>${allFoodItems.find(food => food.id === item).name}</td>
+                                <td>${orderData.quantity[index]}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                </body>
+                </html>
+            `;
+
+            // Write the content to the new window and print
+            printWindow.document.write(kotContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        function printKOT(orderData) {
+            const kotContent = `
+                <div>
+                    <h2>Kitchen Order Ticket</h2>
+                    <p>Order ID: ${orderData.id}</p>
+                    <p>Table: ${orderData.tables[0]}</p>
+                    <p>Date: ${new Date().toLocaleString()}</p>
+                    <table>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                        </tr>
+                        ${orderData.food_items.map((item, index) => `
+                            <tr>
+                                <td>${allFoodItems.find(food => food.id === item).name}</td>
+                                <td>${orderData.quantity[index]}</td>
+                            </tr>
+                        `).join('')}
+                    </table>
+                </div>
+            `;
+        
+            printJS({
+                printable: kotContent,
+                type: 'raw-html',
+                style: `
+                    body { font-family: Arial, sans-serif; }
+                    h2 { text-align: center; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th, td { border: 1px solid black; padding: 5px; text-align: left; }
+                `,
+                targetStyles: ['*'],
+                documentTitle: 'Kitchen Order Ticket',
+                onPrintDialogClose: () => {
+                    console.log('KOT printed successfully');
+                },
+                onError: (error) => {
+                    console.error('Error printing KOT:', error);
+                }
+            });
+        }
+    });
+
+    // CANC: Clicking Cancel Button to cancel the order
+    const cancbtn = document.querySelector('.cancelled-btn')
+    cancbtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (cancbtn.click) {
+            console.log('cancel button clicked');
+            console.table(finalBillItems);
+            const orderDetails = getOrderDetails();
+            console.table('Order Details:', orderDetails);
+
+            const urlParams = new URLSearchParams(window.location.search);
+            // console.log('Order Data:', orderData);
+            const orderId = urlParams.get('orderId');
+            console.log('Order ID:', orderId);
+
+            if (orderId) {
+                cancOrder(orderId);
+            }
+
+        }
+
+        // API Call for Order Cancel
+        function cancOrder(orderId) {
+            const option = {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    status: 'cancelled'
+                })
+            }
+
+            console.log(option.body)
+
+            const url = `${baseURL}orders/order/${orderId}/`;
+            refreshAccessToken2(url, option)
+                // .then(response => response.json())
+                .then(data => {
+                    console.log('Data:', data);
+                    console.table(data);
+                    alert("PATCH: Order Cancelled Successfully");
+                })
+                .catch(error => {
+                    console.log('Error Cancelling Order:', error);
+                })
+        }
+
     });
 
 
@@ -796,9 +1013,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function populateMoreModal(data) {
         // Populate the "more" modal input fields
         document.getElementById('mobile').value = data.phone || '';
-        document.getElementById('name').value = data.first_name || '';
-        document.getElementById('address').value = data.address_line_1 || '';
-        document.getElementById('email').value = data.email || '';
+        document.getElementById('name').value = data.customer.first_name || '';
+        document.getElementById('address').value = data.customer.address || '';
+        document.getElementById('email').value = data.customer.email || '';
+        document.getElementById('discount').value = data.discount || '';
 
         // Set order type
         const orderTypeButtons = document.querySelectorAll('.type-selectable');
@@ -833,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         console.log('Populating Bill Container with Order Data:', orderData);
         billItems = []; // Clear existing billItems
-    
+
         orderData.food_items.forEach((foodId, index) => {
             const foodItem = allFoodItems.find(item => item.id === foodId);
             if (foodItem) {
@@ -846,13 +1064,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
-    
+
         sendDataToSave();
         renderBillItems();
         updateNetTotal();
+
     }
-    
-    
+
+
 
 
 
