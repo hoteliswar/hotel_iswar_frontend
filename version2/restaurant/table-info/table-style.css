@@ -95,7 +95,10 @@ body{
     height: auto;
 }
 
-.table-view-row, .room-view-row{
+.table-view-row, 
+.room-view-row, 
+.delivery-view-row,
+.pickup-view-row{
     height: auto;
     margin-left: 20px;
     overflow-x: auto;
@@ -119,7 +122,9 @@ body{
     color: #be5703;
 }
 
-.table-view-cell, .room-view-cell{
+.table-view-cell, 
+.room-view-cell,
+.delivery-view-cell{
     display: inline-block;
     position: relative;
     height: 90px;
@@ -135,7 +140,9 @@ body{
     margin-bottom: 5px;
 }
 
-.table-view-cell .text, .room-view-cell .text{
+.table-view-cell .text, 
+.room-view-cell .text, 
+.delivery-view-cell .text{
     margin: 0;
     position: absolute;
     top: 50%;
@@ -154,4 +161,10 @@ body{
 .occupied-room{
     background-color: #ffb7b7; 
     cursor: not-allowed;
+}
+
+.delivery-view-cell{
+    width: 120px;
+    background-color: #ffb7b7; 
+    cursor: not-allowed ;
 }

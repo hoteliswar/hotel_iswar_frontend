@@ -501,21 +501,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // Use the parameters as needed
     if (tableNumber && orderType === 'dine_in') {
         console.log(`Dine-in order for table ${tableNumber}`);
-        // Set the order type to DINE-IN and select the table
         setOrderType('DINE-IN');
         selectTable(tableNumber);
     } else if (roomNumber && orderType === 'room_service') {
         console.log(`Room service order for room ${roomNumber}`);
-        // Set the order type to ROOM SERVICE and select the room
         setOrderType('ROOM SERVICE');
         selectRoom(roomNumber);
-    } else if (orderType === 'PICKUP' || orderType === 'DELIVERY') {
-        console.log(`Pickup or Delivery`);
-        // Set the order type to ROOM SERVICE and select the room
+    } else if (orderType === 'pickup') {
+        console.log(`Pickup`);
         document.getElementById('moreButton').click();
-        setOrderType(orderType);
-        selectRoom(roomNumber);
-    } else if (orderId) {
+        setOrderType('PICKUP');
+        document.querySelector('.get-order-type').textContent = 'PICKUP';
+    }else if(orderType === 'delivery') {
+        console.log(`Delivery`);
+        document.getElementById('moreButton').click();
+        setOrderType('DELIVERY');
+        document.querySelector('.get-order-type').textContent = 'DELIVERY';
+    }else if (orderId) {
         document.querySelector('.cancelled-btn').disabled = false;
         console.log(`Order ID: ${orderId}`);
         getDataEditOrder(orderId);
@@ -588,6 +590,12 @@ document.addEventListener('DOMContentLoaded', function () {
         let orderType = document.querySelector('.get-order-type').textContent;
         if (orderType === 'DINE-IN') {
             orderType = 'dine_in';
+        }else if (orderType === 'ROOM SERVICE') {
+            orderType = 'room_service';
+        }else if (orderType === 'PICKUP') {
+            orderType = 'pickup';
+        }else if (orderType === 'DELIVERY') {
+            orderType = 'delivery';
         }
 
         const tableOrRoom = document.querySelector('.get-order-type-info').textContent;
@@ -629,7 +637,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 address_line_1: orderDetails.address,
                 order_type: orderDetails.orderType,
                 tables: [parseInt(orderDetails.tableOrRoom)],
-
                 status: 'in_progress',
                 food_items: finalBillItems.map(item => item.id),
                 quantity: finalBillItems.map(item => item.quantity),
@@ -659,14 +666,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (orderId) {
                 saveOrderPATCH(orderData, orderId);
-                document.querySelector('.cancelled-btn').disabled = false;
-                document.querySelector('.hold-btn').disabled = false;
-                document.querySelector('.kot-btn').disabled = false;
+                // document.querySelector('.cancelled-btn').disabled = false;
+                // document.querySelector('.hold-btn').disabled = false;
+                // document.querySelector('.kot-btn').disabled = false;
 
             } else {
                 saveOrderPOST(orderData);
-                document.querySelector('.hold-btn').disabled = false;
-                document.querySelector('.kot-btn').disabled = false;
+                // document.querySelector('.hold-btn').disabled = false;
+                // document.querySelector('.kot-btn').disabled = false;
 
             }
 
@@ -692,10 +699,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.table(data);
                     takeDataToKOT = data;
                     alert("POST: Saved Order Successfully");
+                    document.querySelector('.cancelled-btn').disabled = false;
+                    document.querySelector('.hold-btn').disabled = false;
+                    document.querySelector('.kot-btn').disabled = false;
                 })
                 .catch(error => {
                     console.log('Error Saving Order:', error);
                 });
+
         }
 
 
@@ -720,6 +731,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     takeDataToKOT = data;
                     console.table(data);
                     alert("PATCH: Saved Order Successfully");
+                    document.querySelector('.cancelled-btn').disabled = false;
+                    document.querySelector('.hold-btn').disabled = false;
+                    document.querySelector('.kot-btn').disabled = false;
                 })
                 .catch(error => {
                     console.log('Error Saving Order:', error);
@@ -1186,6 +1200,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function populateMoreModal(data) {
         // Populate the "more" modal input fields
         document.getElementById('mobile').value = data.phone || '';
+        document.getElementById('mobile-input').value = data.phone || '';
         document.getElementById('name').value = data.customer.first_name || '';
         document.getElementById('address').value = data.customer.address || '';
         document.getElementById('email').value = data.customer.email || '';
