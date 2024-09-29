@@ -124,7 +124,8 @@ body{
 
 .table-view-cell, 
 .room-view-cell,
-.delivery-view-cell{
+.delivery-view-cell,
+.pickup-view-cell{
     display: inline-block;
     position: relative;
     height: 90px;
@@ -142,7 +143,8 @@ body{
 
 .table-view-cell .text, 
 .room-view-cell .text, 
-.delivery-view-cell .text{
+.delivery-view-cell .text,
+.pickup-view-cell .text{
     margin: 0;
     position: absolute;
     top: 50%;
@@ -163,7 +165,8 @@ body{
     cursor: not-allowed;
 }
 
-.delivery-view-cell{
+.delivery-view-cell,
+.pickup-view-cell{
     width: 120px;
     background-color: #ffb7b7; 
     cursor: not-allowed ;
