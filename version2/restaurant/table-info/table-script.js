@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
     //     }
     // });
 
+    // getAllOrders();
+
     getTablesData();
 
     getAllTablesRooms();
@@ -258,6 +260,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 console.log('Data:', data);
                 console.table(data);
+                // Save data in local storage
+                localStorage.setItem('order_data', JSON.stringify(data));
                 delivery_pickup(data);
                 // alert("GET: All Order Received");
             })
@@ -338,6 +342,63 @@ document.addEventListener('DOMContentLoaded', function () {
                 deliveryView.appendChild(deliveryCell);
             });
         }
+
+        if (pickupOrders.length > 0) {
+            console.log('There are multiple pickup orders');
+            const pickupView = document.querySelector('.pickup-view-row');
+        
+            const pickupRow = document.createElement('div');
+            pickupRow.classList.add('row-caption');
+            pickupRow.id = 'pickup-row';
+            pickupRow.textContent = 'Pickup';
+        
+            pickupView.appendChild(pickupRow);
+        
+            pickupOrders.forEach(order => {
+                const pickupCell = document.createElement('div');
+                pickupCell.classList.add('pickup-view-cell');
+                pickupCell.id = `pickup-${order.id}`;
+        
+                const pickupText = document.createElement('div');
+                pickupText.classList.add('text');
+        
+                const pickupOrderId = document.createElement('div');
+                pickupOrderId.classList.add('order-id');
+                pickupOrderId.textContent = `Order #${order.id}`;
+        
+                const pickupOrderMin = document.createElement('div');
+                pickupOrderMin.classList.add('order-min');
+                const orderDate = new Date(order.created_at);
+                const currentTime = new Date();
+                const timeDiff = Math.floor((currentTime - orderDate) / 60000);
+                pickupOrderMin.textContent = `${timeDiff} Min`;
+        
+                pickupText.appendChild(pickupOrderMin);
+                pickupText.appendChild(pickupOrderId);
+        
+                // Create eye button
+                const eyeButton = document.createElement('button');
+                eyeButton.classList.add('eye-button');
+                eyeButton.innerHTML = '<i class="fas fa-eye"></i>';
+                eyeButton.style.position = 'absolute';
+                eyeButton.style.bottom = '5px';
+                eyeButton.style.right = '5px';
+                eyeButton.style.background = 'transparent';
+                eyeButton.style.border = 'none';
+                eyeButton.style.color = 'rgb(150,0,0)';
+                eyeButton.style.cursor = 'pointer';
+        
+                eyeButton.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    window.location.href = `./../takeorder/takeorder.html?orderId=${order.id}&orderType=pickup`;
+                });
+        
+                pickupCell.appendChild(pickupText);
+                pickupCell.appendChild(eyeButton);
+                pickupView.appendChild(pickupCell);
+            });
+        }
+        
     }
 
 
