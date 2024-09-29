@@ -15,9 +15,9 @@
         <div class="header-title">Dine Ops</div>
         <div class="header-items">
             <ul>
-                <li>New Order</li>
+                <li><a href="neworder.html">New Order</a></li>
                 <li class="support">Call For Support <br> 7002246506</li>
-                <li>Dashboard</li>
+                <li><a href="./../../dashboard/dashboard.html">Dashboard</a></li>
                 <li>Food</li>
                 <li>Order</li>
                 <li>Table</li>
@@ -29,11 +29,20 @@
 
     <div class="table-view">
         <div class="table-view-head">Table View
+            
             <div class="order-type-info">
-                <!-- <button class="type-selectable">DINE-IN</button> -->
                 <button class="type-selectable" id="delivery">DELIVERY</button>
                 <button class="type-selectable" id="pickup">PICKUP</button>
-                <!-- <button class="type-selectable">ROOM SERVICE</button> -->
+            </div>
+            <div class="order-indicator">
+                <div class="indicator">
+                    <div class="indicator-color" id="blank"></div>
+                    <div class="indicator-text">Blank Table</div>
+                </div>
+                <div class="indicator">
+                    <div class="indicator-color" id="order"></div>
+                    <div class="indicator-text">Order Running</div>
+                </div>
             </div>
         </div>
         <div class="table-view-body">

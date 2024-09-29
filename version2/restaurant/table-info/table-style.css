@@ -49,6 +49,16 @@ body{
     background-color: #fbe1ac;
 }
 
+a{
+    text-decoration: none;
+    color: #000000;
+}
+
+.header-items li a:hover{
+    cursor: pointer;
+    color: #f07816;
+}
+
 
 /* ------ */
 .table-view{
@@ -61,14 +71,18 @@ body{
     font-size: 1.2em;
     padding-top: 5px;
     font-weight: 550;
+    display: flex;
+    flex-direction: column;
 }
 
 .order-type-info{
+    display: flex;
+    align-self: flex-end;
     float: right;
+    gap: 10px;
 }
 
 .type-selectable{
-    /* padding: 8px 5px; */
     font-size: 0.7em;
     border: 0px;
     background-color: rgb(150, 0, 0);
@@ -89,6 +103,39 @@ body{
 .type-selectable.type-selected{
     background-color: rgb(255, 175, 2);
     color: white;
+}
+
+.order-indicator{
+    text-align: right;
+    font-size: 1.1em;
+    align-self: flex-end;
+    margin-top: 10px;
+    margin-right: 15px;
+}
+
+.indicator{
+display: inline-block;
+}
+
+.indicator-color{
+    display: inline-block;
+    height: 15px;
+    width: 15px;
+    /* background-color: #be5703; */
+}
+
+#blank{
+    background-color: rgb(226, 225, 225) ;
+}
+#order{
+    background-color: #ffb7b7 ;
+}
+
+.indicator-text{
+    display: inline-block;
+    font-size: 0.8em;
+    font-weight: 300;
+    margin-left: 5px;
 }
 
 .table-view-body{

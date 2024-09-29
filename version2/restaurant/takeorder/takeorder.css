@@ -53,6 +53,16 @@ body {
     background-color: #fbe1ac;
 }
 
+a{
+    text-decoration: none;
+    color: #000000;
+}
+
+.header-items li a:hover{
+    cursor: pointer;
+    color: #f07816;
+}
+
 
 /* -------------- */
 
