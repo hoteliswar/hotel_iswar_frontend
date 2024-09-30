@@ -8,7 +8,6 @@ function setCookie(name, value, minutes) {
     document.cookie = name + "=" + value + ";" + expires + ";path=/";
 }
 
-
 // Helper function to get a cookie value
 function getCookie(name) {
     let value = "; " + document.cookie;
@@ -18,88 +17,88 @@ function getCookie(name) {
 
 function refreshAccessToken(url, option) {
     console.log(' refreshAccessToken() called !!');
-    
+
     return fetch(url, option)
-    .then(response => {
-        console.log(response.status);
-        if (response.status === 401) {
-            console.log('Status: 401');
-            fetch(`${baseURL}accounts/token/refresh/`, {
-            // fetch('http://127.0.0.1:8000/api/accounts/token/refresh/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    refresh: getCookie('refresh_token')
+        .then(response => {
+            console.log(response.status);
+            if (response.status === 401) {
+                console.log('Status: 401');
+                fetch(`${baseURL}accounts/token/refresh/`, {
+                    // fetch('http://127.0.0.1:8000/api/accounts/token/refresh/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        refresh: getCookie('refresh_token')
+                    })
                 })
-            })
-            .then(response => {
-                if (response.status == 401){
-                    window.location.href = 'index.html';
-                }
-                else if (response.status == 200){
-                    // access update
-                    console.log('Access Token:', accessToken);
-                    console.log('Refresh Token:', refreshToken);
-                    console.log('Refresh Status: 200');
-                    // if(data.access){
-                    //     setCookie('access_token', data.access, 5);
-                    // }
-                }
+                    .then(response => {
+                        if (response.status == 401) {
+                            window.location.href = 'index.html';
+                        }
+                        else if (response.status == 200) {
+                            // access update
+                            console.log('Access Token:', accessToken);
+                            console.log('Refresh Token:', refreshToken);
+                            console.log('Refresh Status: 200');
+                            // if(data.access){
+                            //     setCookie('access_token', data.access, 5);
+                            // }
+                        }
+                        return response.json();
+                        // refreshAccessToken(url, option);
+                    })
+                    .then(data => {
+                        console.log(data.access);
+                        if (data.access) {
+                            setCookie('access_token', data.access, 5);
+                        }
+                        if (response.status === 200) {
+                            refreshAccessToken(url, option);
+                        }
+                        // refreshAccessToken(url, option);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }
+            else if (response.status === 200) {
+                console.log('Status: 200 okay');
                 return response.json();
-                // refreshAccessToken(url, option);
-            })
-            .then(data => {
-                console.log(data.access);
-                if(data.access){
-                    setCookie('access_token', data.access, 5);
-                }
-                if(response.status === 200){
-                    refreshAccessToken(url, option);
-                }
-                // refreshAccessToken(url, option);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-        else if (response.status === 200) {
-            console.log('Status: 200 okay');
-            return response.json();
-        }
-        else if (response.status === 201) {
-            console.log('Status: 201 okay');
-            return response.json();
-        }
-        else {
-            console.log(`Unexpected status code: ${response.status}`);
-            return response.json().then(err => {
-                throw new Error(err.message);
-            });
-        }
-    });
+            }
+            else if (response.status === 201) {
+                console.log('Status: 201 okay');
+                return response.json();
+            }
+            else {
+                console.log(`Unexpected status code: ${response.status}`);
+                return response.json().then(err => {
+                    throw new Error(err.message);
+                });
+            }
+        });
 }
 
 async function refreshAccessToken2(url, option) {
     // try {
-        const response = await fetch(url, option);
-        if (response.status === 401) {
-            console.log('Status: 401');
-            fetch(`${baseURL}accounts/token/refresh/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    refresh: getCookie('refresh_token')
-                })
+    const response = await fetch(url, option);
+    if (response.status === 401) {
+        console.log('Status: 401');
+        fetch(`${baseURL}accounts/token/refresh/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                refresh: getCookie('refresh_token')
             })
+        })
             .then(response => {
-                if (response.status == 401){
+                if (response.status == 401) {
                     window.location.href = 'index.html';
                 }
-                else if (response.status == 200){
+                else if (response.status == 200) {
                     // access update
                     console.log('Access Token:', getCookie('access_token'));
                     console.log('Refresh Token:', getCookie('refresh_token'));
@@ -113,10 +112,10 @@ async function refreshAccessToken2(url, option) {
             })
             .then(data => {
                 console.log(data.access);
-                if(data.access){
+                if (data.access) {
                     setCookie('access_token', data.access, 5);
                 }
-                if(response.status === 200){
+                if (response.status === 200) {
                     refreshAccessToken2(url, option);
                 }
                 // refreshAccessToken(url, option);
@@ -124,13 +123,13 @@ async function refreshAccessToken2(url, option) {
             .catch(error => {
                 console.error('Error:', error);
             });
-        }
-        else if (response.ok) {
+    }
+    else if (response.ok) {
         // else if (response.status =) {
-            console.log('Statuss: ', response.status);
-            return response.json();
-            
-        }
+        console.log('Statuss: ', response.status);
+        return response.json();
+
+    }
     // } catch (error) {
     //     console.error('Error:', error);
     // }
@@ -239,7 +238,7 @@ function getCategoryListFromStorage() {
         getCategoryList();
         // getCategoryListFromStorage();
     }
-    
+
 }
 
 getFooditems();
@@ -294,7 +293,7 @@ function getAllFoodListFromStorage() {
         // Optionally, you can call getCategoryList() here to fetch from API if not in storage
         getFooditems();
     }
-    
+
 }
 
 
@@ -310,8 +309,8 @@ function getTablesData() {
     }
     const url = `${baseURL}foods/tables/`;
     refreshAccessToken2(url, option)
-    // .then(response => response.json())
-    .then(data => {
+        // .then(response => response.json())
+        .then(data => {
             console.log('Data:', data);
             localStorage.setItem('tablesList', JSON.stringify(data));
             getTablesListFromStorage();
@@ -339,4 +338,46 @@ function getTablesListFromStorage() {
         getTablesData();
     }
 
+}
+
+
+getRoomsData();
+// API Call to GET Rooms data
+function getRoomsData() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+    url = `${baseURL}hotel/rooms/`;
+    refreshAccessToken2(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Data:', data);
+            localStorage.setItem('roomsList', JSON.stringify(data));
+            getRoomsListFromStorage();
+        })
+        .catch(error => {
+            console.log('Error fetching table:', error)
+        });
+}
+
+function getRoomsListFromStorage() {
+    const storedData = localStorage.getItem('roomsList');
+    if (storedData) {
+        if (storedData === 'undefined') {
+            console.log('No room list found in local storage');
+            getRoomsData();
+        }
+        const roomsList = JSON.parse(storedData);
+        console.log('Room list from local storage:', roomsList);
+        // passToCategoryList(categoryList);
+        return roomsList;
+    } else {
+        console.log('No category list found in local storage');
+        // Optionally, you can call getCategoryList() here to fetch from API if not in storage
+        getRoomsData();
+    }
 }

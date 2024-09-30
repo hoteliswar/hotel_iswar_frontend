@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const navItems = document.querySelectorAll('.dash-nav-item');
     const insertAllModal = document.querySelector('.insert-all-modal');
 
-    loadContent('BOOKING');   // Load the default content
+    loadContent('ROOM');   // Load the default content
 
     navItems.forEach(item => {
         item.addEventListener('click', function () {

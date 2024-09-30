@@ -41,6 +41,12 @@
     font-weight: 600;
 }
 
+.room-row{
+    margin-top: 12px;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
 .roomData-list {
     padding-top: 10px;
     display: flex;
