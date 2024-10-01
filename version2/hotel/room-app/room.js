@@ -1,5 +1,4 @@
 // const openRoomModal = document.getElementById('openAddModal');
-// document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('click', function (e) {
     if (e.target.id === 'openAddModal') {
         showAddModal();
@@ -71,10 +70,6 @@ function updateImagePreview() {
 
 renderRoomData();
 
-// document.addEventListener('DOMContentLoaded', function () {
-//     renderRoomData();
-// })
-
 // Get All Rooms from local storage and put in Table
 function renderRoomData() {
     console.log('renderRoomData');
@@ -132,45 +127,71 @@ function viewRoomModal(roomid) {
 
 }
 
-// function addNewRoom(){
 const saveRoombtn = document.getElementById('add-room-save-btn');
-saveRoombtn.addEventListener('click', function () {
-    const roomNumber = document.getElementById('roomNumber').value;
-    const roomPrice = document.getElementById('roomPrice').value;
-    const roomType = document.getElementById('roomType').value;
-    const roomBedType = document.getElementById('bedType').value;
-    const roomStatus = document.getElementById('roomStatus').value;
-    const roomDescription = document.getElementById('amenities').value;
-    // const roomImage = document.getElementById('roomImage').value;
+saveRoombtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    if (e.target.id === 'add-room-save-btn') {
+        const roomNumber = document.getElementById('roomNumber').value;
+        const roomPrice = document.getElementById('roomPrice').value;
+        const roomType = document.getElementById('roomType').value;
+        const roomBedType = document.getElementById('bedType').value;
+        const roomStatus = document.getElementById('roomStatus').value;
+        // const roomDescription = document.getElementById('amenities').value;
+        const roomDescription = document.querySelectorAll('input[name="amenities"]:checked');
+        const selectedAmenities = Array.from(roomDescription).map(cb => cb.value);
+        // const roomImage = document.getElementById('roomImage').value;
 
-    const roomData = {
-        room_number: roomNumber,
-        price: roomPrice,
-        room_type: roomType,
-        beds: roomBedType,
-        status: roomStatus,
-        description: roomDescription,
-        images: uploadedImages
+        // const roomData = {
+        //     room_number: roomNumber,
+        //     price: roomPrice,
+        //     room_type: roomType,
+        //     beds: roomBedType,
+        //     status: roomStatus,
+        //     description: roomDescription,
+        //     images: uploadedImages
+        // }
+
+        const formData = new FormData();
+        formData.append('room_number', roomNumber);
+        formData.append('price', roomPrice);
+        formData.append('room_type', roomType);
+        formData.append('beds', roomBedType);
+        formData.append('status', roomStatus);
+        formData.append('description', selectedAmenities);
+
+
+        console.log('FormData entries:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+            // To display the formData need to iterate over the Object
+        }
+
+        const formDataObj = Object.fromEntries(formData.entries());
+        console.log('FormData as object:', formDataObj);
+
+        addNewRoom(formData);
     }
-    console.log(roomData);
-    addNewRoom(roomData);
-
     // POST CALL TO API to add new room
     function addNewRoom(roomData) {
         const url = `${baseURL}hotel/rooms/`;
         const options = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                // 'Content-Type': 'application/json' 
+                // Remove 'Content-Type' header when sending FormData
             },
-            body: JSON.stringify(roomData),
+            body: roomData,
         };
+        console.log(roomData);
         refreshAccessToken2(url, options)
             // .then(response => response.json())
             .then(data => {
                 console.log('Data:', data);
                 console.table(data);
                 alert("Room Created Successfully");
+                coldReload();
+                coldReload();
             })
             .catch(error => {
                 console.log('Error fetching data:', error);
@@ -179,7 +200,20 @@ saveRoombtn.addEventListener('click', function () {
     }
 })
 
+function coldReload(){
+    // window.location.reload();
+
+    // window.addEventListener('load', function () {
+    //     const hotelNav = document.querySelector('.dash-nav-category');
+    //     const navRoom = hotelNav.getElementById('room');
+    //     if (navRoom){
+    //         navRoom.click();
+    //     }
+    // })
+    getRoomsData();
+    const appendRoom = document.querySelector('.append-all-room');
+    appendRoom.innerHTML = '';
+    renderRoomData();
+}
 
 
-// }
-// })
