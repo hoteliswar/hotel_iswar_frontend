@@ -77,7 +77,7 @@ body {
 }
 
 .dashboard-nav{
-    background-color: aliceblue;
+    background-color: rgb(255, 175, 2);
     height: 92vh;
     overflow-y: auto;
     user-select: none;
@@ -90,8 +90,8 @@ body {
     width: auto;
     height: 50px;
     background-color: rgb(255, 175, 2);
-    border-bottom: 1px solid #fff;
-    border-top: 1px solid #fff;
+    /* border-bottom: 1px solid #fff; */
+    /* border-top: 1px solid #fff; */
     position: relative;
     color: #fff;
     cursor: pointer;
@@ -141,3 +141,8 @@ body {
 
 /* Add Modal from room.html */
 
+.hotel-area{
+    height: 90vh;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
