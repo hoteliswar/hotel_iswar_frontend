@@ -33,7 +33,7 @@ document.querySelector('.close').onclick = function () {
 
 // add images
 
-let uploadedImages = [];
+// let uploadedImages = [];
 
 document.getElementById('roomImage').addEventListener('change', function (event) {
     const files = event.target.files;

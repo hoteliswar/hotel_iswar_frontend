@@ -9,8 +9,8 @@ var roomBookings = {
             age: 25,
             email: "john.doe@example.com",
             phoneNumber: "1234567890",
-            checkIn: new Date(2024, 8, 7, 12, 0),
-            checkOut: new Date(2024, 8, 9, 11, 0)
+            checkIn: new Date(2024, 9, 3, 12, 0),
+            checkOut: new Date(2024, 9, 8, 11, 0)
         },
         {
             guestName: "Amit Dev",
@@ -82,7 +82,7 @@ function generateCalendar(startDate) {
     calendarDiv.appendChild(table);
 }
 
-function generateDayCells(roomNumber, date) {
+function generateDayCells2(roomNumber, date) {
     let cellContent = '<div class="day-cell">';
     for (let hour = 0; hour < 24; hour++) {
         const cellDate = new Date(date);
@@ -103,6 +103,26 @@ function generateDayCells(roomNumber, date) {
     return cellContent;
 }
 
+function generateDayCells(roomNumber, date) {
+    let cellContent = '<div class="day-cell">';
+    for (let hour = 0; hour < 24; hour++) {
+        const cellDate = new Date(date);
+        cellDate.setHours(hour);
+        const { isBooked, isPast } = checkBookingStatus(roomNumber, cellDate);
+        let cellClass = 'available';
+        if (isBooked) {
+            cellClass = isPast ? 'past-booked' : 'booked';
+            const bookingInfo = getBookingInfo(roomNumber, cellDate);
+            const tooltipContent = bookingInfo ?
+                `Guest: ${bookingInfo.guestName}\nAge: ${bookingInfo.age}\nPhone: ${bookingInfo.phoneNumber}\nCheck-in: ${formatDate(bookingInfo.checkIn)}\nCheck-out: ${formatDate(bookingInfo.checkOut)}` : '';
+            cellContent += `<div class="hour-cell ${cellClass}" data-tooltip="${tooltipContent}" onclick="showBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
+        } else {
+            cellContent += `<div class="hour-cell ${cellClass}" onclick="showNewBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
+        }
+    }
+    cellContent += '</div>';
+    return cellContent;
+}
 
 function generateDayCells99(roomNumber, date) {
     let cellContent = '<div class="day-cell">';
@@ -245,7 +265,7 @@ document.addEventListener('click', function(event) {
 
         if(roomList){
             roomList.textContent = 'Room List';
-            allRooms();
+            // allRooms();
         }
     }
 });
@@ -311,6 +331,27 @@ function selectRoom(roomNumber) {
     newBookingForm(roomNumber);
 }
 
-function newBookingForm(roomNumber){
+// function newBookingForm(roomNumber){
     
+// }
+
+function showNewBookingModal(roomNumber, dateString) {
+    const date = new Date(dateString);
+    const newBookingModal = document.getElementById('newBookingModal');
+    if (newBookingModal) {
+        setTimeout(() => newBookingModal.classList.add('show'), 10);
+        newBookingModal.style.display = 'block';
+    }
+
+    // Pre-fill the room number and date in the new booking form
+    // document.getElementById('roomNumberInput').value = roomNumber;
+    // document.getElementById('checkInDateInput').value = formatDateForInput(date);
+
+    // You might want to call your existing function to populate room list
+    // allRooms();
 }
+
+function formatDateForInput(date) {
+    return date.toISOString().split('T')[0];
+}
+
