@@ -343,7 +343,7 @@ function getTablesListFromStorage() {
 
 getRoomsData();
 // API Call to GET Rooms data
-function getRoomsData() {
+function getRoomsData2() {
     const option = {
         method: 'GET',
         headers: {
@@ -358,10 +358,32 @@ function getRoomsData() {
             console.log('Data:', data);
             localStorage.setItem('roomsList', JSON.stringify(data));
             getRoomsListFromStorage();
+            return true;
         })
         .catch(error => {
             console.log('Error fetching table:', error)
         });
+}
+
+async function getRoomsData() {
+    const url = `${baseURL}hotel/rooms/`;
+    const options = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    };
+
+    try {
+        const response = await refreshAccessToken2(url, options);
+        // const roomsData = await response.json();
+        // Save the updated room data to local storage
+        localStorage.setItem('roomsList', JSON.stringify(response));
+        console.log('Rooms data updated in local storage');
+    } catch (error) {
+        console.log('Error fetching rooms data:', error);
+    }
 }
 
 function getRoomsListFromStorage() {
@@ -400,6 +422,7 @@ function customAlert(message, type = 'info') {
     alertContainer.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
     alertContainer.style.zIndex = '9999';
     alertContainer.style.transition = 'opacity 0.3s ease-in-out';
+    alertContainer.style.zIndex = '100002';
 
     // Set color based on alert type
     switch(type) {

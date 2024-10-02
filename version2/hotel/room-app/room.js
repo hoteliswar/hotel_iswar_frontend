@@ -1,4 +1,11 @@
 // const openRoomModal = document.getElementById('openAddModal');
+// const hotelArea = document.getElementById('hotel-content');
+// hotelArea.addEventListener('DOMContentLoaded', function (e) {
+//     e.preventDefault();
+//     console.log('hotelArea loaded');
+// })
+
+
 document.addEventListener('click', function (e) {
     if (e.target.id === 'openAddModal') {
         showAddModal();
@@ -100,12 +107,12 @@ function renderRoomData() {
         description.textContent = room.description;
 
         const bedType = document.createElement('div');
-        bedType.classList.add('col-2');
+        bedType.classList.add('col-3');
         bedType.textContent = room.beds;
 
         const actions = document.createElement('div');
-        actions.classList.add('col-2');
-        actions.innerHTML = '<i class="fas fa-eye"></i>';
+        actions.classList.add('col-1');
+        actions.innerHTML = `<i class="fas fa-eye view-room-eye" data-room-id="${room.id}"></i>`;
         actions.addEventListener('click', function () {
             // alert('View button clicked');
             viewRoomModal(room.id);
@@ -124,11 +131,101 @@ function renderRoomData() {
 }
 
 function viewRoomModal(roomid) {
+    // Change Heading and Button
+    document.querySelector('.model-content-title').textContent = 'View Room';
+    const actionBtn = document.getElementById('add-room-save-btn');
+    actionBtn.value = 'Update';
+    actionBtn.id = 'update-room-btn';
+
+    console.log('viewRoomModal', roomid);
+    // Get roomsList from localstorage and fetch records with roomid
+    const roomsList = JSON.parse(localStorage.getItem('roomsList')) || [];
+    const roomData = roomsList.find(room => room.id === roomid);
+    console.log('roomData', roomData);
+
+    // Open the modal and display the room data
+    const modal = document.getElementById('roomModal');
+    modal.style.display = 'block';
+    modal.classList.add('show');
+
+    // Display room data in modal
+    const roomNumber = document.getElementById('roomNumber');
+    roomNumber.value = roomData.room_number;
+
+    const roomPrice = document.getElementById('roomPrice');
+    roomPrice.value = roomData.price;
+
+    const roomType = document.getElementById('roomType');
+    roomType.value = roomData.room_type;
+
+    const roomBedType = document.getElementById('bedType');
+    roomBedType.value = roomData.beds;
+
+    const roomStatus = document.getElementById('roomStatus');
+    roomStatus.value = roomData.status;
+
+    const roomImages = document.getElementById('roomImages');
+    roomImages.value = roomData.images;
+
+    // Description is amenities which stored as concatatenated checkbox values
+
+    const roomDescription = document.getElementById('amenities');
+    
+    // Handle amenities checkboxes
+    const amenities = roomData.description.split(',').map(item => item.trim());
+    const checkboxes = document.querySelectorAll('input[name="amenities"]');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = amenities.includes(checkbox.value);
+    });
+
+
+
+
+
+
 
 }
 
-const saveRoombtn = document.getElementById('add-room-save-btn');
-saveRoombtn.addEventListener('click', function (e) {
+// Update Room
+document.getElementById('update-room-btn').addEventListener('click', function (e) {
+    e.preventDefault();
+    if (e.target.id === 'update-room-btn') {
+        const roomNumber = document.getElementById('roomNumber').value;
+        const roomPrice = document.getElementById('roomPrice').value;
+        const roomType = document.getElementById('roomType').value;
+        const roomBedType = document.getElementById('bedType').value;
+        const roomStatus = document.getElementById('roomStatus').value;
+        const roomDescription = document.querySelectorAll('input[name="amenities"]:checked');
+        const selectedAmenities = Array.from(roomDescription).map(cb => cb.value);
+
+        const formData = new FormData();
+        formData.append('room_number', roomNumber);
+        formData.append('price', roomPrice);
+        formData.append('room_type', roomType);
+        formData.append('beds', roomBedType);
+        formData.append('status', roomStatus);
+        formData.append('description', selectedAmenities);
+
+        console.log('FormData entries:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
+
+        const formDataObj = Object.fromEntries(formData.entries());
+        console.log('FormData as object:', formDataObj);
+
+        updateRoom(formData);
+        document.querySelector('.close').click();
+
+        function updateRoom(roomData) {
+        }
+    }
+});
+
+
+// Add New Room
+document.getElementById('add-room-save-btn').addEventListener('click', function (e) {
     e.preventDefault();
     if (e.target.id === 'add-room-save-btn') {
         const roomNumber = document.getElementById('roomNumber').value;
@@ -170,6 +267,7 @@ saveRoombtn.addEventListener('click', function (e) {
         console.log('FormData as object:', formDataObj);
 
         addNewRoom(formData);
+        document.querySelector('.close').click();
     }
     // POST CALL TO API to add new room
     function addNewRoom(roomData) {
@@ -190,30 +288,21 @@ saveRoombtn.addEventListener('click', function (e) {
                 console.log('Data:', data);
                 console.table(data);
                 alert("Room Created Successfully");
-                coldReload();
-                coldReload();
+                getRoomsData();
+                return getRoomsData();
+            })
+            .then(() => {
+                alert("Room Created Successfully");
+                document.querySelector('.append-all-room').innerHTML = '';
+                renderRoomData();
             })
             .catch(error => {
                 console.log('Error fetching data:', error);
             });
-
     }
+
+
 })
 
-function coldReload(){
-    // window.location.reload();
-
-    // window.addEventListener('load', function () {
-    //     const hotelNav = document.querySelector('.dash-nav-category');
-    //     const navRoom = hotelNav.getElementById('room');
-    //     if (navRoom){
-    //         navRoom.click();
-    //     }
-    // })
-    getRoomsData();
-    const appendRoom = document.querySelector('.append-all-room');
-    appendRoom.innerHTML = '';
-    renderRoomData();
-}
 
 

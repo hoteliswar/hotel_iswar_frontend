@@ -67,6 +67,11 @@
     font-weight: 500;
 }
 
+.view-room-eye{
+    cursor: pointer;
+    color: rgb(255, 140, 0);
+}
+
 .roomData-list {
     padding-top: 10px;
     display: flex;
