@@ -278,7 +278,7 @@ document.querySelector('.close2').onclick = function () {
     setTimeout(() => newBookingModal.style.display = 'none', 300);
 }
 
-function allRooms(){
+function allRooms2(){
     const roomList = {
         101: "Available",
         102: "Available",
@@ -315,10 +315,36 @@ function allRooms(){
         
     }
 
-    const modalRoomList = document.querySelector('.m-room');
+    const modalRoomList = document.querySelector('.rooms-btn');
     modalRoomList.innerHTML = '';
     modalRoomList.appendChild(allRoomDiv);
 
+}
+
+function allRooms(){
+    const modalRoomListSelect = document.querySelector('.rooms-btn');
+    const roomList = localStorage.getItem('roomsList');
+    const roomListObj = JSON.parse(roomList);
+    console.log('Testing');
+    console.log(roomListObj);
+
+    // Create options for each rooms and when clicked it will add another date field
+    roomListObj.forEach(room => {
+        const option = document.createElement('option');
+        option.value = room.room_number;
+        option.textContent = `Room ${room.room_number}`;
+        modalRoomListSelect.appendChild(option);
+    });
+    modalRoomListSelect.addEventListener('change', function() {
+        const selectedRoom = this.value;
+        const dateField = document.createElement('input');
+        dateField.type = 'date';
+        dateField.name = 'bookingDate';
+        dateField.required = true;
+        document.querySelector('.booking-form').appendChild(dateField);
+    });
+
+   
 }
 
 function selectRoom(roomNumber) {
@@ -348,7 +374,7 @@ function showNewBookingModal(roomNumber, dateString) {
     // document.getElementById('checkInDateInput').value = formatDateForInput(date);
 
     // You might want to call your existing function to populate room list
-    // allRooms();
+    allRooms();
 }
 
 function formatDateForInput(date) {

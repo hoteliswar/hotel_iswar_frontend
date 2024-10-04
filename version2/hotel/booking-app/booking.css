@@ -24,7 +24,7 @@ body {
     cursor: pointer;
 }
 
-.newBooking{
+.newBooking {
     background-color: #bb3e03;
 }
 
@@ -155,7 +155,8 @@ td {
     /* Or any color you prefer for past bookings */
 }
 
-.modal-container, .modal-container-2 {
+.modal-container,
+.modal-container-2 {
     position: fixed !important;
     z-index: 10000;
     right: -100%;
@@ -168,7 +169,8 @@ td {
     transition: right 0.3s ease-out;
 }
 
-.calendar-modal, .new-booking{
+.calendar-modal,
+.new-booking {
     /* display: none; */
     position: fixed;
     z-index: 1000;
@@ -182,12 +184,12 @@ td {
     transition: right 0.3s ease-out;
 }
 
-.new-booking{
+.new-booking {
     max-width: 45%;
 }
 
 /*  */
-.modal-header{
+.modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -203,17 +205,20 @@ td {
 }
 
 /*  */
-.calendar-modal.show, .new-booking.show {
+.calendar-modal.show,
+.new-booking.show {
     right: 0;
 }
 
-.modal-content, .modal-content-2 {
+.modal-content,
+.modal-content-2 {
     height: 100%;
     overflow-y: auto;
     padding: 20px;
 }
 
-.close, .close2 {
+.close,
+.close2 {
     /* position: absolute; */
     top: 10px;
     right: 20px;
@@ -221,29 +226,30 @@ td {
     cursor: pointer;
 }
 
-.booking-form{
+.booking-form {
     padding-top: 20px;
 }
 
-.input-element{
+.input-element {
     display: inline-block;
     width: 48%;
     margin-right: 2%;
     vertical-align: top;
 }
 
-.input-element:nth-child(even){
+.input-element:nth-child(even) {
     margin-right: 0;
 }
 
-.input-element label{
+.input-element label {
     display: block;
     margin-bottom: 5px;
     font-size: 0.8em;
     font-weight: 600;
 }
 
-.input-element input{
+.input-element input,
+.input-element select {
     width: 100%;
     padding: 5px;
     margin: 0 0 10px 0;
@@ -251,3 +257,20 @@ td {
     border: 1px solid rgb(252, 176, 11);
 }
 
+.ele-room label {
+    display: inline-block;
+    width: 25%;
+
+}
+
+.ele-room input {
+    display: inline-block;
+    width: 50%;
+
+}
+
+#add-more-btn {
+    color: rgb(246, 169, 3);
+    padding-left: 10px;
+    cursor: pointer;
+}
