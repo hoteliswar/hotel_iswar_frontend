@@ -185,7 +185,11 @@ td {
 }
 
 .new-booking {
-    max-width: 45%;
+    max-width: 65%;
+}
+
+.booking-details-col{
+    width: 65%;
 }
 
 /*  */
@@ -259,18 +263,18 @@ td {
 
 .ele-room label {
     display: inline-block;
-    width: 25%;
+    width: 30%;
 
 }
 
 .ele-room input {
     display: inline-block;
-    width: 50%;
+    width: 45%;
 
 }
 
-#add-more-btn {
-    color: rgb(246, 169, 3);
+#add-more-btn, .remove-room-btn {
+    color: #f6a903;
     padding-left: 10px;
     cursor: pointer;
 }
@@ -278,4 +282,17 @@ td {
 .address {
     display: block;
     width: 97%;
+}
+
+.new-booking-btn{
+    background-color: #f6a903;
+    height: 50px;
+    width: 100px;
+    border: 0;
+    border-radius: 4px;
+    float: right;
+    margin: 20px 10px 20px 20px ;
+    font-weight: 500;
+
+
 }

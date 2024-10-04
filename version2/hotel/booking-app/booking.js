@@ -253,7 +253,7 @@ document.querySelector('.close').onclick = function () {
 // });
 
 // Function to handle the new booking modal
-document.addEventListener('click', function(event) {
+document.addEventListener('click', function (event) {
     if (event.target && event.target.id === 'newBooking-btn') {
         const newBookingModal = document.getElementById('newBookingModal');
         if (newBookingModal) {
@@ -263,7 +263,7 @@ document.addEventListener('click', function(event) {
 
         roomList = document.querySelector('.m-room');
 
-        if(roomList){
+        if (roomList) {
             roomList.textContent = 'Room List';
             // allRooms();
         }
@@ -278,7 +278,7 @@ document.querySelector('.close2').onclick = function () {
     setTimeout(() => newBookingModal.style.display = 'none', 300);
 }
 
-function allRooms2(){
+function allRooms2() {
     const roomList = {
         101: "Available",
         102: "Available",
@@ -304,7 +304,7 @@ function allRooms2(){
             roomButton.onclick = () => selectRoom(roomNumber);
             allRoomDiv.appendChild(roomButton);
         }
-        if (status === "Booked" || status === "Occupied")  {
+        if (status === "Booked" || status === "Occupied") {
             const roomButton = document.createElement('button');
             roomButton.className = `room-button ${status.toLowerCase()}`;
             roomButton.id = roomNumber;
@@ -312,7 +312,7 @@ function allRooms2(){
             roomButton.disabled = true;
             allRoomDiv.appendChild(roomButton);
         }
-        
+
     }
 
     const modalRoomList = document.querySelector('.rooms-btn');
@@ -321,7 +321,7 @@ function allRooms2(){
 
 }
 
-function allRooms(){
+function allRooms3() {
     const modalRoomListSelect = document.querySelector('.rooms-btn');
     const roomList = localStorage.getItem('roomsList');
     const roomListObj = JSON.parse(roomList);
@@ -335,7 +335,7 @@ function allRooms(){
         option.textContent = `Room ${room.room_number}`;
         modalRoomListSelect.appendChild(option);
     });
-    modalRoomListSelect.addEventListener('change', function() {
+    modalRoomListSelect.addEventListener('change', function () {
         const selectedRoom = this.value;
         const dateField = document.createElement('input');
         dateField.type = 'date';
@@ -344,7 +344,56 @@ function allRooms(){
         document.querySelector('.booking-form').appendChild(dateField);
     });
 
-   
+
+}
+
+function allRooms4() {
+    const modalRoomListSelects = document.querySelectorAll('.rooms-btn');
+    const roomList = localStorage.getItem('roomsList');
+    const roomListObj = JSON.parse(roomList);
+    console.log('Testing');
+    console.log(roomListObj);
+
+    modalRoomListSelects.forEach(select => {
+        // Clear existing options
+        select.innerHTML = '<option selected disabled>Select Room</option>';
+
+        // Create options for each room
+        roomListObj.forEach(room => {
+            const option = document.createElement('option');
+            option.value = room.room_number;
+            option.textContent = `Room ${room.room_number}`;
+            select.appendChild(option);
+        });
+
+        // Add change event listener to each select
+        select.addEventListener('change', function () {
+            const selectedRoom = this.value;
+            console.log(`Selected room: ${selectedRoom}`);
+            // You can add more functionality here if needed
+        });
+    });
+}
+
+function allRooms5() {
+    const modalRoomListSelects = document.querySelectorAll('.rooms-btn');
+    if (modalRoomListSelects.length > 0) {
+        modalRoomListSelects.forEach(select => {
+            populateRoomOptions(select);
+        });
+    } else {
+        const singleSelect = document.querySelector('.rooms-btn');
+        if (singleSelect) {
+            populateRoomOptions(singleSelect);
+        }
+    }
+}
+
+function allRooms() {
+    const modalRoomListSelects = document.querySelectorAll('.rooms-btn');
+    modalRoomListSelects.forEach(select => {
+        populateRoomOptions(select);
+    });
 }
 
 function selectRoom(roomNumber) {
@@ -358,7 +407,7 @@ function selectRoom(roomNumber) {
 }
 
 // function newBookingForm(roomNumber){
-    
+
 // }
 
 function showNewBookingModal(roomNumber, dateString) {
@@ -369,11 +418,6 @@ function showNewBookingModal(roomNumber, dateString) {
         newBookingModal.style.display = 'block';
     }
 
-    // Pre-fill the room number and date in the new booking form
-    // document.getElementById('roomNumberInput').value = roomNumber;
-    // document.getElementById('checkInDateInput').value = formatDateForInput(date);
-
-    // You might want to call your existing function to populate room list
     allRooms();
 }
 
@@ -381,3 +425,170 @@ function formatDateForInput(date) {
     return date.toISOString().split('T')[0];
 }
 
+document.addEventListener('DOMContentLoaded', allRooms);
+
+const addMoreBtn = document.getElementById('add-more-btn');
+const inputElementAddRoom = document.querySelector('.input-element-add-room');
+let rowCount = 1;
+
+addMoreBtn.addEventListener('click', function () {
+    rowCount++;
+    const newRow = createNewRow(rowCount);
+    // inputElementAddRoom.appendChild(newRow);
+});
+
+function createNewRow(id) {
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.id = `room-${id}`;
+
+    row.innerHTML = `
+           <div class="input-element">
+            <label for="roomNumber">Room</label>
+            <select class="rooms-btn" id="roomSelect-${id}">
+                <option selected disabled>Select Room</option>
+            </select>
+        </div>
+        <div class="input-element ele-room">
+            <label for="startDate-${id}">Start Date</label>
+            <input type="date" id="startDate-${id}" name="startDate" required>
+            <label for="endDate-${id}">End Date</label>
+            <input type="date" id="endDate-${id}" name="endDate" required>
+            <i class="fa-solid fa-circle-minus fa-2x remove-room-btn"></i>
+        </div>
+        `;
+
+    const removeBtn = row.querySelector('.remove-room-btn');
+    removeBtn.addEventListener('click', function () {
+        row.remove();
+    });
+
+    // return row;
+    inputElementAddRoom.appendChild(row);
+
+    // Populate room options for this new row
+    const selectElement = row.querySelector('.rooms-btn');
+    populateRoomOptions(selectElement);
+}
+
+// Function to initialize the booking functionality
+function initializeBooking() {
+    const addMoreBtn = document.getElementById('add-more-btn');
+    const inputElementAddRoom = document.querySelector('.input-element-add-room');
+    let rowCount = 1;
+
+    if (addMoreBtn) {
+        addMoreBtn.addEventListener('click', function () {
+            rowCount++;
+            const newRow = createNewRow(rowCount);
+            inputElementAddRoom.appendChild(newRow);
+            populateRoomOptions(newRow.querySelector('.rooms-btn'));
+        });
+    }
+
+    // Initial call to populate existing room selects
+    allRooms();
+}
+
+function populateRoomOptions(select) {
+    const roomList = localStorage.getItem('roomsList');
+    const roomListObj = JSON.parse(roomList);
+
+    // Clear existing options
+    select.innerHTML = '<option selected disabled>Select Room</option>';
+
+    // Create options for each room
+    roomListObj.forEach(room => {
+        const option = document.createElement('option');
+        option.value = room.room_number;
+        option.textContent = `Room ${room.room_number}`;
+        select.appendChild(option);
+    });
+
+    // Add change event listener to the select
+    select.addEventListener('change', function () {
+        const selectedRoom = this.value;
+        console.log(`Selected room: ${selectedRoom}`);
+        // You can add more functionality here if needed
+    });
+}
+
+// Export the initialization function
+window.initializeBooking = initializeBooking;
+
+
+// document.getElementById('new-booking-btn-2').addEventListener('click', function () {
+//     const roomRows = document.querySelectorAll('.row'); // Select all dynamically added room rows
+//     const bookingData = [];
+//     console.log(bookingData)
+
+//     roomRows.forEach((row, index) => {
+//         const roomSelect = document.getElementById(`roomSelect-${index + 1}`);
+//         const startDate = document.getElementById(`startDate-${index + 1}`);
+//         const endDate = document.getElementById(`endDate-${index + 1}`);
+
+//         // Validate to ensure room, start date, and end date are selected
+//         if (roomSelect.value && startDate.value && endDate.value) {
+//             bookingData.push({
+//                 room: roomSelect.value,
+//                 startDate: startDate.value,
+//                 endDate: endDate.value
+//             });
+//         } else {
+//             alert("Please fill all the required fields for each room.");
+//             return;
+//         }
+//     });
+
+//     console.log(bookingData); // You can handle this data as needed, like sending it to a backend API
+
+//     // Now you can use `bookingData` array to process or send data as required
+// });
+
+
+document.getElementById('new-booking-btn').addEventListener('click', function (e) {
+    e.preventDefault();
+    const roomRows = document.querySelectorAll('.row');
+    console.log(roomRows)
+    const bookingData = [];
+
+    roomRows.forEach((row, index) => {
+        const roomSelect = row.querySelector('.rooms-btn');
+        const startDate = row.querySelector('input[name="startDate"]');
+        const endDate = row.querySelector('input[name="endDate"]');
+
+        if (!roomSelect || !startDate || !endDate) {
+            console.error(`Missing elements in row ${index + 1}:`, {
+                roomSelect: !!roomSelect,
+                startDate: !!startDate,
+                endDate: !!endDate
+            });
+            alert(`Error: Some elements are missing in row ${index + 1}. Please check the console for details.`);
+            return;
+        }
+
+        if (roomSelect.value && startDate.value && endDate.value) {
+            bookingData.push({
+                room: roomSelect.value,
+                startDate: startDate.value,
+                endDate: endDate.value
+            });
+        } else {
+            console.warn(`Incomplete data in row ${index + 1}:`, {
+                room: roomSelect.value,
+                startDate: startDate.value,
+                endDate: endDate.value
+            });
+            alert(`Please fill all the required fields for room ${index + 1}.`);
+            return;
+        }
+    });
+
+    if (bookingData.length === 0) {
+        alert("Please add at least one room booking.");
+        return;
+    }
+
+    console.log("Booking data:", bookingData);
+    // Process or send bookingData as required
+});
