@@ -274,3 +274,8 @@ td {
     padding-left: 10px;
     cursor: pointer;
 }
+
+.address {
+    display: block;
+    width: 97%;
+}
