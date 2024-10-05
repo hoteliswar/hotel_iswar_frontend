@@ -48,36 +48,31 @@
                 <div class="booking-details-col">
                     <div class="modal-body-booking">
                         <div class="booking-form">
-                            <div class="input-element">
+
+
+                            <!-- <div class="input-element">
                                 <label for="bookingDate">Date</label>
                                 <input type="date" id="bookingDate" name="bookingDate" required>
                             </div>
                             <div class="input-element">
                                 <label for="bookingTime">Time</label>
-                                <input type="time" id="bookingTime" name="bookingTime" required>
-                            </div>
-                            <!-- <div class="input-element">
-                            <label for="roomNumber">Room</label>
-                            <input type="text" id="roomNumber" name="roomNumber" placeholder="Room Number" required>
-                            <select class="rooms-btn">
-                                <option selected disabled>Select Rooms</option>
-                            </select>
-                        </div> -->
+                                <input type="time" id="bookingTime" name="bookingTime" required value="12:00">
+                            </div> -->
 
                             <div class="input-element-add-room">
                                 <div class="row" id="room-1">
                                     <div class="input-element">
-                                        <label for="roomNumber">Room</label>
-                                        <select class="rooms-btn">
+                                        <label for="roomSelect-1">Room</label>
+                                        <select class="rooms-btn" id="roomSelect-1">
                                             <option selected disabled>Select Room</option>
                                         </select>
                                     </div>
                                     <div class="input-element ele-room">
-                                        <label for="roomNumber">Start Date</label>
-                                        <input type="date" id="startDate-1" name="startDate" placeholder="Room Number"
+                                        <label for="startDate-1">Start Date</label>
+                                        <input type="date" id="startDate-1" id="startDate-1" name="startDate" placeholder="Room Number"
                                             required>
-                                        <label for="roomNumber">End Date</label>
-                                        <input type="date" id="endDate-2" name="endDate" placeholder="Room Number"
+                                        <label for="endDate-1">End Date</label>
+                                        <input type="date" id="endDate-1" id="endDate-1" name="endDate" placeholder="Room Number"
                                             required>
                                         <i class="fa-solid fa-circle-plus fa-2x" id="add-more-btn"></i>
                                     </div>
@@ -119,15 +114,25 @@
                                 <input type="text" id="customerNationality" name="customerNationality"
                                     placeholder="Last Name">
                             </div>
+                            <div class="input-element">
+                                <label for="customerId">ID Card</label>
+                                <input type="file" id="customerId" name="customerId" multiple file-type="image/* , pdf/*">
+                            </div>
 
-                            <button class="new-booking-btn" id="new-booking-btn">Book</button>
 
-
-
-
+                            
 
                         </div>
                     </div>
+                </div>
+                <div class="booking-payment-col">
+                    <div class="total-booking-amount">Total Booking Amount</div>
+                    <div class="total-booking-amount-value">₹ 0.00</div>
+
+                    <div class="advance-booking-amount">Advance (₹)</div>
+                    <input type="text" class="advance-booking-amount-input" name="advance-booking-amount" id="advance-booking-amount" placeholder="0.00">
+
+                    <button class="new-booking-btn" id="new-booking-btn">Book</button>
                 </div>
             </div>
         </div>
