@@ -495,9 +495,9 @@ function createNewRow(id) {
     inputElementAddRoom.appendChild(row);
 }
 
-firstRowonDateChange();
+initializeFirstRow();
 
-function firstRowonDateChange(id = 1) {
+function initializeFirstRow() {
     const rows = document.querySelectorAll('.row');
     const row = rows[0];
     const startDateInput = row.querySelector(`#startDate-1`);
@@ -599,7 +599,7 @@ function populateRoomOptions(select, startDate, endDate) {
     roomListObj.forEach(room => {
         const isAvailable = checkRoomAvailability(room, startDate, endDate);
         const option = document.createElement('option');
-        option.value = room.room_number;
+        option.value = room.id;
         option.textContent = `Room ${room.room_number} - ${room.room_type} ${isAvailable ? '' : '(Occupied)'}`;
         option.disabled = !isAvailable;
         option.dataset.price = room.price;
@@ -627,17 +627,27 @@ function checkRoomAvailability(room, startDate, endDate) {
 window.initializeBooking = initializeBooking;
 
 
-// document.getElementById('new-booking-btn-2').addEventListener('click', function () {
-//     const roomRows = document.querySelectorAll('.row'); // Select all dynamically added room rows
+// document.getElementById('new-booking-btn2').addEventListener('click', function (e) {
+//     e.preventDefault();
+//     const roomRows = document.querySelectorAll('.row');
+//     console.log(roomRows)
 //     const bookingData = [];
-//     console.log(bookingData)
 
 //     roomRows.forEach((row, index) => {
-//         const roomSelect = document.getElementById(`roomSelect-${index + 1}`);
-//         const startDate = document.getElementById(`startDate-${index + 1}`);
-//         const endDate = document.getElementById(`endDate-${index + 1}`);
+//         const roomSelect = row.querySelector('.rooms-btn');
+//         const startDate = row.querySelector('input[name="startDate"]');
+//         const endDate = row.querySelector('input[name="endDate"]');
 
-//         // Validate to ensure room, start date, and end date are selected
+//         if (!roomSelect || !startDate || !endDate) {
+//             console.error(`Missing elements in row ${index + 1}:`, {
+//                 roomSelect: !!roomSelect,
+//                 startDate: !!startDate,
+//                 endDate: !!endDate
+//             });
+//             alert(`Error: Some elements are missing in row ${index + 1}. Please check the console for details.`);
+//             return;
+//         }
+
 //         if (roomSelect.value && startDate.value && endDate.value) {
 //             bookingData.push({
 //                 room: roomSelect.value,
@@ -645,63 +655,24 @@ window.initializeBooking = initializeBooking;
 //                 endDate: endDate.value
 //             });
 //         } else {
-//             alert("Please fill all the required fields for each room.");
+//             console.warn(`Incomplete data in row ${index + 1}:`, {
+//                 room: roomSelect.value,
+//                 startDate: startDate.value,
+//                 endDate: endDate.value
+//             });
+//             alert(`Please fill all the required fields for room ${index + 1}.`);
 //             return;
 //         }
 //     });
 
-//     console.log(bookingData); // You can handle this data as needed, like sending it to a backend API
+//     if (bookingData.length === 0) {
+//         alert("Please add at least one room booking.");
+//         return;
+//     }
 
-//     // Now you can use `bookingData` array to process or send data as required
+//     console.log("Booking data:", bookingData);
+//     // Process or send bookingData as required
 // });
-
-
-document.getElementById('new-booking-btn-2').addEventListener('click', function (e) {
-    e.preventDefault();
-    const roomRows = document.querySelectorAll('.row');
-    console.log(roomRows)
-    const bookingData = [];
-
-    roomRows.forEach((row, index) => {
-        const roomSelect = row.querySelector('.rooms-btn');
-        const startDate = row.querySelector('input[name="startDate"]');
-        const endDate = row.querySelector('input[name="endDate"]');
-
-        if (!roomSelect || !startDate || !endDate) {
-            console.error(`Missing elements in row ${index + 1}:`, {
-                roomSelect: !!roomSelect,
-                startDate: !!startDate,
-                endDate: !!endDate
-            });
-            alert(`Error: Some elements are missing in row ${index + 1}. Please check the console for details.`);
-            return;
-        }
-
-        if (roomSelect.value && startDate.value && endDate.value) {
-            bookingData.push({
-                room: roomSelect.value,
-                startDate: startDate.value,
-                endDate: endDate.value
-            });
-        } else {
-            console.warn(`Incomplete data in row ${index + 1}:`, {
-                room: roomSelect.value,
-                startDate: startDate.value,
-                endDate: endDate.value
-            });
-            alert(`Please fill all the required fields for room ${index + 1}.`);
-            return;
-        }
-    });
-
-    if (bookingData.length === 0) {
-        alert("Please add at least one room booking.");
-        return;
-    }
-
-    console.log("Booking data:", bookingData);
-    // Process or send bookingData as required
-});
 
 
 function updateTotalBookingAmount2() {
@@ -743,6 +714,7 @@ function updateTotalBookingAmount2() {
 
 document.getElementById('new-booking-btn').addEventListener('click', function (e) {
     e.preventDefault();
+    console.log("Book btn clicked")
     const roomRows = document.querySelectorAll('.input-element-add-room .row');
     console.log(roomRows);
     const bookingData = [];
@@ -763,10 +735,14 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
         }
 
         if (roomSelect.value && startDate.value && endDate.value) {
+            // Convert dates to the required format
+            const formattedStartDate = new Date(startDate.value + 'T12:00:00Z').toISOString();
+            const formattedEndDate = new Date(endDate.value + 'T12:00:00Z').toISOString();
+
             bookingData.push({
                 room: roomSelect.value,
-                startDate: startDate.value,
-                endDate: endDate.value
+                startDate: formattedStartDate,
+                endDate: formattedEndDate
             });
         } else {
             console.warn(`Incomplete data in row ${index + 1}:`, {
@@ -784,8 +760,130 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
         return;
     }
 
+    const bookingPhone = document.getElementById('bookingPhone').value;
+    const bookingEmail = document.getElementById('bookingEmail').value;
+    const bookingFname = document.getElementById('bookingFname').value;
+    const bookingLname = document.getElementById('bookingLname').value;
+    const bookingAddress = document.getElementById('bookingAddress').value;
+    const customerState = document.getElementById('customerState').value;
+    const customerNationality = document.getElementById('customerNationality').value;
+    const customerId = document.getElementById('customerId').value;
+    const advanceBookingAmount = document.getElementById('advance-booking-amount').value;
+
+    // If any of the above fields are empty, alert the user
+    if (!bookingPhone || !bookingEmail || !bookingFname || !bookingLname || !bookingAddress || !customerState || !customerNationality) {
+        if (!bookingPhone) {
+            alert("Phone number is required.");
+            return;
+        }
+        if (!bookingEmail) {
+            alert("Email is required.");
+            return;
+        }
+        if (!bookingFname) {
+            alert("First name is required.");
+            return;
+        }
+        if (!bookingLname) {
+            alert("Last name is required.");
+            return;
+        }
+        if (!bookingAddress) {
+            alert("Address is required.");
+            return;
+        }
+        if (!customerState) {
+            alert("State is required.");
+            return;
+        }
+        if (!customerNationality) {
+            alert("Nationality is required.");
+            return;
+        }
+    }
+
+    if (advanceBookingAmount === null) {
+        advanceBookingAmount = 0;
+    }
+
     console.log("Booking data:", bookingData);
     // Process or send bookingData as required
+
+    const booking = {
+        'phone': bookingPhone,
+        'email': bookingEmail,
+        'first_name': bookingFname,
+        'last_name': bookingLname,
+        'address_line_1': bookingAddress,
+        'address_line_2': customerState + " , " + customerNationality,
+        // 'id': customerId,
+        'advance_amount': advanceBookingAmount,
+        // 'total_amount': totalBookingAmount,
+        'rooms': bookingData,
+        'status': 'pending'
+    }
+    console.log(booking);
+
+    // Create a form data object and add the booking data to it
+    const bookingFormData = new FormData();
+    bookingFormData.append('phone', bookingPhone);
+    bookingFormData.append('email', bookingEmail);
+    bookingFormData.append('first_name', bookingFname);
+    bookingFormData.append('last_name', bookingLname);
+    bookingFormData.append('address_line_1', bookingAddress);
+    bookingFormData.append('address_line_2', customerState + " , " + booking.customerNationality);
+    bookingFormData.append('advance_amount', advanceBookingAmount);
+    bookingFormData.append('status', 1);
+    // bookingFormData.append('rooms', JSON.stringify(bookingData));
+    bookingFormData.append("rooms",   `
+        "[
+            {
+                "room": ${bookingData.room},
+                "start_date": "${bookingData.startDate}",
+                "end_date": "${bookingData.endDate}"
+            }
+        ]"
+    `);
+
+    console.log("FormData:", JSON.stringify(bookingFormData));
+
+    for (let [key, value] of bookingFormData.entries()) {
+        console.log(key, value);
+        // To display the formData need to iterate over the Object
+    }
+
+
+    submitBooking(bookingFormData);
+
+    // POST call to API for booking
+    function submitBooking(booking) {
+
+        console.log("Booking data from submitBooking:", booking);
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+            },
+            body: booking,
+        };
+
+        const url = `${baseURL}hotel/bookings/`;
+
+        console.log("Booking data from submitBooking:", booking);
+        refreshAccessToken2(url, options)
+            // .then(response => response.json())
+            .then(data => {
+                console.log('Booked Data:', data);
+                console.table(data);
+                alert("Booked Successfully");
+            })
+            .catch(error => {
+                console.log('Error fetching booked data:', error);
+            });
+
+    }
+
 });
 
 function updateTotalBookingAmount3() {

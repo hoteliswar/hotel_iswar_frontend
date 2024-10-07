@@ -78,47 +78,88 @@
                             </div>
                             <div class="input-element">
                                 <label for="bookingPhone">Phone</label>
-                                <input type="text" id="bookingPhone" name="bookingPhone" required
+                                <input type="text" id="bookingPhone" name="bookingPhone" required value="1234567890"
                                     placeholder="+91 12345 67890">
                             </div>
                             <div class="input-element">
                                 <label for="bookingEmail">Email</label>
-                                <input type="email" id="bookingEmail" name="bookingEmail"
+                                <input type="email" id="bookingEmail" name="bookingEmail" value="test@gmail.com"
                                     placeholder="name@example.com">
                             </div>
                             <div class="input-element">
                                 <label for="bookingFname">First Name</label>
-                                <input type="text" id="bookingFname" name="bookingFname" required
+                                <input type="text" id="bookingFname" name="bookingFname" required value="test"
                                     placeholder="First Name">
                             </div>
                             <div class="input-element">
                                 <label for="bookingLname">Last Name</label>
-                                <input type="text" id="bookingLname" name="bookingLname" required
+                                <input type="text" id="bookingLname" name="bookingLname" required value="test"
                                     placeholder="Last Name">
                             </div>
                             <div class="input-element address">
                                 <label for="bookingAddress">Address</label>
-                                <input type="text" id="bookingAddress" name="bookingAddress" required
+                                <input type="text" id="bookingAddress" name="bookingAddress" required value="test"
                                     placeholder="Address">
                             </div>
                             <div class="input-element">
                                 <label for="customerState">State</label>
                                 <select name="customerState" id="customerState">
-                                    <option value="">Select State</option>
+                                    <option selected disabled>Select State</option>
+                                    <!-- States -->
+                                    <option value="andhra_pradesh">Andhra Pradesh</option>
+                                    <option value="arunachal_pradesh">Arunachal Pradesh</option>
+                                    <option value="assam">Assam</option>
+                                    <option value="bihar">Bihar</option>
+                                    <option value="chhattisgarh">Chhattisgarh</option>
+                                    <option value="goa">Goa</option>
+                                    <option value="gujarat">Gujarat</option>
+                                    <option value="haryana">Haryana</option>
+                                    <option value="himachal_pradesh">Himachal Pradesh</option>
+                                    <option value="jharkhand">Jharkhand</option>
+                                    <option value="karnataka">Karnataka</option>
+                                    <option value="kerala">Kerala</option>
+                                    <option value="madhya_pradesh">Madhya Pradesh</option>
+                                    <option value="maharashtra">Maharashtra</option>
+                                    <option value="manipur">Manipur</option>
+                                    <option value="meghalaya">Meghalaya</option>
+                                    <option value="mizoram">Mizoram</option>
+                                    <option value="nagaland">Nagaland</option>
+                                    <option value="odisha">Odisha</option>
+                                    <option value="punjab">Punjab</option>
+                                    <option value="rajasthan">Rajasthan</option>
+                                    <option value="sikkim">Sikkim</option>
+                                    <option value="tamil_nadu">Tamil Nadu</option>
+                                    <option value="telangana">Telangana</option>
+                                    <option value="tripura">Tripura</option>
+                                    <option value="uttar_pradesh">Uttar Pradesh</option>
+                                    <option value="uttarakhand">Uttarakhand</option>
+                                    <option value="west_bengal">West Bengal</option>
+
+                                    <!-- Union Territories -->
+                                    <option value="andaman_and_nicobar_islands">Andaman and Nicobar Islands</option>
+                                    <option value="chandigarh">Chandigarh</option>
+                                    <option value="dadra_and_nagar_haveli_and_daman_and_diu">Dadra and Nagar Haveli and
+                                        Daman and Diu</option>
+                                    <option value="delhi">Delhi</option>
+                                    <option value="lakshadweep">Lakshadweep</option>
+                                    <option value="puducherry">Puducherry</option>
+                                    <option value="ladakh">Ladakh</option>
+                                    <option value="jammu_and_kashmir">Jammu and Kashmir</option>
                                 </select>
                             </div>
                             <div class="input-element">
                                 <label for="customerNationality">Nationality</label>
-                                <input type="text" id="customerNationality" name="customerNationality"
+                                <input type="text" id="customerNationality" name="customerNationality" value="indian"
                                     placeholder="Last Name">
                             </div>
                             <div class="input-element">
                                 <label for="customerId">ID Card</label>
-                                <input type="file" id="customerId" name="customerId" multiple file-type="image/* , pdf/*">
+                                <input type="file" id="customerId" name="customerId" multiple
+                                    file-type="image/* , pdf/*">
                             </div>
 
 
-                            
+
 
                         </div>
                     </div>
@@ -128,7 +169,8 @@
                     <div class="total-booking-amount-value">₹ 0.00</div>
 
                     <div class="advance-booking-amount">Advance (₹)</div>
-                    <input type="text" class="advance-booking-amount-input" name="advance-booking-amount" id="advance-booking-amount" placeholder="0.00">
+                    <input type="text" class="advance-booking-amount-input" name="advance-booking-amount"
+                        id="advance-booking-amount" placeholder="0.00">
 
                     <button class="new-booking-btn" id="new-booking-btn">Book</button>
                 </div>
