@@ -442,6 +442,7 @@ document.addEventListener('DOMContentLoaded', allRooms);
 // const addMoreBtn = document.getElementById('add-more-btn');
 const inputElementAddRoom = document.querySelector('.input-element-add-room');
 let rowCount = 1;
+let rowCountStart = 0;
 
 document.getElementById('add-more-btn').addEventListener('click', function () {
     rowCount++;
@@ -456,9 +457,9 @@ function createNewRow(id) {
     row.id = `room-${id}`;
 
     row.innerHTML = `
-           <div class="input-element">
+        <div class="input-element">
             <label for="roomSelect-${id}">Room</label>
-            <select class="rooms-btn" id="roomSelect-${id}">
+            <select disabled class="rooms-btn" id="roomSelect-${id}">
                 <option selected disabled>Select Room</option>
             </select>
         </div>
@@ -469,29 +470,54 @@ function createNewRow(id) {
             <input type="date" id="endDate-${id}" name="endDate" required>
             <i class="fa-solid fa-circle-minus fa-2x remove-room-btn"></i>
         </div>
-        `;
+    `;
 
     const removeBtn = row.querySelector('.remove-room-btn');
     removeBtn.addEventListener('click', function () {
         row.remove();
+        updateTotalBookingAmount(); // Update total amount after removing a row
     });
-
-    // return row;
-    // inputElementAddRoom.appendChild(row);
-
-    // // Populate room options for this new row
-    // const selectElement = row.querySelector('.rooms-btn');
-    // populateRoomOptions(selectElement);
-
 
     const startDateInput = row.querySelector(`#startDate-${id}`);
     const endDateInput = row.querySelector(`#endDate-${id}`);
     const roomSelect = row.querySelector(`#roomSelect-${id}`);
 
-    startDateInput.addEventListener('change', () => checkDatesAndPopulateRooms(id));
-    endDateInput.addEventListener('change', () => checkDatesAndPopulateRooms(id));
+    startDateInput.addEventListener('change', () => {
+        checkDatesAndPopulateRooms(id);
+        updateTotalBookingAmount(); // Update total amount when start date changes
+    });
+    endDateInput.addEventListener('change', () => {
+        checkDatesAndPopulateRooms(id);
+        updateTotalBookingAmount(); // Update total amount when end date changes
+    });
+    roomSelect.addEventListener('change', updateTotalBookingAmount); // Update total amount when room selection changes
 
     inputElementAddRoom.appendChild(row);
+}
+
+firstRowonDateChange();
+
+function firstRowonDateChange(id = 1) {
+    const rows = document.querySelectorAll('.row');
+    const row = rows[0];
+    const startDateInput = row.querySelector(`#startDate-1`);
+    const endDateInput = row.querySelector(`#endDate-1`);
+    const roomSelect = row.querySelector(`#roomSelect-1`);
+
+    // startDateInput.addEventListener('change', () => checkDatesAndPopulateRooms(1));
+    // endDateInput.addEventListener('change', () => checkDatesAndPopulateRooms(1));
+
+    startDateInput.addEventListener('change', () => {
+        checkDatesAndPopulateRooms(1);
+        updateTotalBookingAmount();
+    });
+    endDateInput.addEventListener('change', () => {
+        checkDatesAndPopulateRooms(1);
+        updateTotalBookingAmount();
+    });
+    roomSelect.addEventListener('change', updateTotalBookingAmount);
+
+    // inputElementAddRoom.appendChild(row);
 }
 
 function checkDatesAndPopulateRooms(id) {
@@ -568,7 +594,7 @@ function populateRoomOptions(select, startDate, endDate) {
 
     // Clear existing options
     select.innerHTML = '<option selected disabled>Select Room</option>';
-
+    console.log("populateRoomOptions")
     // Create options for each room
     roomListObj.forEach(room => {
         const isAvailable = checkRoomAvailability(room, startDate, endDate);
@@ -630,7 +656,7 @@ window.initializeBooking = initializeBooking;
 // });
 
 
-document.getElementById('new-booking-btn').addEventListener('click', function (e) {
+document.getElementById('new-booking-btn-2').addEventListener('click', function (e) {
     e.preventDefault();
     const roomRows = document.querySelectorAll('.row');
     console.log(roomRows)
@@ -677,9 +703,8 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
     // Process or send bookingData as required
 });
 
-// select Room options should be diasbled at start and before populateRoomOptions, startDate and endDate shall be given and with startDate and EndDate we need to calculate available rooms and if any room is occupied then in options it should be disabled and  should show occupied
 
-function updateTotalBookingAmount() {
+function updateTotalBookingAmount2() {
     const roomRows = document.querySelectorAll('.row');
     let totalAmount = 0;
 
@@ -715,3 +740,126 @@ function updateTotalBookingAmount() {
         advanceInput.max = totalAmount;
     }
 }
+
+document.getElementById('new-booking-btn').addEventListener('click', function (e) {
+    e.preventDefault();
+    const roomRows = document.querySelectorAll('.input-element-add-room .row');
+    console.log(roomRows);
+    const bookingData = [];
+
+    roomRows.forEach((row, index) => {
+        const roomSelect = row.querySelector('.rooms-btn');
+        const startDate = row.querySelector('input[name="startDate"]');
+        const endDate = row.querySelector('input[name="endDate"]');
+
+        if (!roomSelect || !startDate || !endDate) {
+            console.error(`Missing elements in row ${index + 1}:`, {
+                roomSelect: !!roomSelect,
+                startDate: !!startDate,
+                endDate: !!endDate
+            });
+            alert(`Error: Some elements are missing in row ${index + 1}. Please check the console for details.`);
+            return;
+        }
+
+        if (roomSelect.value && startDate.value && endDate.value) {
+            bookingData.push({
+                room: roomSelect.value,
+                startDate: startDate.value,
+                endDate: endDate.value
+            });
+        } else {
+            console.warn(`Incomplete data in row ${index + 1}:`, {
+                room: roomSelect.value,
+                startDate: startDate.value,
+                endDate: endDate.value
+            });
+            alert(`Please fill all the required fields for room ${index + 1}.`);
+            return;
+        }
+    });
+
+    if (bookingData.length === 0) {
+        alert("Please add at least one room booking.");
+        return;
+    }
+
+    console.log("Booking data:", bookingData);
+    // Process or send bookingData as required
+});
+
+function updateTotalBookingAmount3() {
+    const roomRows = document.querySelectorAll('.input-element-add-room .row');
+    let totalAmount = 0;
+
+    roomRows.forEach(row => {
+        const roomSelect = row.querySelector('.rooms-btn');
+        const startDateInput = row.querySelector('input[name="startDate"]');
+        const endDateInput = row.querySelector('input[name="endDate"]');
+
+        if (roomSelect.value && startDateInput.value && endDateInput.value) {
+            const price = parseFloat(roomSelect.options[roomSelect.selectedIndex].dataset.price);
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+
+            // Calculate the number of nights
+            const nights = (endDate - startDate) / (1000 * 60 * 60 * 24);
+
+            // Add to total amount
+            totalAmount += price * nights;
+        }
+    });
+
+    // Update the display
+    const totalAmountElement = document.querySelector('.total-booking-amount-value');
+    if (totalAmountElement) {
+        totalAmountElement.textContent = `₹ ${totalAmount.toFixed(2)}`;
+    } else {
+        console.error('Total amount display element not found');
+    }
+
+    // Update advance amount input max value
+    const advanceInput = document.getElementById('advance-booking-amount');
+    if (advanceInput) {
+        advanceInput.max = totalAmount;
+    }
+}
+
+function updateTotalBookingAmount() {
+    const roomRows = document.querySelectorAll('.input-element-add-room .row');
+    let totalAmount = 0;
+
+    roomRows.forEach(row => {
+        const roomSelect = row.querySelector('.rooms-btn');
+        const startDateInput = row.querySelector('input[name="startDate"]');
+        const endDateInput = row.querySelector('input[name="endDate"]');
+
+        if (roomSelect.value && startDateInput.value && endDateInput.value) {
+            const price = parseFloat(roomSelect.options[roomSelect.selectedIndex].dataset.price);
+            const startDate = new Date(startDateInput.value);
+            const endDate = new Date(endDateInput.value);
+
+            // Calculate the number of nights
+            const nights = (endDate - startDate) / (1000 * 60 * 60 * 24);
+
+            // Add to total amount
+            totalAmount += price * nights;
+        }
+    });
+
+    // Update the display
+    const totalAmountElement = document.querySelector('.total-booking-amount-value');
+    if (totalAmountElement) {
+        totalAmountElement.textContent = `₹ ${totalAmount.toFixed(2)}`;
+    } else {
+        console.error('Total amount display element not found');
+    }
+
+    // Update advance amount input max value
+    const advanceInput = document.getElementById('advance-booking-amount');
+    if (advanceInput) {
+        advanceInput.max = totalAmount;
+    }
+}
+// range of dates should be disabled and occupied
+

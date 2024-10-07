@@ -25,14 +25,14 @@ async function createCategories() {
 // Function to create food items
 async function createFoodItems() {
     const foodItems = [
-        { name: 'Chicken Wings', price: 9.99, category: 1, status: 'enabled' },
-        { name: 'Caesar Salad', price: 7.99, category: 1, status: 'enabled' },
-        { name: 'Grilled Salmon', price: 18.99, category: 2, status: 'enabled' },
-        { name: 'Beef Steak', price: 22.99, category: 2, status: 'enabled' },
-        { name: 'Chocolate Cake', price: 6.99, category: 3, status: 'enabled' },
-        { name: 'Ice Cream', price: 4.99, category: 3, status: 'enabled' },
-        { name: 'Soda', price: 2.99, category: 4, status: 'enabled' },
-        { name: 'Coffee', price: 3.99, category: 4, status: 'enabled' }
+        { name: 'Chicken Wings', price: 9.99, category: 5, status: 'enabled' },
+        { name: 'Caesar Salad', price: 7.99, category: 5 , status: 'enabled' },
+        { name: 'Grilled Salmon', price: 18.99, category: 6, status: 'enabled' },
+        { name: 'Beef Steak', price: 22.99, category: 6, status: 'enabled' },
+        { name: 'Chocolate Cake', price: 6.99, category: 7, status: 'enabled' },
+        { name: 'Ice Cream', price: 4.99, category: 7, status: 'enabled' },
+        { name: 'Soda', price: 2.99, category: 8, status: 'enabled' },
+        { name: 'Coffee', price: 3.99, category: 8, status: 'enabled' }
     ];
 
     for (const item of foodItems) {
@@ -44,6 +44,7 @@ async function createFoodItems() {
             },
             body: JSON.stringify(item)
         });
+        console.log(item)
     }
     console.log('Food items created');
 }
@@ -81,9 +82,9 @@ async function createTables() {
 // Main function to populate the database
 async function populateDatabase() {
     try {
-        await createCategories();
+        // await createCategories();
         await createFoodItems();
-        await createTables();
+        // await createTables();
         console.log('Database populated successfully');
         document.querySelector('.message').textContent = 'Database populated successfully';
     } catch (error) {
