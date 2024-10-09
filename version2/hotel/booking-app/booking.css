@@ -89,6 +89,11 @@ td {
     background-color: #fff6b1;
 }
 
+.hour-cell.available { background-color: #eae2b7; }
+.hour-cell.booked { background-color: #1b4965; }
+.hour-cell.checkin { background-color: #0077b6; }
+.hour-cell.checkout { background-color: #6c757d; }
+
 /* .tooltip {
     display: none;
     position: absolute;

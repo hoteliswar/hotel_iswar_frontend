@@ -1,8 +1,90 @@
 
 var currentDate = new Date();
 
+function convertToRequiredFormat() {
+    const apiDataString = localStorage.getItem('roomsList');
+    if(!apiDataString){
+        console.log('No data found');
+    }
 
-var roomBookings = {
+    let apiData;
+    try {
+        apiData = JSON.parse(apiDataString);
+    } catch (error) {
+        console.error('Error parsing roomsList data:', error);
+        return {};
+    }
+
+    const localroomBookings = {};
+
+    if (!Array.isArray(apiData)) {
+        console.error('roomsList is not an array');
+        return {};
+    }
+    // const localroomBookings = {};
+
+    // apiData.forEach(room => {
+    //     const roomNumber = room.room_number;
+
+    //     // Create an entry for each room in the localroomBookings object
+    //     localroomBookings[roomNumber] = room.bookings.map(booking => ({
+    //         guestName: `Guest ${booking.id}`, // Placeholder for guest name
+    //         age: 30, // Placeholder for age
+    //         email: `guest${booking.id}@example.com`, // Placeholder for email
+    //         phoneNumber: "1234567890", // Placeholder for phone number
+    //         checkIn: new Date(
+    //             booking.start_date.replace("T", " ").replace("Z", "")
+    //         ),
+    //         checkOut: new Date(
+    //             booking.end_date.replace("T", " ").replace("Z", "")
+    //         ),
+    //         status: booking.is_active ? "booked" : "available"
+        
+    //     }));
+    // });
+
+    apiData.forEach(room => {
+        const roomNumber = room.room_number;
+        const currentDate = new Date();
+    
+        // Create an entry for each room in the localroomBookings object
+        localroomBookings[roomNumber] = room.bookings.map(booking => {
+            const checkIn = new Date(booking.start_date.replace("T", " ").replace("Z", ""));
+            const checkOut = new Date(booking.end_date.replace("T", " ").replace("Z", ""));
+    
+            let status;
+            if (checkIn < currentDate && checkOut < currentDate) {
+                status = "checkout";
+            } else if (checkIn > currentDate && checkOut > currentDate) {
+                status = "booked";
+            } else if (checkIn <= currentDate && checkOut > currentDate) {
+                status = "checkin";
+            } else {
+                status = "available";
+            }
+    
+            return {
+                guestName: `Guest ${booking.id}`, // Placeholder for guest name
+                age: 30, // Placeholder for age
+                email: `guest${booking.id}@example.com`, // Placeholder for email
+                phoneNumber: "1234567890", // Placeholder for phone number
+                checkIn: checkIn,
+                checkOut: checkOut,
+                status: status
+            };
+        });
+    });
+
+    console.log(`localroomBookings: ${localroomBookings}`);
+
+    return localroomBookings;
+}
+
+// Converting API response to the desired format
+var roomBookings = convertToRequiredFormat();
+console.log(roomBookings);
+
+var roomBookings2 = {
     101: [
         {
             guestName: "John Doe",
@@ -107,7 +189,7 @@ function generateDayCells2(roomNumber, date) {
     return cellContent;
 }
 
-function generateDayCells(roomNumber, date) {
+function generateDayCells5(roomNumber, date) {
     let cellContent = '<div class="day-cell">';
     for (let hour = 0; hour < 24; hour++) {
         const cellDate = new Date(date);
@@ -128,32 +210,108 @@ function generateDayCells(roomNumber, date) {
     return cellContent;
 }
 
-function generateDayCells99(roomNumber, date) {
+function generateDayCells(roomNumber, date) {
     let cellContent = '<div class="day-cell">';
     for (let hour = 0; hour < 24; hour++) {
         const cellDate = new Date(date);
         cellDate.setHours(hour);
-        const { isBooked, isPast } = checkBookingStatus(roomNumber, cellDate);
+        const bookingInfo = getBookingInfo(roomNumber, cellDate);
         let cellClass = 'available';
-        if (isBooked) {
-            cellClass = isPast ? 'past-booked' : 'booked';
-            const bookingInfo = getBookingInfo(roomNumber, cellDate);
-            const tooltipContent = bookingInfo ? `Guest: ${bookingInfo.guestName}\nCheck-in: ${formatDate(bookingInfo.checkIn)}\nCheck-out: ${formatDate(bookingInfo.checkOut)}` : '';
+        
+        if (bookingInfo) {
+            switch(bookingInfo.status) {
+                case 'booked':
+                    cellClass = 'booked';
+                    break;
+                case 'checkin':
+                    cellClass = 'checkin';
+                    break;
+                case 'checkout':
+                    cellClass = 'checkout';
+                    break;
+            }
+            
+            const tooltipContent = `Guest: ${bookingInfo.guestName}\nAge: ${bookingInfo.age}\nPhone: ${bookingInfo.phoneNumber}\nCheck-in: ${formatDate(bookingInfo.checkIn)}\nCheck-out: ${formatDate(bookingInfo.checkOut)}\nStatus: ${bookingInfo.status}`;
             cellContent += `<div class="hour-cell ${cellClass}" data-tooltip="${tooltipContent}" onclick="showBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
         } else {
-            cellContent += `<div class="hour-cell ${cellClass}"></div>`;
+            cellContent += `<div class="hour-cell ${cellClass}" onclick="showNewBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
         }
     }
     cellContent += '</div>';
     return cellContent;
 }
 
+function generateDayCells3(roomNumber, date) {
+    let cellContent = '<div class="day-cell">';
+    for (let hour = 0; hour < 24; hour++) {
+        const cellDate = new Date(date);
+        cellDate.setHours(hour);
+        const { status, isPast } = checkBookingStatus(roomNumber, cellDate);
+        let cellClass = 'available';
+        
+        switch(status) {
+            case 'booked':
+                cellClass = isPast ? 'past-booked' : 'booked';
+                break;
+            case 'checkin':
+                cellClass = isPast ? 'past-checkin' : 'checkin';
+                break;
+            case 'checkout':
+                cellClass = isPast ? 'past-checkout' : 'checkout';
+                break;
+        }
+
+        if (status !== 'available') {
+            const bookingInfo = getBookingInfo(roomNumber, cellDate);
+            const tooltipContent = bookingInfo ?
+                `Guest: ${bookingInfo.guestName}\nAge: ${bookingInfo.age}\nPhone: ${bookingInfo.phoneNumber}\nCheck-in: ${formatDate(bookingInfo.checkIn)}\nCheck-out: ${formatDate(bookingInfo.checkOut)}\nStatus: ${status}` : '';
+            cellContent += `<div class="hour-cell ${cellClass}" data-tooltip="${tooltipContent}" onclick="showBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
+        } else {
+            cellContent += `<div class="hour-cell ${cellClass}" onclick="showNewBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
+        }
+    }
+    cellContent += '</div>';
+    return cellContent;
+}
+
+function generateDayCells4(roomNumber, date) {
+    let cellContent = '<div class="day-cell">';
+    for (let hour = 0; hour < 24; hour++) {
+        const cellDate = new Date(date);
+        cellDate.setHours(hour);
+        const { status, isPast } = checkBookingStatus(roomNumber, cellDate);
+        let cellClass = status;
+        if (isPast) cellClass += ' past';
+
+        const bookingInfo = getBookingInfo(roomNumber, cellDate);
+        const tooltipContent = bookingInfo ?
+            `Guest: ${bookingInfo.guestName}\nAge: ${bookingInfo.age}\nPhone: ${bookingInfo.phoneNumber}\nCheck-in: ${formatDate(bookingInfo.checkIn)}\nCheck-out: ${formatDate(bookingInfo.checkOut)}\nStatus: ${status}` : '';
+
+        if (status !== 'available') {
+            cellContent += `<div class="hour-cell ${cellClass}" data-tooltip="${tooltipContent}" onclick="showBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
+        } else {
+            cellContent += `<div class="hour-cell ${cellClass}" onclick="showNewBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
+        }
+    }
+    cellContent += '</div>';
+    return cellContent;
+}
+
+function getBookingInfo2(roomNumber, date) {
+    const bookings = roomBookings[roomNumber];
+    if (!bookings) return null;
+
+    return bookings.find(booking => date >= booking.checkIn && date < booking.checkOut);
+}
 
 function getBookingInfo(roomNumber, date) {
     const bookings = roomBookings[roomNumber];
     if (!bookings) return null;
 
-    return bookings.find(booking => date >= booking.checkIn && date < booking.checkOut);
+    return bookings.find(booking => {
+        const bookingDate = new Date(date);
+        return bookingDate >= booking.checkIn && bookingDate < booking.checkOut;
+    });
 }
 
 function formatDate(date) {
@@ -172,6 +330,43 @@ function checkBookingStatus(roomNumber, date) {
         }
     }
     return { isBooked: false, isPast: false };
+}
+
+function checkBookingStatus2(roomNumber, date) {
+    const bookings = roomBookings[roomNumber];
+    if (!bookings) return { status: 'available', isPast: false };
+
+    const now = new Date();
+    for (const booking of bookings) {
+        const checkIn = new Date(booking.checkIn);
+        const checkOut = new Date(booking.checkOut);
+        if (date >= checkIn && date < checkOut) {
+            let status = 'booked';
+            if (date.toDateString() === checkIn.toDateString()) {
+                status = 'checkin';
+            } else if (date.toDateString() === new Date(checkOut.getTime() - 86400000).toDateString()) {
+                status = 'checkout';
+            }
+            return { status, isPast: checkOut < now };
+        }
+    }
+    return { status: 'available', isPast: false };
+}
+
+function checkBookingStatus3(roomNumber, date) {
+    const bookings = roomBookings[roomNumber];
+    if (!bookings) return { status: 'available', isPast: false };
+
+    const now = new Date();
+    for (const booking of bookings) {
+        const checkIn = new Date(booking.checkIn);
+        const checkOut = new Date(booking.checkOut);
+        if (date >= checkIn && date < checkOut) {
+            let status = booking.status; // Use the status from the booking object
+            return { status, isPast: checkOut < now };
+        }
+    }
+    return { status: 'available', isPast: false };
 }
 
 function updateCalendar() {
@@ -248,15 +443,6 @@ document.querySelector('.close').onclick = function () {
     modal.classList.remove('show');
     setTimeout(() => modal.style.display = 'none', 300);
 }
-
-// document.addEventListener('DOMContentLoaded', function () {
-//     document.addEventListener('click', function (e) {
-//         if (e.target.id === 'newBooking-btn') {
-//             newBooking();
-//         }
-//     });
-// });
-
 
 // Function to handle the new booking modal
 document.addEventListener('click', function (event) {
