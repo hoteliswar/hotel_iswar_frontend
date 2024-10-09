@@ -81,17 +81,9 @@ td {
     position: relative;
 } */
 
-.booked {
-    background-color: #ffc300;
-}
-
-.available {
-    background-color: #fff6b1;
-}
-
 .hour-cell.available { background-color: #eae2b7; }
 .hour-cell.booked { background-color: #1b4965; }
-.hour-cell.checkin { background-color: #0077b6; }
+.hour-cell.checkin { background-color: #f77f00; }
 .hour-cell.checkout { background-color: #6c757d; }
 
 /* .tooltip {
