@@ -1,6 +1,6 @@
-// loadBooking();
-// function loadBooking() {
+
 var currentDate = new Date();
+
 
 var roomBookings = {
     101: [
@@ -9,8 +9,9 @@ var roomBookings = {
             age: 25,
             email: "john.doe@example.com",
             phoneNumber: "1234567890",
-            checkIn: new Date(2024, 9, 3, 12, 0),
-            checkOut: new Date(2024, 9, 8, 11, 0)
+            checkIn: new Date("2024-10-10 12:10"),
+            checkOut: new Date("2024-10-12 12:00"),
+            status: "booked"
         },
         {
             guestName: "Amit Dev",
@@ -18,7 +19,8 @@ var roomBookings = {
             email: "john.doe@example.com",
             phoneNumber: "1234567890",
             checkIn: new Date(2024, 8, 6, 12, 0),
-            checkOut: new Date(2024, 8, 7, 11, 0)
+            checkOut: new Date(2024, 8, 7, 11, 0),
+            status: "checkout"
         }
     ],
     102: [
@@ -28,7 +30,8 @@ var roomBookings = {
             email: "john.doe@example.com",
             phoneNumber: "1234567890",
             checkIn: new Date(2024, 8, 4, 14, 0),
-            checkOut: new Date(2024, 8, 7, 11, 0)
+            checkOut: new Date(2024, 8, 7, 11, 0),
+            status: "checkout"
         },
         {
             guestName: "Alice Johnson",
@@ -36,7 +39,8 @@ var roomBookings = {
             email: "john.doe@example.com",
             phoneNumber: "1234567890",
             checkIn: new Date(2024, 7, 24, 14, 0),
-            checkOut: new Date(2024, 7, 27, 11, 0)
+            checkOut: new Date(2024, 7, 27, 11, 0),
+            status: "checkout"
         }
     ]
 };
@@ -179,10 +183,11 @@ function updateCalendar() {
     monthSelect.value = currentDate.getMonth();
 }
 
+
 function updateCurrentMonth() {
     const monthNames = ["January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"];
-    document.getElementById('currentMonth').textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    document.getElementById('currentMonth').textContent = `${monthNames[currentDate.getMonth() ]} ${currentDate.getFullYear()}`;
 }
 
 document.getElementById('prevWeek').addEventListener('click', () => {
@@ -440,9 +445,9 @@ function formatDateForInput(date) {
 document.addEventListener('DOMContentLoaded', allRooms);
 
 // const addMoreBtn = document.getElementById('add-more-btn');
-const inputElementAddRoom = document.querySelector('.input-element-add-room');
-let rowCount = 1;
-let rowCountStart = 0;
+// const inputElementAddRoom = document.querySelector('.input-element-add-room');
+var rowCount = 1;
+var rowCountStart = 0;
 
 document.getElementById('add-more-btn').addEventListener('click', function () {
     rowCount++;
@@ -452,6 +457,7 @@ document.getElementById('add-more-btn').addEventListener('click', function () {
 
 
 function createNewRow(id) {
+    const inputElementAddRoom = document.querySelector('.input-element-add-room');
     const row = document.createElement('div');
     row.className = 'row';
     row.id = `room-${id}`;
@@ -951,32 +957,36 @@ function updateTotalBookingAmount() {
 }
 // range of dates should be disabled and occupied
 
-const bookingPhone = document.getElementById('bookingPhone');
-const bookingEmail = document.getElementById('bookingEmail');
-const bookingFname = document.getElementById('bookingFname');
-const bookingLname = document.getElementById('bookingLname');
-const bookingAddress = document.getElementById('bookingAddress');
-const customerState = document.getElementById('customerState');
-const customerNationality = document.getElementById('customerNationality');
-const customerStateDiv = document.getElementById('customerState-div');
-const stateInputSelect = document.getElementById('state-input-select');
+// const bookingPhone = document.getElementById('bookingPhone');
+// const bookingEmail = document.getElementById('bookingEmail');
+// const bookingFname = document.getElementById('bookingFname');
+// const bookingLname = document.getElementById('bookingLname');
+// const bookingAddress = document.getElementById('bookingAddress');
+// const customerState = document.getElementById('customerState');
+// const customerNationality = document.getElementById('customerNationality');
+// const customerStateDiv = document.getElementById('customerState-div');
+// const stateInputSelect = document.getElementById('state-input-select');
 
-const stateInput = document.createElement('input');
-stateInput.type = 'text';
-stateInput.name = 'customerState';
-stateInput.id = 'customerState';
-stateInput.placeholder = 'State, Country';
+// const stateInput = document.createElement('input');
+// stateInput.type = 'text';
+// stateInput.name = 'customerState';
+// stateInput.id = 'customerState';
+// stateInput.placeholder = 'State, Country';
 
-bookingPhone.addEventListener('input', function () {
+// Configure bookingPhone
+document.getElementById('bookingPhone').addEventListener('input', function () {
     if (bookingPhone.value.length > 10) {
         bookingPhone.value = bookingPhone.value.slice(0, 10);
     }
 });
 
-customerNationality.addEventListener('change', function () {
+// Configure customerNationality
+document.getElementById('customerNationality').addEventListener('change', function () {
+    const stateInputSelect = document.getElementById('state-input-select');
+
     if (customerNationality.value === 'others') {
         stateInputSelect.innerHTML = '';
-        stateInputSelect.appendChild(stateInput);
+        stateInputSelect.appendChild(createStateInput());
 
 
     } else if (customerNationality.value === 'indian') {
@@ -986,48 +996,48 @@ customerNationality.addEventListener('change', function () {
 });
 
 
-const statesAndUTs = {
-    "States": [
-        { value: "andhra_pradesh", text: "Andhra Pradesh" },
-        { value: "arunachal_pradesh", text: "Arunachal Pradesh" },
-        { value: "assam", text: "Assam" },
-        { value: "bihar", text: "Bihar" },
-        { value: "chhattisgarh", text: "Chhattisgarh" },
-        { value: "goa", text: "Goa" },
-        { value: "gujarat", text: "Gujarat" },
-        { value: "haryana", text: "Haryana" },
-        { value: "himachal_pradesh", text: "Himachal Pradesh" },
-        { value: "jharkhand", text: "Jharkhand" },
-        { value: "karnataka", text: "Karnataka" },
-        { value: "kerala", text: "Kerala" },
-        { value: "madhya_pradesh", text: "Madhya Pradesh" },
-        { value: "maharashtra", text: "Maharashtra" },
-        { value: "manipur", text: "Manipur" },
-        { value: "meghalaya", text: "Meghalaya" },
-        { value: "mizoram", text: "Mizoram" },
-        { value: "nagaland", text: "Nagaland" },
-        { value: "odisha", text: "Odisha" },
-        { value: "punjab", text: "Punjab" },
-        { value: "rajasthan", text: "Rajasthan" },
-        { value: "sikkim", text: "Sikkim" },
-        { value: "tamil_nadu", text: "Tamil Nadu" },
-        { value: "telangana", text: "Telangana" },
-        { value: "tripura", text: "Tripura" },
-        { value: "uttar_pradesh", text: "Uttar Pradesh" },
-        { value: "uttarakhand", text: "Uttarakhand" },
-        { value: "west_bengal", text: "West Bengal" }
-    ],
-    "Union Territories": [
-        { value: "andaman_and_nicobar_islands", text: "Andaman and Nicobar Islands" },
-        { value: "chandigarh", text: "Chandigarh" },
-        { value: "dadra_and_nagar_haveli_and_daman_and_diu", text: "Dadra and Nagar Haveli and Daman and Diu" },
-        { value: "delhi", text: "Delhi" },
-        { value: "lakshadweep", text: "Lakshadweep" },
-        { value: "puducherry", text: "Puducherry" },
-        { value: "ladakh", text: "Ladakh" },
-        { value: "jammu_and_kashmir", text: "Jammu and Kashmir" }
-    ]
-};
+// const statesAndUTs = {
+//     "States": [
+//         { value: "andhra_pradesh", text: "Andhra Pradesh" },
+//         { value: "arunachal_pradesh", text: "Arunachal Pradesh" },
+//         { value: "assam", text: "Assam" },
+//         { value: "bihar", text: "Bihar" },
+//         { value: "chhattisgarh", text: "Chhattisgarh" },
+//         { value: "goa", text: "Goa" },
+//         { value: "gujarat", text: "Gujarat" },
+//         { value: "haryana", text: "Haryana" },
+//         { value: "himachal_pradesh", text: "Himachal Pradesh" },
+//         { value: "jharkhand", text: "Jharkhand" },
+//         { value: "karnataka", text: "Karnataka" },
+//         { value: "kerala", text: "Kerala" },
+//         { value: "madhya_pradesh", text: "Madhya Pradesh" },
+//         { value: "maharashtra", text: "Maharashtra" },
+//         { value: "manipur", text: "Manipur" },
+//         { value: "meghalaya", text: "Meghalaya" },
+//         { value: "mizoram", text: "Mizoram" },
+//         { value: "nagaland", text: "Nagaland" },
+//         { value: "odisha", text: "Odisha" },
+//         { value: "punjab", text: "Punjab" },
+//         { value: "rajasthan", text: "Rajasthan" },
+//         { value: "sikkim", text: "Sikkim" },
+//         { value: "tamil_nadu", text: "Tamil Nadu" },
+//         { value: "telangana", text: "Telangana" },
+//         { value: "tripura", text: "Tripura" },
+//         { value: "uttar_pradesh", text: "Uttar Pradesh" },
+//         { value: "uttarakhand", text: "Uttarakhand" },
+//         { value: "west_bengal", text: "West Bengal" }
+//     ],
+//     "Union Territories": [
+//         { value: "andaman_and_nicobar_islands", text: "Andaman and Nicobar Islands" },
+//         { value: "chandigarh", text: "Chandigarh" },
+//         { value: "dadra_and_nagar_haveli_and_daman_and_diu", text: "Dadra and Nagar Haveli and Daman and Diu" },
+//         { value: "delhi", text: "Delhi" },
+//         { value: "lakshadweep", text: "Lakshadweep" },
+//         { value: "puducherry", text: "Puducherry" },
+//         { value: "ladakh", text: "Ladakh" },
+//         { value: "jammu_and_kashmir", text: "Jammu and Kashmir" }
+//     ]
+// };
 
 // Function to create and append options
 function createOptions(groupLabel, options, selectElement) {
@@ -1044,6 +1054,49 @@ function createOptions(groupLabel, options, selectElement) {
 
 // Create select element dynamically
 function createStateDropdown() {
+
+    const statesAndUTs = {
+        "States": [
+            { value: "andhra_pradesh", text: "Andhra Pradesh" },
+            { value: "arunachal_pradesh", text: "Arunachal Pradesh" },
+            { value: "assam", text: "Assam" },
+            { value: "bihar", text: "Bihar" },
+            { value: "chhattisgarh", text: "Chhattisgarh" },
+            { value: "goa", text: "Goa" },
+            { value: "gujarat", text: "Gujarat" },
+            { value: "haryana", text: "Haryana" },
+            { value: "himachal_pradesh", text: "Himachal Pradesh" },
+            { value: "jharkhand", text: "Jharkhand" },
+            { value: "karnataka", text: "Karnataka" },
+            { value: "kerala", text: "Kerala" },
+            { value: "madhya_pradesh", text: "Madhya Pradesh" },
+            { value: "maharashtra", text: "Maharashtra" },
+            { value: "manipur", text: "Manipur" },
+            { value: "meghalaya", text: "Meghalaya" },
+            { value: "mizoram", text: "Mizoram" },
+            { value: "nagaland", text: "Nagaland" },
+            { value: "odisha", text: "Odisha" },
+            { value: "punjab", text: "Punjab" },
+            { value: "rajasthan", text: "Rajasthan" },
+            { value: "sikkim", text: "Sikkim" },
+            { value: "tamil_nadu", text: "Tamil Nadu" },
+            { value: "telangana", text: "Telangana" },
+            { value: "tripura", text: "Tripura" },
+            { value: "uttar_pradesh", text: "Uttar Pradesh" },
+            { value: "uttarakhand", text: "Uttarakhand" },
+            { value: "west_bengal", text: "West Bengal" }
+        ],
+        "Union Territories": [
+            { value: "andaman_and_nicobar_islands", text: "Andaman and Nicobar Islands" },
+            { value: "chandigarh", text: "Chandigarh" },
+            { value: "dadra_and_nagar_haveli_and_daman_and_diu", text: "Dadra and Nagar Haveli and Daman and Diu" },
+            { value: "delhi", text: "Delhi" },
+            { value: "lakshadweep", text: "Lakshadweep" },
+            { value: "puducherry", text: "Puducherry" },
+            { value: "ladakh", text: "Ladakh" },
+            { value: "jammu_and_kashmir", text: "Jammu and Kashmir" }
+        ]
+    };
     const selectElement = document.createElement('select');
     selectElement.name = "customerState";
     selectElement.id = "customerState";
@@ -1062,6 +1115,15 @@ function createStateDropdown() {
     createOptions("Union Territories", statesAndUTs["Union Territories"], selectElement);
 
     return selectElement;
+}
+
+function createStateInput() {
+    const stateInput = document.createElement('input');
+    stateInput.type = 'text';
+    stateInput.name = 'customerState';
+    stateInput.id = 'customerState';
+    stateInput.placeholder = 'State, Country';
+    return stateInput;
 }
 
 // Append the select element into the #state div
