@@ -143,6 +143,6 @@ body {
 
 .hotel-area{
     height: 90vh;
-    overflow-y: hidden;
+    /* overflow-y: hidden; */
     overflow-x: hidden;
 }

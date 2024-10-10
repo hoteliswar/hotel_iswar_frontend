@@ -10,7 +10,51 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
+}
+
+.calender-color-indicator{
+    justify-content: space-between;
+    align-items: center;
+    /* margin-bottom: 20px; */
+    float: right;
+}
+
+.color-box{
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    /* border-radius: 50%; */
+    margin-right: 5px;
+    background-color: #1b4965;
+}
+
+.indicator-available,
+.indicator-booked,
+.indicator-checkin,
+.indicator-checkout{
+    display: inline-block;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; 
+    margin-right: 10px;
+}
+
+
+.indicator-available .color-box{
+    background-color: #eae2b7;
+}
+
+.indicator-booked .color-box{
+    background-color: #1b4965;
+}
+
+.indicator-checkin .color-box{
+    background-color: #f77f00;
+}
+
+.indicator-checkout .color-box{
+    background-color: #6c757d;
 }
 
 .preWeek,
