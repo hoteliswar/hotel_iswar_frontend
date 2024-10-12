@@ -1182,49 +1182,6 @@ document.getElementById('customerNationality').addEventListener('change', functi
 });
 
 
-// const statesAndUTs = {
-//     "States": [
-//         { value: "andhra_pradesh", text: "Andhra Pradesh" },
-//         { value: "arunachal_pradesh", text: "Arunachal Pradesh" },
-//         { value: "assam", text: "Assam" },
-//         { value: "bihar", text: "Bihar" },
-//         { value: "chhattisgarh", text: "Chhattisgarh" },
-//         { value: "goa", text: "Goa" },
-//         { value: "gujarat", text: "Gujarat" },
-//         { value: "haryana", text: "Haryana" },
-//         { value: "himachal_pradesh", text: "Himachal Pradesh" },
-//         { value: "jharkhand", text: "Jharkhand" },
-//         { value: "karnataka", text: "Karnataka" },
-//         { value: "kerala", text: "Kerala" },
-//         { value: "madhya_pradesh", text: "Madhya Pradesh" },
-//         { value: "maharashtra", text: "Maharashtra" },
-//         { value: "manipur", text: "Manipur" },
-//         { value: "meghalaya", text: "Meghalaya" },
-//         { value: "mizoram", text: "Mizoram" },
-//         { value: "nagaland", text: "Nagaland" },
-//         { value: "odisha", text: "Odisha" },
-//         { value: "punjab", text: "Punjab" },
-//         { value: "rajasthan", text: "Rajasthan" },
-//         { value: "sikkim", text: "Sikkim" },
-//         { value: "tamil_nadu", text: "Tamil Nadu" },
-//         { value: "telangana", text: "Telangana" },
-//         { value: "tripura", text: "Tripura" },
-//         { value: "uttar_pradesh", text: "Uttar Pradesh" },
-//         { value: "uttarakhand", text: "Uttarakhand" },
-//         { value: "west_bengal", text: "West Bengal" }
-//     ],
-//     "Union Territories": [
-//         { value: "andaman_and_nicobar_islands", text: "Andaman and Nicobar Islands" },
-//         { value: "chandigarh", text: "Chandigarh" },
-//         { value: "dadra_and_nagar_haveli_and_daman_and_diu", text: "Dadra and Nagar Haveli and Daman and Diu" },
-//         { value: "delhi", text: "Delhi" },
-//         { value: "lakshadweep", text: "Lakshadweep" },
-//         { value: "puducherry", text: "Puducherry" },
-//         { value: "ladakh", text: "Ladakh" },
-//         { value: "jammu_and_kashmir", text: "Jammu and Kashmir" }
-//     ]
-// };
-
 // Function to create and append options
 function createOptions(groupLabel, options, selectElement) {
     const optgroup = document.createElement('optgroup');
@@ -1283,6 +1240,7 @@ function createStateDropdown() {
             { value: "jammu_and_kashmir", text: "Jammu and Kashmir" }
         ]
     };
+
     const selectElement = document.createElement('select');
     selectElement.name = "customerState";
     selectElement.id = "customerState";
@@ -1311,11 +1269,6 @@ function createStateInput() {
     stateInput.placeholder = 'State, Country';
     return stateInput;
 }
-
-// Append the select element into the #state div
-// const stateDiv = document.getElementById('state');
-// stateDiv.appendChild(createStateDropdown());
-
 
 
 
