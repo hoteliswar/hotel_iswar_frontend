@@ -2,6 +2,55 @@ body {
     font-family: Arial, sans-serif;
 }
 
+/* Toggle Checkbox */
+
+.view-toggle {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-left: 10px;
+}
+
+.toggle-checkbox {
+    display: none;
+}
+
+.toggle-label {
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    background-color: #ccc;
+    border-radius: 34px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.toggle-inner {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+}
+
+.toggle-checkbox:checked+.toggle-label {
+    background-color: #ffaf02;
+}
+
+.toggle-checkbox:checked+.toggle-label .toggle-inner {
+    transform: translateX(26px);
+}
+
+.toggle-text {
+    margin-left: 10px;
+}
+
+/* Calendar View */
+
 .calender-wrapper {
     padding: 10px;
 }
@@ -13,14 +62,14 @@ body {
     margin-bottom: 5px;
 }
 
-.calender-color-indicator{
+.calender-color-indicator {
     justify-content: space-between;
     align-items: center;
     /* margin-bottom: 20px; */
     float: right;
 }
 
-.color-box{
+.color-box {
     display: inline-block;
     width: 20px;
     height: 20px;
@@ -32,28 +81,28 @@ body {
 .indicator-available,
 .indicator-booked,
 .indicator-checkin,
-.indicator-checkout{
+.indicator-checkout {
     display: inline-block;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
     margin-right: 10px;
 }
 
 
-.indicator-available .color-box{
+.indicator-available .color-box {
     background-color: #eae2b7;
 }
 
-.indicator-booked .color-box{
-    background-color: #1b4965;
+.indicator-booked .color-box {
+    background-color: #0b97ed;
 }
 
-.indicator-checkin .color-box{
+.indicator-checkin .color-box {
     background-color: #f77f00;
 }
 
-.indicator-checkout .color-box{
+.indicator-checkout .color-box {
     background-color: #6c757d;
 }
 
@@ -125,10 +174,21 @@ td {
     position: relative;
 } */
 
-.hour-cell.available { background-color: #eae2b7; }
-.hour-cell.booked { background-color: #1b4965; }
-.hour-cell.checkin { background-color: #f77f00; }
-.hour-cell.checkout { background-color: #6c757d; }
+.hour-cell.available {
+    background-color: #eae2b7;
+}
+
+.hour-cell.booked {
+    background-color: #0b97ed;
+}
+
+.hour-cell.checkin {
+    background-color: #f77f00;
+}
+
+.hour-cell.checkout {
+    background-color: #6c757d;
+}
 
 /* .tooltip {
     display: none;
@@ -229,21 +289,21 @@ td {
     max-width: 65%;
 }
 
-.booking-details-col{
+.booking-details-col {
     width: 65%;
     display: inline-block;
     border-right: 1px solid #e0e0e0;
 }
 
-.booking-payment-col{
+.booking-payment-col {
     width: 34%;
     display: inline-block;
     vertical-align: top;
     padding: 10px;
-    
+
 }
 
-.total-booking-amount{
+.total-booking-amount {
     width: 45%;
     word-wrap: break-word;
     display: inline-block;
@@ -253,7 +313,7 @@ td {
     padding-left: 0px;
 }
 
-.total-booking-amount-value{
+.total-booking-amount-value {
     display: inline-block;
     width: 50%;
     text-align: right;
@@ -264,7 +324,7 @@ td {
     align-items: center;
 }
 
-.advance-booking-amount{
+.advance-booking-amount {
     width: 45%;
     display: inline-block;
     font-size: 0.9em;
@@ -272,7 +332,7 @@ td {
     margin-top: 10px;
 }
 
-.advance-booking-amount-input{
+.advance-booking-amount-input {
     display: inline-block;
     width: 50%;
     font-size: 1.1em;
@@ -388,7 +448,8 @@ td {
 
 }
 
-#add-more-btn, .remove-room-btn {
+#add-more-btn,
+.remove-room-btn {
     color: #f6a903;
     padding-left: 10px;
     cursor: pointer;
@@ -399,14 +460,25 @@ td {
     width: 97%;
 }
 
-.new-booking-btn{
+.new-booking-btn {
     background-color: #f6a903;
     height: 50px;
     width: 100px;
     border: 0;
     border-radius: 4px;
     float: right;
-    margin: 20px 10px 20px 20px ;
+    margin: 20px 10px 20px 20px;
     font-weight: 500;
     margin-top: 250px;
+}
+
+/* List View */
+
+.listview-wrapper {
+    padding: 10px;
+    padding-right: 20px;
+}
+
+.header-row-2 {
+    float: right;
 }

@@ -1,3 +1,32 @@
+document.getElementById('viewToggle').addEventListener('click', function() {
+    const viewToggle = document.getElementById('viewToggle');
+    const calendarWrapper = document.querySelector('.calender-wrapper');
+    const listviewWrapper = document.querySelector('.listview-wrapper');
+    const toggleText = document.querySelector('.toggle-text');
+
+    viewToggle.addEventListener('change', function() {
+        if (this.checked) {
+            calendarWrapper.style.display = 'none';
+            listviewWrapper.style.display = 'block';
+            toggleText.textContent = 'List View';
+            // Here you would call a function to populate the list view
+            populateListView();
+        } else {
+            calendarWrapper.style.display = 'block';
+            listviewWrapper.style.display = 'none';
+            toggleText.textContent = 'Calendar View';
+        }
+    });
+});
+
+function populateListView() {
+    // This function should populate the listview-wrapper with all bookings
+    // You'll need to implement this based on your data structure
+    const listviewWrapper = document.querySelector('.listview-wrapper');
+    // listviewWrapper.innerHTML = '<h2>All Bookings</h2>';
+    // Add code here to loop through all bookings and add them to the list view
+}
+
 
 var currentDate = new Date();
 
@@ -1269,7 +1298,6 @@ function createStateInput() {
     stateInput.placeholder = 'State, Country';
     return stateInput;
 }
-
 
 
 

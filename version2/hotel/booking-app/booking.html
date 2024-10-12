@@ -10,8 +10,17 @@
 </head>
 
 <body>
-    <!-- <h1>Booking</h1> -->
-    <div class="calender-wrapper">
+    <!-- Toggle checkbox -->
+    <div class="view-toggle">
+        <input type="checkbox" id="viewToggle" class="toggle-checkbox">
+        <label for="viewToggle" class="toggle-label">
+            <span class="toggle-inner"></span>
+            <span class="toggle-switch"></span>
+        </label>
+        <span class="toggle-text">Calendar View</span>
+    </div>
+
+    <div class="calender-wrapper" style="display: none;">
         <div class="header-row">
             <div id="currentMonth"></div>
             <div class="calendar-view">
@@ -44,6 +53,12 @@
                 </div>
         </div>
         <div id="calendar"></div>
+    </div>
+
+    <div class="listview-wrapper" >
+        <div class="header-row-2">
+            <button id="newBooking-btn" class="newBooking">New Booking</button>
+        </div>
     </div>
 
     <!-- Modal: View Data from calendar -->
