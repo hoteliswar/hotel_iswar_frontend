@@ -622,13 +622,6 @@ function selectRoom(roomNumber) {
     newBookingForm(roomNumber);
 }
 
-// function newBookingForm(roomNumber){
-
-// }
-
-// const addMoreBtn = document.getElementById('add-more-btn');
-// const inputElementAddRoom = document.querySelector('.input-element-add-room');
-// let rowCount = 1;
 
 function showNewBookingModal(roomNumber, dateString) {
 
