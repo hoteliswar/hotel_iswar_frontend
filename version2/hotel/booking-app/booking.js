@@ -137,7 +137,13 @@ function convertToRequiredFormat() {
             const booking = bookingData.booking;
             const user = bookingData.user;
             const checkIn = new Date(booking.start_date);
-            const checkOut = new Date(booking.end_date);
+            let checkOut;
+            console.log(checkOut);
+            if (booking.check_out_date === null) {
+                checkOut = new Date(booking.end_date);
+            } else { 
+                checkOut = new Date(booking.check_out_date);
+            }
             const currentDate = new Date();
 
             let status;

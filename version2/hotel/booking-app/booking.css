@@ -482,3 +482,19 @@ td {
 .header-row-2 {
     float: right;
 }
+
+.all-bookings-list {
+    display: block;
+    /* flex-direction: column; */
+    align-items: center;
+    margin-top: 50px;
+    padding: 10px;
+    background-color: #fff3e2;
+    border-radius: 10px;
+}
+
+.booking-list-header {
+    display: flex;
+    flex-direction: row;
+    font-weight: 600;
+}
