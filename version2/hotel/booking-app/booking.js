@@ -30,7 +30,7 @@ function populateListView() {
 
 var currentDate = new Date();
 
-function convertToRequiredFormat() {
+function convertToRequiredFormat2() {
     const apiDataString = localStorage.getItem('roomsList');
     if(!apiDataString){
         console.log('No data found');
@@ -106,6 +106,62 @@ function convertToRequiredFormat() {
 
     console.log(`localroomBookings: ${localroomBookings}`);
 
+    return localroomBookings;
+}
+
+function convertToRequiredFormat() {
+    const apiDataString = localStorage.getItem('roomsList');
+    if(!apiDataString){
+        console.log('No data found');
+        return {};
+    }
+
+    let apiData;
+    try {
+        apiData = JSON.parse(apiDataString);
+    } catch (error) {
+        console.error('Error parsing roomsList data:', error);
+        return {};
+    }
+
+    const localroomBookings = {};
+
+    if (!Array.isArray(apiData)) {
+        console.error('roomsList is not an array');
+        return {};
+    }
+
+    apiData.forEach(room => {
+        const roomNumber = room.room_number;
+        localroomBookings[roomNumber] = room.bookings.map(bookingData => {
+            const booking = bookingData.booking;
+            const user = bookingData.user;
+            const checkIn = new Date(booking.start_date);
+            const checkOut = new Date(booking.end_date);
+            const currentDate = new Date();
+
+            let status;
+            if (checkOut < currentDate) {
+                status = "checkout";
+            } else if (checkIn > currentDate) {
+                status = "booked";
+            } else {
+                status = "checkin";
+            }
+
+            return {
+                guestName: `${user.first_name} ${user.last_name}`,
+                age: 25, // Placeholder as age is not provided in the original data
+                email: user.email,
+                phoneNumber: user.phone,
+                checkIn: checkIn,
+                checkOut: checkOut,
+                status: status
+            };
+        });
+    });
+
+    console.log('localroomBookings:', localroomBookings);
     return localroomBookings;
 }
 
