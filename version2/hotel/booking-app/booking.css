@@ -7,7 +7,6 @@ body {
 .view-toggle {
     display: flex;
     align-items: center;
-    margin-bottom: 20px;
     margin-left: 10px;
 }
 
@@ -498,3 +497,44 @@ td {
     flex-direction: row;
     font-weight: 600;
 }
+
+.booking-list-body .row {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-top: 1px solid #bababa;
+}
+
+.booking-list-body .status-booked,
+.booking-list-body .status-checkin,
+.booking-list-body .status-checkout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;  
+    text-align: center;
+    border-radius: 5px;
+    font-weight: 600;
+    padding: 5px;
+}
+
+.booking-list-body .status-booked {
+    background-color: #0b97ed;
+    color: #fff;
+}
+
+.booking-list-body .status-checkin {
+    background-color: #f77f00;
+    color: #fff;
+}
+
+.booking-list-body .status-checkout {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.booking-list-body .eye {
+    padding-left: 10px;
+    color: #6d3900;
+    cursor: pointer;
+}
+

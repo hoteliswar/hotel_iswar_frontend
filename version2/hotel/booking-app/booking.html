@@ -20,7 +20,7 @@
         <span class="toggle-text">Calendar View</span>
     </div>
 
-    <div class="calender-wrapper" style="display: none;">
+    <div class="calender-wrapper" >
         <div class="header-row">
             <div id="currentMonth"></div>
             <div class="calendar-view">
@@ -55,18 +55,19 @@
         <div id="calendar"></div>
     </div>
 
-    <div class="listview-wrapper"  >
+    <div class="listview-wrapper" style="display: none;">
         <div class="header-row-2">
             <button id="newBooking-btn" class="newBooking">New Booking</button>
         </div>
         <div class="all-bookings-list">
             <div class="booking-list-header">
-                <div class="col-2">Room</div>
+                <div class="col-1">Room</div>
                 <div class="col-2">Booking Date</div>
                 <div class="col-2">Guest Name</div>
-                <div class="col-2">Checkin</div>
-                <div class="col-2">Checkout</div>
-                <div class="col-2">Status</div>
+                <div class="col-2">From</div>
+                <div class="col-2">To</div>
+                <div class="col-1">Status</div>
+                <div class="col-1">Actions</div>
             </div>
             <div class="booking-list-body"></div>
         </div>

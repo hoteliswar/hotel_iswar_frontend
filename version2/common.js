@@ -80,11 +80,12 @@ function refreshAccessToken(url, option) {
         });
 }
 
-async function refreshAccessToken2(url, option) {
+async function refreshAccessToken22(url, option) {
     // try {
     const response = await fetch(url, option);
+    // if (!response.ok) {
     if (response.status === 401) {
-        console.log('Status: 401');
+        console.log(`Status: ${response.status}`);
         fetch(`${baseURL}accounts/token/refresh/`, {
             method: 'POST',
             headers: {
@@ -133,6 +134,73 @@ async function refreshAccessToken2(url, option) {
     // } catch (error) {
     //     console.error('Error:', error);
     // }
+}
+
+async function refreshAccessToken2(url, option) {
+    try {
+        const response = await fetch(url, option);
+        console.log(`Status: ${response.status}`);
+
+        if (response.status === 401) {
+            // Handle unauthorized access
+            const refreshResponse = await fetch(`${baseURL}accounts/token/refresh/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    refresh: getCookie('refresh_token')
+                })
+            });
+
+            if (refreshResponse.status === 401) {
+                // Refresh token is also invalid, redirect to login
+                window.location.href = 'index.html';
+                return;
+            } else if (refreshResponse.status === 200) {
+                const data = await refreshResponse.json();
+                if (data.access) {
+                    setCookie('access_token', data.access, 5);
+                    console.log('Access Token refreshed');
+                    // Retry the original request with the new token
+                    return refreshAccessToken2(url, {
+                        ...option,
+                        headers: {
+                            ...option.headers,
+                            'Authorization': `Bearer ${data.access}`
+                        }
+                    });
+                }
+            }
+        } else if (response.status === 400) {
+            // Handle bad request
+            console.error('Bad Request:', await response.text());
+            throw new Error('Bad Request');
+        } else if (response.status === 403) {
+            // Handle forbidden
+            console.error('Forbidden:', await response.text());
+            throw new Error('Forbidden');
+        } else if (response.status === 404) {
+            // Handle not found
+            console.error('Not Found:', await response.text());
+            throw new Error('Not Found');
+        } else if (response.status === 500) {
+            // Handle server error
+            console.error('Server Error:', await response.text());
+            throw new Error('Server Error');
+        } else if (response.ok) {
+            // Handle successful response
+            console.log('Status:', response.status);
+            return response.json();
+        } else {
+            // Handle any other status codes
+            console.error('Unexpected Status:', response.status, await response.text());
+            throw new Error(`Unexpected Status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Error in refreshAccessToken2:', error);
+        throw error;
+    }
 }
 
 async function refreshAccessToken3(url, option) {

@@ -19,14 +19,147 @@ document.getElementById('viewToggle').addEventListener('click', function() {
     });
 });
 
+// document.getElementById('viewToggle').click();
+
 function populateListView() {
-    // This function should populate the listview-wrapper with all bookings
-    // You'll need to implement this based on your data structure
-    const listviewWrapper = document.querySelector('.listview-wrapper');
-    // listviewWrapper.innerHTML = '<h2>All Bookings</h2>';
-    // Add code here to loop through all bookings and add them to the list view
+    convertToRequiredFormat_ListView();
+}
+// convertToRequiredFormat_ListView();
+
+async function convertToRequiredFormat_ListView() {
+    try {
+        const apiDataString = await getAllBookings();
+        // console.log(`apiDataString: ${JSON.stringify(apiDataString)}`);
+        if(!apiDataString || apiDataString.length === 0){
+            console.log('No data found');
+            return {};
+        }
+
+        let apiData;
+        try {
+            apiData = JSON.parse(apiDataString);
+            console.log(`apiData: ${apiData}`);
+        } catch (error) {
+            console.error('Error parsing bookingsList data:', error);
+            return {};
+        }
+
+        // Get roomsList from localStorage and parse it
+        const roomsListString = localStorage.getItem('roomsList');
+        let roomsList;
+        try {
+            roomsList = JSON.parse(roomsListString);
+        } catch (error) {
+            console.error('Error parsing roomsList:', error);
+            return {};
+        }
+
+        // Create a map of room ID to room number
+        const roomIdToNumberMap = {};
+        roomsList.forEach(room => {
+            roomIdToNumberMap[room.id] = room.room_number;
+        });
+
+        const allBookings = {};
+
+        apiData.forEach(booking => {
+            booking.rooms.forEach(room => {
+                const roomNumber = roomIdToNumberMap[room.room]; // Map room ID to room number
+                if (!roomNumber) {
+                    console.warn(`Room number not found for room ID: ${room.room}`);
+                    return; // Skip this room if we can't find its number
+                }
+
+                if (!allBookings[roomNumber]) {
+                    allBookings[roomNumber] = [];
+                }
+
+                const guestDetail = booking.guest_detail[0]; // Assuming there's always at least one guest
+                const checkIn = new Date(room.start_date);
+                const checkOut = new Date(room.end_date);
+                const bookingDate = new Date(booking.booking_date);
+
+                let status;
+                if (booking.status === 'checked_in') {
+                    status = 'checkin';
+                } else if (booking.status === 'pending') {
+                    status = 'booked';
+                } else if (room.check_out_date) {
+                    status = 'checkout';
+                } else {
+                    status = 'booked'; // Default status
+                }
+
+                allBookings[roomNumber].push({
+                    guestName: `${guestDetail.first_name} ${guestDetail.last_name}`,
+                    age: 25, // Placeholder as age is not provided
+                    email: guestDetail.email,
+                    bookingDate: bookingDate, //how to get the bookingDate
+                    phoneNumber: guestDetail.phone,
+                    checkIn: checkIn,
+                    checkOut: checkOut,
+                    status: status
+                });
+            });
+        });
+
+        console.table('allBookings:', allBookings);
+        renderListView(allBookings);
+        // return allBookings;
+    } catch (error) {
+        console.error('Error in convertToRequiredFormat_ListView:', error);
+        return {};
+    }
 }
 
+function getAllBookings(){
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+    url = `${baseURL}hotel/bookings/`;
+    return refreshAccessToken2(url, option)
+        .then(data => {
+            console.log('Bookings Data:', data);
+            localStorage.setItem('bookingsList', JSON.stringify(data));
+            // return data;
+            return JSON.stringify(data); // Return stringified data
+        })
+        .catch(error => {
+            console.log('Error fetching table:', error);
+            throw error; // Re-throw the error to be caught in the calling function
+        });
+}
+
+function renderListView(allBookings){
+    const listviewWrapper = document.querySelector('.booking-list-body');
+    listviewWrapper.innerHTML = ''; // Clear existing content
+    
+    // Display booking details for each booking in each room and sort by date
+    for (const roomNumber in allBookings) {
+        const bookings = allBookings[roomNumber];
+        console.log(bookings);
+        bookings.sort((a, b) => new Date(a.checkIn) - new Date(b.checkIn));
+
+        bookings.forEach(booking => {
+            const roomDiv = document.createElement('div');
+            roomDiv.classList.add('row');
+            roomDiv.innerHTML = `
+                <div class="col-1">${roomNumber}</div>
+                <div class="col-2">${booking.bookingDate.toLocaleString()}</div>
+                <div class="col-2">${booking.guestName}</div>
+                <div class="col-2">${booking.checkIn.toLocaleString()}</div>
+                <div class="col-2">${booking.checkOut.toLocaleString()}</div>
+                <div class="col-1 status-${booking.status}">${booking.status}</div>
+                <div class="col-1 "> <i class="fa-solid fa-eye eye" id="eye"></i> </div>
+            `;
+            listviewWrapper.appendChild(roomDiv);
+        });
+    }
+}
 
 var currentDate = new Date();
 
@@ -109,7 +242,7 @@ function convertToRequiredFormat2() {
     return localroomBookings;
 }
 
-function convertToRequiredFormat() {
+function convertToRequiredFormat3() {
     const apiDataString = localStorage.getItem('roomsList');
     if(!apiDataString){
         console.log('No data found');
@@ -171,9 +304,154 @@ function convertToRequiredFormat() {
     return localroomBookings;
 }
 
+function convertToRequiredFormat4() {
+    // const apiDataString = await getAllBookings();
+    const apiDataString = localStorage.getItem('bookingsList');
+    if(!apiDataString){
+        console.log('No bookings data found');
+        return {};
+    }
+
+    let apiData;
+    try {
+        apiData = JSON.parse(apiDataString);
+    } catch (error) {
+        console.error('Error parsing bookingsList data:', error);
+        return {};
+    }
+
+    // Get roomsList from localStorage and parse it
+    const roomsListString = localStorage.getItem('roomsList');
+    let roomsList;
+    try {
+        roomsList = JSON.parse(roomsListString);
+    } catch (error) {
+        console.error('Error parsing roomsList:', error);
+        return {};
+    }
+
+    // Create a map of room ID to room number
+    const roomIdToNumberMap = {};
+    roomsList.forEach(room => {
+        roomIdToNumberMap[room.id] = room.room_number;
+    });
+
+    const roomBookings = {};
+
+    console.log(`apiData: ${JSON.stringify(apiData)}`);
+    apiData.forEach(booking => {
+        booking.rooms.forEach(room => {
+            const roomNumber = roomIdToNumberMap[room.room];
+            if (!roomNumber) {
+                console.warn(`Room number not found for room ID: ${room.room}`);
+                return; // Skip this room if we can't find its number
+            }
+
+            if (!roomBookings[roomNumber]) {
+                roomBookings[roomNumber] = [];
+            }
+
+            const guestDetail = booking.guest_detail[0]; // Assuming there's always at least one guest
+            const checkIn = new Date(room.start_date);
+            const checkOut = new Date(room.end_date);
+            const bookingDate = new Date(booking.booking_date);
+
+            let status;
+            if (room.check_out_date) {
+                status = 'checkout';
+            } else if (room.check_in_details !== null && room.check_in_details.check_in_date !== null) {
+                status = 'checkin';
+            } else {
+                status = 'booked';
+            }
+
+            roomBookings[roomNumber].push({
+                guestName: `${guestDetail.first_name} ${guestDetail.last_name}`,
+                age: 25, // Placeholder as age is not provided
+                email: guestDetail.email,
+                phoneNumber: guestDetail.phone,
+                bookingDate: bookingDate,
+                checkIn: checkIn,
+                checkOut: checkOut,
+                status: status
+            });
+        });
+    });
+
+    console.log('roomBookings:', roomBookings);
+    return roomBookings;
+}
+
+function convertToRequiredFormat() {
+    const bookingsData = JSON.parse(localStorage.getItem('bookingsList'));
+    const roomsList = JSON.parse(localStorage.getItem('roomsList'));
+
+    if (!bookingsData || !roomsList) {
+        console.log('No data found');
+        return {};
+    }
+
+    // Create a map of room ID to room number
+    const roomIdToNumberMap = {};
+    roomsList.forEach(room => {
+        roomIdToNumberMap[room.id] = room.room_number;
+    });
+
+    const roomBookings = {};
+
+    bookingsData.forEach(booking => {
+        booking.rooms.forEach(room => {
+            const roomNumber = roomIdToNumberMap[room.room];
+            if (!roomNumber) {
+                console.warn(`Room number not found for room ID: ${room.room}`);
+                return;
+            }
+
+            if (!roomBookings[roomNumber]) {
+                roomBookings[roomNumber] = [];
+            }
+
+            const guestDetail = booking.guest_detail[0]; // Assuming there's always at least one guest
+            let status;
+            if (booking.status === 'pending') {
+                status = 'booked';
+            } else if (booking.status === 'checked_in') {
+                status = room.check_out_date ? 'checkout' : 'checkin';
+            } else {
+                status = booking.status; // For any other status
+            }
+
+            roomBookings[roomNumber].push({
+                guestName: `${guestDetail.first_name} ${guestDetail.last_name}`,
+                age: 25, // Placeholder as age is not provided
+                email: guestDetail.email,
+                phoneNumber: guestDetail.phone,
+                checkIn: new Date(room.start_date),
+                checkOut: new Date(room.end_date),
+                status: status,
+                bookingDate: new Date(booking.booking_date)
+            });
+        });
+    });
+
+    // Sort bookings for each room by check-in date
+    for (const roomNumber in roomBookings) {
+        roomBookings[roomNumber].sort((a, b) => a.checkIn - b.checkIn);
+    }
+
+    console.log('roomBookings:', roomBookings);
+    return roomBookings;
+}
+
 // Converting API response to the desired format
 var roomBookings = convertToRequiredFormat();
 console.log(roomBookings);
+
+// Instead of using forEach, we'll use Object.entries to iterate over the object
+Object.entries(roomBookings).forEach(([roomNumber, bookings]) => {
+    console.log(`Room ${roomNumber}:`);
+    console.table(bookings);
+});
 
 var roomBookings2 = {
     101: [
@@ -259,48 +537,6 @@ function generateCalendar(startDate) {
     calendarDiv.appendChild(table);
 }
 
-function generateDayCells2(roomNumber, date) {
-    let cellContent = '<div class="day-cell">';
-    for (let hour = 0; hour < 24; hour++) {
-        const cellDate = new Date(date);
-        cellDate.setHours(hour);
-        const { isBooked, isPast } = checkBookingStatus(roomNumber, cellDate);
-        let cellClass = 'available';
-        if (isBooked) {
-            cellClass = isPast ? 'past-booked' : 'booked';
-            const bookingInfo = getBookingInfo(roomNumber, cellDate);
-            const tooltipContent = bookingInfo ?
-                `Guest: ${bookingInfo.guestName}\nAge: ${bookingInfo.age}\nPhone: ${bookingInfo.phoneNumber}\nCheck-in: ${formatDate(bookingInfo.checkIn)}\nCheck-out: ${formatDate(bookingInfo.checkOut)}` : '';
-            cellContent += `<div class="hour-cell ${cellClass}" data-tooltip="${tooltipContent}" onclick="showBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
-        } else {
-            cellContent += `<div class="hour-cell ${cellClass}"></div>`;
-        }
-    }
-    cellContent += '</div>';
-    return cellContent;
-}
-
-function generateDayCells5(roomNumber, date) {
-    let cellContent = '<div class="day-cell">';
-    for (let hour = 0; hour < 24; hour++) {
-        const cellDate = new Date(date);
-        cellDate.setHours(hour);
-        const { isBooked, isPast } = checkBookingStatus(roomNumber, cellDate);
-        let cellClass = 'available';
-        if (isBooked) {
-            cellClass = isPast ? 'past-booked' : 'booked';
-            const bookingInfo = getBookingInfo(roomNumber, cellDate);
-            const tooltipContent = bookingInfo ?
-                `Guest: ${bookingInfo.guestName}\nAge: ${bookingInfo.age}\nPhone: ${bookingInfo.phoneNumber}\nCheck-in: ${formatDate(bookingInfo.checkIn)}\nCheck-out: ${formatDate(bookingInfo.checkOut)}` : '';
-            cellContent += `<div class="hour-cell ${cellClass}" data-tooltip="${tooltipContent}" onclick="showBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
-        } else {
-            cellContent += `<div class="hour-cell ${cellClass}" onclick="showNewBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
-        }
-    }
-    cellContent += '</div>';
-    return cellContent;
-}
-
 function generateDayCells(roomNumber, date) {
     let cellContent = '<div class="day-cell">';
     for (let hour = 0; hour < 24; hour++) {
@@ -332,69 +568,6 @@ function generateDayCells(roomNumber, date) {
     return cellContent;
 }
 
-function generateDayCells3(roomNumber, date) {
-    let cellContent = '<div class="day-cell">';
-    for (let hour = 0; hour < 24; hour++) {
-        const cellDate = new Date(date);
-        cellDate.setHours(hour);
-        const { status, isPast } = checkBookingStatus(roomNumber, cellDate);
-        let cellClass = 'available';
-        
-        switch(status) {
-            case 'booked':
-                cellClass = isPast ? 'past-booked' : 'booked';
-                break;
-            case 'checkin':
-                cellClass = isPast ? 'past-checkin' : 'checkin';
-                break;
-            case 'checkout':
-                cellClass = isPast ? 'past-checkout' : 'checkout';
-                break;
-        }
-
-        if (status !== 'available') {
-            const bookingInfo = getBookingInfo(roomNumber, cellDate);
-            const tooltipContent = bookingInfo ?
-                `Guest: ${bookingInfo.guestName}\nAge: ${bookingInfo.age}\nPhone: ${bookingInfo.phoneNumber}\nCheck-in: ${formatDate(bookingInfo.checkIn)}\nCheck-out: ${formatDate(bookingInfo.checkOut)}\nStatus: ${status}` : '';
-            cellContent += `<div class="hour-cell ${cellClass}" data-tooltip="${tooltipContent}" onclick="showBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
-        } else {
-            cellContent += `<div class="hour-cell ${cellClass}" onclick="showNewBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
-        }
-    }
-    cellContent += '</div>';
-    return cellContent;
-}
-
-function generateDayCells4(roomNumber, date) {
-    let cellContent = '<div class="day-cell">';
-    for (let hour = 0; hour < 24; hour++) {
-        const cellDate = new Date(date);
-        cellDate.setHours(hour);
-        const { status, isPast } = checkBookingStatus(roomNumber, cellDate);
-        let cellClass = status;
-        if (isPast) cellClass += ' past';
-
-        const bookingInfo = getBookingInfo(roomNumber, cellDate);
-        const tooltipContent = bookingInfo ?
-            `Guest: ${bookingInfo.guestName}\nAge: ${bookingInfo.age}\nPhone: ${bookingInfo.phoneNumber}\nCheck-in: ${formatDate(bookingInfo.checkIn)}\nCheck-out: ${formatDate(bookingInfo.checkOut)}\nStatus: ${status}` : '';
-
-        if (status !== 'available') {
-            cellContent += `<div class="hour-cell ${cellClass}" data-tooltip="${tooltipContent}" onclick="showBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
-        } else {
-            cellContent += `<div class="hour-cell ${cellClass}" onclick="showNewBookingModal(${roomNumber}, '${cellDate.toISOString()}')"></div>`;
-        }
-    }
-    cellContent += '</div>';
-    return cellContent;
-}
-
-function getBookingInfo2(roomNumber, date) {
-    const bookings = roomBookings[roomNumber];
-    if (!bookings) return null;
-
-    return bookings.find(booking => date >= booking.checkIn && date < booking.checkOut);
-}
-
 function getBookingInfo(roomNumber, date) {
     const bookings = roomBookings[roomNumber];
     if (!bookings) return null;
@@ -423,42 +596,6 @@ function checkBookingStatus(roomNumber, date) {
     return { isBooked: false, isPast: false };
 }
 
-function checkBookingStatus2(roomNumber, date) {
-    const bookings = roomBookings[roomNumber];
-    if (!bookings) return { status: 'available', isPast: false };
-
-    const now = new Date();
-    for (const booking of bookings) {
-        const checkIn = new Date(booking.checkIn);
-        const checkOut = new Date(booking.checkOut);
-        if (date >= checkIn && date < checkOut) {
-            let status = 'booked';
-            if (date.toDateString() === checkIn.toDateString()) {
-                status = 'checkin';
-            } else if (date.toDateString() === new Date(checkOut.getTime() - 86400000).toDateString()) {
-                status = 'checkout';
-            }
-            return { status, isPast: checkOut < now };
-        }
-    }
-    return { status: 'available', isPast: false };
-}
-
-function checkBookingStatus3(roomNumber, date) {
-    const bookings = roomBookings[roomNumber];
-    if (!bookings) return { status: 'available', isPast: false };
-
-    const now = new Date();
-    for (const booking of bookings) {
-        const checkIn = new Date(booking.checkIn);
-        const checkOut = new Date(booking.checkOut);
-        if (date >= checkIn && date < checkOut) {
-            let status = booking.status; // Use the status from the booking object
-            return { status, isPast: checkOut < now };
-        }
-    }
-    return { status: 'available', isPast: false };
-}
 
 function updateCalendar() {
     generateCalendar(currentDate);
@@ -543,8 +680,6 @@ document.addEventListener('click', function (event) {
             setTimeout(() => newBookingModal.classList.add('show'), 10);
             newBookingModal.style.display = 'block';
         }
-
-
     }
 });
 
@@ -554,117 +689,6 @@ document.querySelector('.close2').onclick = function () {
     const newBookingModal = document.getElementById('newBookingModal');
     newBookingModal.classList.remove('show');
     setTimeout(() => newBookingModal.style.display = 'none', 300);
-}
-
-function allRooms2() {
-    const roomList = {
-        101: "Available",
-        102: "Available",
-        201: "Available",
-        202: "Booked",
-        203: "Available",
-        301: "Booked",
-        302: "Occupied",
-        303: "Occupied",
-        401: "Occupied",
-        402: "Available",
-    }
-
-    const allRoomDiv = document.createElement('div');
-    allRoomDiv.className = 'all-room-available';
-
-    for (const [roomNumber, status] of Object.entries(roomList)) {
-        if (status === "Available") {
-            const roomButton = document.createElement('button');
-            roomButton.className = 'room-button available';
-            roomButton.id = roomNumber;
-            roomButton.textContent = `Room ${roomNumber}`;
-            roomButton.onclick = () => selectRoom(roomNumber);
-            allRoomDiv.appendChild(roomButton);
-        }
-        if (status === "Booked" || status === "Occupied") {
-            const roomButton = document.createElement('button');
-            roomButton.className = `room-button ${status.toLowerCase()}`;
-            roomButton.id = roomNumber;
-            roomButton.textContent = `Room ${roomNumber}`;
-            roomButton.disabled = true;
-            allRoomDiv.appendChild(roomButton);
-        }
-
-    }
-
-    const modalRoomList = document.querySelector('.rooms-btn');
-    modalRoomList.innerHTML = '';
-    modalRoomList.appendChild(allRoomDiv);
-
-}
-
-function allRooms3() {
-    const modalRoomListSelect = document.querySelector('.rooms-btn');
-    const roomList = localStorage.getItem('roomsList');
-    const roomListObj = JSON.parse(roomList);
-    console.log('Testing');
-    console.log(roomListObj);
-
-    // Create options for each rooms and when clicked it will add another date field
-    roomListObj.forEach(room => {
-        const option = document.createElement('option');
-        option.value = room.room_number;
-        option.textContent = `Room ${room.room_number}`;
-        modalRoomListSelect.appendChild(option);
-    });
-    modalRoomListSelect.addEventListener('change', function () {
-        const selectedRoom = this.value;
-        const dateField = document.createElement('input');
-        dateField.type = 'date';
-        dateField.name = 'bookingDate';
-        dateField.required = true;
-        document.querySelector('.booking-form').appendChild(dateField);
-    });
-
-
-}
-
-function allRooms4() {
-    const modalRoomListSelects = document.querySelectorAll('.rooms-btn');
-    const roomList = localStorage.getItem('roomsList');
-    const roomListObj = JSON.parse(roomList);
-    console.log('Testing');
-    console.log(roomListObj);
-
-    modalRoomListSelects.forEach(select => {
-        // Clear existing options
-        select.innerHTML = '<option selected disabled>Select Room</option>';
-
-        // Create options for each room
-        roomListObj.forEach(room => {
-            const option = document.createElement('option');
-            option.value = room.room_number;
-            option.textContent = `Room ${room.room_number}`;
-            select.appendChild(option);
-        });
-
-        // Add change event listener to each select
-        select.addEventListener('change', function () {
-            const selectedRoom = this.value;
-            console.log(`Selected room: ${selectedRoom}`);
-            // You can add more functionality here if needed
-        });
-    });
-}
-
-function allRooms5() {
-    const modalRoomListSelects = document.querySelectorAll('.rooms-btn');
-    if (modalRoomListSelects.length > 0) {
-        modalRoomListSelects.forEach(select => {
-            populateRoomOptions(select);
-        });
-    } else {
-        const singleSelect = document.querySelector('.rooms-btn');
-        if (singleSelect) {
-            populateRoomOptions(singleSelect);
-        }
-    }
 }
 
 function allRooms() {
@@ -830,29 +854,6 @@ function initializeBooking() {
     allRooms();
 }
 
-function populateRoomOptions2(select) {
-    const roomList = localStorage.getItem('roomsList');
-    const roomListObj = JSON.parse(roomList);
-
-    // Clear existing options
-    select.innerHTML = '<option selected disabled>Select Room</option>';
-
-    // Create options for each room
-    roomListObj.forEach(room => {
-        const option = document.createElement('option');
-        option.value = room.room_number;
-        option.textContent = `Room ${room.room_number}`;
-        select.appendChild(option);
-    });
-
-    // Add change event listener to the select
-    select.addEventListener('change', function () {
-        const selectedRoom = this.value;
-        console.log(`Selected room: ${selectedRoom}`);
-        // You can add more functionality here if needed
-    });
-}
-
 function populateRoomOptions(select, startDate, endDate) {
     const roomList = localStorage.getItem('roomsList');
     if (!roomList) {
@@ -951,43 +952,6 @@ window.initializeBooking = initializeBooking;
 // });
 
 
-function updateTotalBookingAmount2() {
-    const roomRows = document.querySelectorAll('.row');
-    let totalAmount = 0;
-
-    roomRows.forEach(row => {
-        const roomSelect = row.querySelector('.rooms-btn');
-        const startDateInput = row.querySelector('input[name="startDate"]');
-        const endDateInput = row.querySelector('input[name="endDate"]');
-
-        if (roomSelect.value && startDateInput.value && endDateInput.value) {
-            const price = parseFloat(roomSelect.options[roomSelect.selectedIndex].dataset.price);
-            const startDate = new Date(startDateInput.value);
-            const endDate = new Date(endDateInput.value);
-
-            // Calculate the number of nights
-            const nights = (endDate - startDate) / (1000 * 60 * 60 * 24);
-
-            // Add to total amount
-            totalAmount += price * nights;
-        }
-    });
-
-    // Update the display
-    const totalAmountElement = document.querySelector('.total-booking-amount-value');
-    if (totalAmountElement) {
-        totalAmountElement.textContent = `₹ ${totalAmount.toFixed(2)}`;
-    } else {
-        console.error('Total amount display element not found');
-    }
-
-    // Update advance amount input max value
-    const advanceInput = document.getElementById('advance-booking-amount');
-    if (advanceInput) {
-        advanceInput.max = totalAmount;
-    }
-}
-
 document.getElementById('new-booking-btn').addEventListener('click', function (e) {
     e.preventDefault();
     console.log("Book btn clicked")
@@ -1016,7 +980,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
             const formattedEndDate = new Date(endDate.value + 'T12:00:00Z').toISOString();
 
             bookingData.push({
-                room: roomSelect.value,
+                room: parseInt(roomSelect.value),
                 start_date: formattedStartDate,
                 end_date: formattedEndDate
             });
@@ -1109,7 +1073,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
     bookingFormData.append('address_line_1', bookingAddress);
     bookingFormData.append('address_line_2', customerState + " , " + customerNationality);
     bookingFormData.append('advance_amount', advanceBookingAmount);
-    bookingFormData.append('status', 1);
+    bookingFormData.append('status', 'pending');
     bookingFormData.append('rooms', JSON.stringify(bookingData));
 
     console.log("FormData:", JSON.stringify(bookingFormData));
@@ -1141,8 +1105,9 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
             .then(data => {
                 console.log('Booked Data:', data);
                 console.table(data);
+                console.log(response.status);
                 alert("Booked Successfully");
-                window.location.href = '/hotel/hotel.html';
+                // window.location.href = '/hotel/hotel.html';
             })
             .catch(error => {
                 console.log('Error fetching booked data:', error);
@@ -1152,42 +1117,6 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
 
 });
 
-function updateTotalBookingAmount3() {
-    const roomRows = document.querySelectorAll('.input-element-add-room .row');
-    let totalAmount = 0;
-
-    roomRows.forEach(row => {
-        const roomSelect = row.querySelector('.rooms-btn');
-        const startDateInput = row.querySelector('input[name="startDate"]');
-        const endDateInput = row.querySelector('input[name="endDate"]');
-
-        if (roomSelect.value && startDateInput.value && endDateInput.value) {
-            const price = parseFloat(roomSelect.options[roomSelect.selectedIndex].dataset.price);
-            const startDate = new Date(startDateInput.value);
-            const endDate = new Date(endDateInput.value);
-
-            // Calculate the number of nights
-            const nights = (endDate - startDate) / (1000 * 60 * 60 * 24);
-
-            // Add to total amount
-            totalAmount += price * nights;
-        }
-    });
-
-    // Update the display
-    const totalAmountElement = document.querySelector('.total-booking-amount-value');
-    if (totalAmountElement) {
-        totalAmountElement.textContent = `₹ ${totalAmount.toFixed(2)}`;
-    } else {
-        console.error('Total amount display element not found');
-    }
-
-    // Update advance amount input max value
-    const advanceInput = document.getElementById('advance-booking-amount');
-    if (advanceInput) {
-        advanceInput.max = totalAmount;
-    }
-}
 
 function updateTotalBookingAmount() {
     const roomRows = document.querySelectorAll('.input-element-add-room .row');
@@ -1225,23 +1154,6 @@ function updateTotalBookingAmount() {
         advanceInput.max = totalAmount;
     }
 }
-// range of dates should be disabled and occupied
-
-// const bookingPhone = document.getElementById('bookingPhone');
-// const bookingEmail = document.getElementById('bookingEmail');
-// const bookingFname = document.getElementById('bookingFname');
-// const bookingLname = document.getElementById('bookingLname');
-// const bookingAddress = document.getElementById('bookingAddress');
-// const customerState = document.getElementById('customerState');
-// const customerNationality = document.getElementById('customerNationality');
-// const customerStateDiv = document.getElementById('customerState-div');
-// const stateInputSelect = document.getElementById('state-input-select');
-
-// const stateInput = document.createElement('input');
-// stateInput.type = 'text';
-// stateInput.name = 'customerState';
-// stateInput.id = 'customerState';
-// stateInput.placeholder = 'State, Country';
 
 // Configure bookingPhone
 document.getElementById('bookingPhone').addEventListener('input', function () {
@@ -1353,6 +1265,4 @@ function createStateInput() {
     stateInput.placeholder = 'State, Country';
     return stateInput;
 }
-
-
 
