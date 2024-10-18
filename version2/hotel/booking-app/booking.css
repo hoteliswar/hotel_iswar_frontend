@@ -189,6 +189,14 @@ td {
     background-color: #6c757d;
 }
 
+.hour-cell.pending {
+    background-color: #005242;
+}
+
+.hour-cell.noshow {
+    background-color: #a3fcea;
+}
+
 /* .tooltip {
     display: none;
     position: absolute;

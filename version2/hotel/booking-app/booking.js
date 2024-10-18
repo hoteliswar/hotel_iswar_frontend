@@ -382,7 +382,7 @@ function convertToRequiredFormat4() {
     return roomBookings;
 }
 
-function convertToRequiredFormat() {
+function convertToRequiredFormat5() {
     const bookingsData = JSON.parse(localStorage.getItem('bookingsList'));
     const roomsList = JSON.parse(localStorage.getItem('roomsList'));
 
@@ -428,6 +428,88 @@ function convertToRequiredFormat() {
                 phoneNumber: guestDetail.phone,
                 checkIn: new Date(room.start_date),
                 checkOut: new Date(room.end_date),
+                status: status,
+                bookingDate: new Date(booking.booking_date)
+            });
+        });
+    });
+
+    // Sort bookings for each room by check-in date
+    for (const roomNumber in roomBookings) {
+        roomBookings[roomNumber].sort((a, b) => a.checkIn - b.checkIn);
+    }
+
+    console.log('roomBookings:', roomBookings);
+    return roomBookings;
+}
+
+function convertToRequiredFormat() {
+    const bookingsData = JSON.parse(localStorage.getItem('bookingsList'));
+    const roomsList = JSON.parse(localStorage.getItem('roomsList'));
+
+    if (!bookingsData || !roomsList) {
+        console.log('No data found');
+        return {};
+    }
+
+    // Create a map of room ID to room number
+    const roomIdToNumberMap = {};
+    roomsList.forEach(room => {
+        roomIdToNumberMap[room.id] = room.room_number;
+    });
+
+    console.log(`roomIdToNumberMap: ${roomIdToNumberMap}`);
+
+    // null is used for replacing values (not needed here).
+    // 2 is the number of spaces for indentation, which makes it more readable.
+    console.log(JSON.stringify(roomIdToNumberMap, null, 2));
+    console.log(JSON.stringify(roomIdToNumberMap));
+
+
+    const roomBookings = {};
+    const currentDate = new Date();
+
+    bookingsData.forEach(booking => {
+        booking.rooms.forEach(room => {
+            const roomNumber = roomIdToNumberMap[room.room];
+            console.log(`roomNumber: ${roomNumber}`);
+            if (!roomNumber) {
+                console.warn(`Room number not found for room ID: ${room.room}`);
+                return;
+            }
+
+            if (!roomBookings[roomNumber]) {
+                roomBookings[roomNumber] = [];
+            }
+
+            const guestDetail = booking.guest_detail[0]; // Assuming there's always at least one guest
+            const checkInDate = new Date(room.start_date);
+            const checkOutDate = new Date(room.end_date);
+            let status;
+
+            if (booking.status === 'pending') {
+                if(room.start_date > currentDate){
+                    status = 'pending';
+                } else {
+                    status = 'noshow';
+                }
+            } else if ( room.check_in_details && room.check_out_date){
+                status = 'checkout';
+            } else if (room.check_in_details && !room.check_out_date){
+                status = 'checkin';
+            } else if (booking.status === 'confirmed'){
+                status = 'confirmed'
+            }
+            
+            
+
+            roomBookings[roomNumber].push({
+                guestName: `${guestDetail.first_name} ${guestDetail.last_name}`,
+                age: 25, // Placeholder as age is not provided
+                email: guestDetail.email,
+                phoneNumber: guestDetail.phone,
+                checkIn: checkInDate,
+                checkOut: checkOutDate,
                 status: status,
                 bookingDate: new Date(booking.booking_date)
             });
@@ -556,6 +638,9 @@ function generateDayCells(roomNumber, date) {
                 case 'checkout':
                     cellClass = 'checkout';
                     break;
+                case 'pending':
+                    cellClass = 'pending';
+                    break;
             }
             
             const tooltipContent = `Guest: ${bookingInfo.guestName}\nAge: ${bookingInfo.age}\nPhone: ${bookingInfo.phoneNumber}\nCheck-in: ${formatDate(bookingInfo.checkIn)}\nCheck-out: ${formatDate(bookingInfo.checkOut)}\nStatus: ${bookingInfo.status}`;
@@ -567,6 +652,8 @@ function generateDayCells(roomNumber, date) {
     cellContent += '</div>';
     return cellContent;
 }
+
+
 
 function getBookingInfo(roomNumber, date) {
     const bookings = roomBookings[roomNumber];
@@ -583,7 +670,7 @@ function formatDate(date) {
 }
 
 
-function checkBookingStatus(roomNumber, date) {
+function checkBookingStatus2(roomNumber, date) {
     const bookings = roomBookings[roomNumber];
     if (!bookings) return { isBooked: false, isPast: false };
 
@@ -594,6 +681,25 @@ function checkBookingStatus(roomNumber, date) {
         }
     }
     return { isBooked: false, isPast: false };
+}
+
+function checkBookingStatus(roomNumber, date) {
+    const bookings = roomBookings[roomNumber];
+    if (!bookings) return { status: 'available', isPast: false };
+
+    const now = new Date();
+    for (const booking of bookings) {
+        if (date >= booking.checkIn && date < booking.checkOut) {
+            if (booking.status === 'checkout') {
+                return { status: 'checkout', isPast: booking.checkOut < now };
+            } else if (booking.status === 'checkin') {
+                return { status: 'checkin', isPast: booking.checkOut < now };
+            } else {
+                return { status: 'booked', isPast: booking.checkOut < now };
+            }
+        }
+    }
+    return { status: 'available', isPast: false };
 }
 
 
