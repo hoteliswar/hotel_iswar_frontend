@@ -80,14 +80,18 @@ async function convertToRequiredFormat_ListView() {
                 const bookingDate = new Date(booking.booking_date);
 
                 let status;
-                if (booking.status === 'checked_in') {
-                    status = 'checkin';
-                } else if (booking.status === 'pending') {
-                    status = 'booked';
-                } else if (room.check_out_date) {
+                if (booking.status === 'pending') {
+                    if(room.start_date > currentDate.toISOString()){
+                        status = 'pending';
+                    } else if(room.start_date < currentDate.toISOString()) {
+                        status = 'noshow';
+                    }
+                } else if ( room.check_in_details && room.check_out_date){
                     status = 'checkout';
-                } else {
-                    status = 'booked'; // Default status
+                } else if (room.check_in_details && !room.check_out_date){
+                    status = 'checkin';
+                } else if (booking.status === 'confirmed'){
+                    status = 'confirmed'
                 }
 
                 allBookings[roomNumber].push({
@@ -487,10 +491,13 @@ function convertToRequiredFormat() {
             const checkOutDate = new Date(room.end_date);
             let status;
 
+            console.log(room.start_date);
+            console.log(currentDate);
+
             if (booking.status === 'pending') {
-                if(room.start_date > currentDate){
+                if(room.start_date > currentDate.toISOString()){
                     status = 'pending';
-                } else {
+                } else if(room.start_date < currentDate.toISOString()) {
                     status = 'noshow';
                 }
             } else if ( room.check_in_details && room.check_out_date){
@@ -641,6 +648,9 @@ function generateDayCells(roomNumber, date) {
                 case 'pending':
                     cellClass = 'pending';
                     break;
+                case 'noshow':
+                    cellClass = 'noshow';
+                    break;
             }
             
             const tooltipContent = `Guest: ${bookingInfo.guestName}\nAge: ${bookingInfo.age}\nPhone: ${bookingInfo.phoneNumber}\nCheck-in: ${formatDate(bookingInfo.checkIn)}\nCheck-out: ${formatDate(bookingInfo.checkOut)}\nStatus: ${bookingInfo.status}`;
@@ -749,18 +759,31 @@ updateCalendar();
 function showBookingModal(roomNumber, dateString) {
     const date = new Date(dateString);
     const bookingInfo = getBookingInfo(roomNumber, date);
+    console.table(bookingInfo);
 
     if (bookingInfo) {
-        const modalContent = `
+        let modalContent = `
             <h2>Booking Details</h2>
             <p><strong>Room Number:</strong> ${roomNumber}</p>
             <p><strong>Guest Name:</strong> ${bookingInfo.guestName}</p>
-            <p><strong>Age:</strong> ${bookingInfo.age}</p>
+            <!--<p><strong>Age:</strong> ${bookingInfo.age}</p>-->
             <p><strong>Email:</strong> ${bookingInfo.email}</p>
             <p><strong>Phone Number:</strong> ${bookingInfo.phoneNumber}</p>
-            <p><strong>Check-in:</strong> ${formatDate(bookingInfo.checkIn)}</p>
-            <p><strong>Check-out:</strong> ${formatDate(bookingInfo.checkOut)}</p>
+            <p><strong>Start-Date&Time:</strong> ${formatDate(bookingInfo.checkIn)}</p>
+            <p><strong>End-Date&Time:</strong> ${formatDate(bookingInfo.checkOut)}</p>
         `;
+        if(bookingInfo.status === 'pending' || bookingInfo.status === 'noshow'){
+            modalContent += `
+                <p><strong>Status:</strong> ${bookingInfo.status}</p>
+                <button class="btn-checkin" id="btn-checkin" onclick="checkInBooking();">Check-In</button>
+            `;
+        }
+        if(bookingInfo.status === 'checkin'){
+            modalContent += `
+                <p><strong>Status:</strong> ${bookingInfo.status}</p>
+                <button class="btn-checkout" id="btn-checkout" onclick="checkOutBooking();">Check-Out</button>
+            `;
+        }
 
         const modal = document.getElementById('bookingModal');
         const modalBody = modal.querySelector('.modal-body');
@@ -770,6 +793,31 @@ function showBookingModal(roomNumber, dateString) {
 
         modal.style.display = 'block';
     }
+
+    // const btnCheckin = document.getElementById('btn-checkin');
+    // btnCheckin.addEventListener('click', () => {
+    //     console.log("Check-In btn clicked");
+    // });
+
+    // const btnCheckout = document.getElementById('btn-checkout');
+    // btnCheckout.addEventListener('click', () => {
+    //     console.log("Check-Out btn clicked");
+    // });
+}
+
+function checkInBooking(){
+    console.log("Check-In btn clicked");
+    const modal = document.getElementById('bookingModal');
+        const modalBody = modal.querySelector('.modal-body');
+        setTimeout(() => modal.classList.add('show'), 10);
+
+        modalBody.innerHTML = modalContent;
+
+        modal.style.display = 'block';
+}
+
+function checkOutBooking(){
+    console.log("Check-Out btn clicked");
 }
 
 document.querySelector('.close').onclick = function () {
@@ -1211,7 +1259,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
             .then(data => {
                 console.log('Booked Data:', data);
                 console.table(data);
-                console.log(response.status);
+                // console.log(response.status);
                 alert("Booked Successfully");
                 // window.location.href = '/hotel/hotel.html';
             })

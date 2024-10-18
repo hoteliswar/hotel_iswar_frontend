@@ -43,6 +43,15 @@
                     <div class="color-box"></div>
                     Booked
                 </div>
+                <div class="indicator-pending">
+                    <div class="color-box"></div>
+                    Pending
+                </div>
+                <div class="indicator-noshow">
+                    <div class="color-box"></div>
+                    NoShow
+                </div>
+
                 <div class="indicator-checkin">
                     <div class="color-box"></div>
                     Checkin
@@ -73,7 +82,7 @@
         </div>
     </div>
 
-    <!-- Modal: View Data from calendar -->
+    <!-- Modal: View Data from bookings -->
     <div class="modal-container">
         <div id="bookingModal" class="calendar-modal">
             <div class="modal-content">
@@ -83,6 +92,7 @@
         </div>
     </div>
 
+    <!-- Modal: New Booking -->
     <div class="modal-container-2">
         <div id="newBookingModal" class="new-booking">
             <div class="modal-content-2">
@@ -227,6 +237,16 @@
 
                     <button class="new-booking-btn" id="new-booking-btn">Book</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: CheckIn for bookings -->
+    <div class="modal-container-3">
+        <div id="bookingModal" class="calendar-modal">
+            <div class="modal-content-3">
+                <span class="close3">&times;</span>
+                <div class="modal-body"></div>
             </div>
         </div>
     </div>

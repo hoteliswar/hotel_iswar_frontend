@@ -80,7 +80,9 @@ body {
 .indicator-available,
 .indicator-booked,
 .indicator-checkin,
-.indicator-checkout {
+.indicator-checkout,
+.indicator-noshow,
+.indicator-pending {
     display: inline-block;
     justify-content: space-between;
     align-items: center;
@@ -103,6 +105,14 @@ body {
 
 .indicator-checkout .color-box {
     background-color: #6c757d;
+}
+
+.indicator-pending .color-box {
+    background-color: #005242;
+}
+
+.indicator-noshow .color-box {
+    background-color: #9b7400;
 }
 
 .preWeek,
@@ -194,7 +204,7 @@ td {
 }
 
 .hour-cell.noshow {
-    background-color: #a3fcea;
+    background-color: #9b7400;
 }
 
 /* .tooltip {
@@ -512,6 +522,8 @@ td {
     border-top: 1px solid #bababa;
 }
 
+.booking-list-body .status-noshow,
+.booking-list-body .status-pending,
 .booking-list-body .status-booked,
 .booking-list-body .status-checkin,
 .booking-list-body .status-checkout {
@@ -537,6 +549,16 @@ td {
 
 .booking-list-body .status-checkout {
     background-color: #6c757d;
+    color: #fff;
+}
+
+.booking-list-body .status-noshow {
+    background-color: #9b7400;
+    color: #fff;
+}
+
+.booking-list-body .status-pending {
+    background-color: #005242;
     color: #fff;
 }
 
