@@ -274,7 +274,8 @@ td {
 }
 
 .modal-container,
-.modal-container-2 {
+.modal-container-2,
+.modal-container-3 {
     position: fixed !important;
     z-index: 10000;
     right: -100%;
@@ -288,6 +289,7 @@ td {
 }
 
 .calendar-modal,
+.checkin-modal,
 .new-booking {
     /* display: none; */
     position: fixed;
@@ -379,6 +381,7 @@ td {
 
 /*  */
 .calendar-modal.show,
+.checkin-modal.show,
 .new-booking.show {
     right: 0;
 }
@@ -409,7 +412,8 @@ td {
 
 
 .close,
-.close2 {
+.close2,
+.close3 {
     /* position: absolute; */
     top: 10px;
     right: 20px;
