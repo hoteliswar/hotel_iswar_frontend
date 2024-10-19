@@ -471,6 +471,7 @@ function showBookingModal(roomNumber, dateString) {
     console.table(bookingInfo);
 
     if (bookingInfo) {
+        console.log(bookingInfo);
         let modalContent = `
             <h2>Booking Details</h2>
             <p><strong>Room Number:</strong> ${roomNumber}</p>
@@ -484,8 +485,15 @@ function showBookingModal(roomNumber, dateString) {
         if (bookingInfo.status === 'pending' || bookingInfo.status === 'noshow') {
             modalContent += `
                 <p><strong>Status:</strong> ${bookingInfo.status}</p>
-                <button class="btn-checkin" id="btn-checkin" onclick="checkInBooking();">Check-In</button>
             `;
+            const checkInBtn = document.createElement('button');
+            checkInBtn.className = 'btn-checkin';
+            checkInBtn.id = 'btn-checkin';
+            checkInBtn.textContent = 'Check-In';
+            // checkInBtn.addEventListener('click', () => checkInBooking(bookingInfo));
+            // checkInBtn.onclick = () => checkInBooking(bookingInfo);
+            modalContent += checkInBtn.outerHTML;
+
         }
         if (bookingInfo.status === 'checkin') {
             modalContent += `
@@ -503,21 +511,32 @@ function showBookingModal(roomNumber, dateString) {
         modal.style.display = 'block';
     }
 
+    // Adding event listener to check-in button inside booking details modal
+    document.getElementById('btn-checkin').addEventListener('click', () => checkInBooking(bookingInfo));
+
 }
 
 // Onclick action for CheckIn from Booking details modal
-function checkInBooking() {
-    let modalContent = ` `
+function checkInBooking(bookingInfo) {
+    renderCheckinModal(bookingInfo);
+    // let modalContent = ` `;
     console.log("Check-In btn clicked");
     const modal = document.getElementById('checkinModal');
     const modalBody = modal.querySelector('.modal-body');
     setTimeout(() => modal.classList.add('show'), 10);
 
-    modalBody.innerHTML = modalContent;
+    // modalBody.innerHTML = modalContent;
 
     modal.style.display = 'block';
 }
 
+function renderCheckinModal(bookingInfo){
+    // console.log(JSON.stringify(bookingInfo, null, 2));
+
+    console.log(bookingInfo);
+}
+
+// Close action for checkin modal
 document.querySelector('.close3').onclick = function () {
     const modal = document.getElementById('checkinModal');
     modal.classList.remove('show');

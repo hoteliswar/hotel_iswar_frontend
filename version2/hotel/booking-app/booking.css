@@ -308,6 +308,10 @@ td {
     max-width: 65%;
 }
 
+.checkin-modal {
+    max-width: 65%;
+}
+
 .booking-details-col {
     width: 65%;
     display: inline-block;
@@ -387,7 +391,8 @@ td {
 }
 
 .modal-content,
-.modal-content-2 {
+.modal-content-2,
+.modal-content-3 {
     height: 100%;
     overflow-y: auto;
     padding: 20px;
@@ -409,7 +414,6 @@ td {
 .modal-content-2::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
-
 
 .close,
 .close2,
