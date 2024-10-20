@@ -309,7 +309,7 @@ td {
 }
 
 .checkin-modal {
-    max-width: 65%;
+    max-width: 45%;
 }
 
 .booking-details-col {
@@ -575,4 +575,52 @@ td {
     color: #6d3900;
     cursor: pointer;
 }
+
+.modal-checkin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.heading {
+    font-size: 1.5em;
+    font-weight: 600;
+    margin-bottom: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.modal-form{
+    padding-top: 10px;
+}
+
+.input-element-checkin {
+    display: inline-block;
+    width: 48%;
+    margin-bottom: 10px;
+}
+
+.input-element-checkin.lg {
+    width: 99%;
+}
+
+.input-element-checkin label {
+    display: block;
+    width: 30%;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.input-element-checkin input {
+    display: inline-block;
+    width: 99%;
+    border: 1px solid #fcb00b;
+    border-radius: 4px;
+    height: 30px;
+}
+
 

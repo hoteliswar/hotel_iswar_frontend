@@ -1,289 +1,341 @@
 [
-    {
+  {
       "id": 1,
       "booking_date": "2024-10-14T18:20:19.679477Z",
       "status": "checked_in",
       "total_amount": "0.00",
       "tenant": 1,
       "guest_detail": [
-        {
-          "id": 4,
-          "username": "5555577",
-          "email": "rz57@example.com",
-          "first_name": "Rz",
-          "last_name": "Mz",
-          "phone": "5555577",
-          "address_line_1": "123 Main St",
-          "address_line_2": "Apt 4B"
-        }
+          {
+              "id": 4,
+              "username": "5555577",
+              "email": "rz57@example.com",
+              "first_name": "Rz",
+              "last_name": "Mz",
+              "phone": "5555577",
+              "address_line_1": "123 Main St",
+              "address_line_2": "Apt 4B"
+          }
       ],
       "rooms": [
-        {
-          "id": 1,
-          "booking": 1,
-          "room": 1,
-          "start_date": "2027-10-01T14:00:00Z",
-          "end_date": "2027-10-05T11:00:00Z",
-          "is_active": false,
-          "check_in_details": {
-            "id": 1,
-            "room_booking": 1,
-            "check_in_date": "2027-10-01T14:00:00Z",
-            "checked_in_by": 2,
-            "guests": [
-              {
-                "id": 6,
-                "email": "33@example.com",
-                "first_name": "John",
-                "last_name": "Doe",
-                "phone": "00345678944",
-                "address_line_1": "123 Main St",
-                "address_line_2": "Yo",
-                "guest_details": {
-                  "coming_from": "CityA",
-                  "going_to": "CityB",
-                  "purpose": "Business",
-                  "guest_id": [],
-                  "foreigner": false,
-                  "c_form": null
-                }
-              }
-            ]
-          },
-          "check_out_date": "2027-10-05T11:00:00Z",
-          "checked_out_by": 2,
-          "service_usages": [
-            {
+          {
               "id": 1,
-              "booking_id": 1,
-              "room_id": 1,
-              "service_id": 1,
-              "service_name": "Tshirt",
-              "usage_date": "2024-10-14T18:21:05.834572Z",
-              "quantity": 5,
-              "total_price": "50.00"
-            }
-          ],
-          "orders": [
-            {
-              "id": 2,
-              "food_items": [
-                1,
-                2
-              ],
-              "quantity": [
-                3,
-                3
-              ],
-              "phone": "1234567890",
-              "customer": {
-                "id": 5,
-                "username": "1234567890",
-                "email": "test@gmail.com",
-                "first_name": "test",
-                "last_name": "test",
-                "phone": "1234567890",
-                "address_line_1": "test",
-                "address_line_2": "maharashtra , indian"
+              "booking": 1,
+              "room": 1,
+              "start_date": "2027-10-01T14:00:00Z",
+              "end_date": "2027-10-05T11:00:00Z",
+              "is_active": false,
+              "check_in_details": {
+                  "id": 1,
+                  "room_booking": 1,
+                  "check_in_date": "2027-10-01T14:00:00Z",
+                  "checked_in_by": 2,
+                  "guests": [
+                      {
+                          "id": 6,
+                          "email": "33@example.com",
+                          "first_name": "John",
+                          "last_name": "Doe",
+                          "phone": "00345678944",
+                          "address_line_1": "123 Main St",
+                          "address_line_2": "Yo",
+                          "guest_details": {
+                              "coming_from": "CityA",
+                              "going_to": "CityB",
+                              "purpose": "Business",
+                              "guest_id": [],
+                              "foreigner": false,
+                              "c_form": null
+                          }
+                      }
+                  ]
               },
-              "room_id": 1,
-              "booking_id": 1,
-              "order_type": "hotel",
-              "payment_method": "cash",
-              "created_at": "2024-10-14T18:20:50.555396Z",
-              "status": "in_progress",
-              "total_price": "190.00",
-              "discount": "15.00",
-              "coupon_used": [
-                "WINTER2023"
+              "check_out_date": "2027-10-05T11:00:00Z",
+              "checked_out_by": 2,
+              "service_usages": [
+                  {
+                      "id": 1,
+                      "booking_id": 1,
+                      "room_id": 1,
+                      "service_id": 1,
+                      "service_name": "Tshirt",
+                      "usage_date": "2024-10-14T18:21:05.834572Z",
+                      "quantity": 5,
+                      "total_price": "50.00"
+                  }
               ],
-              "notes": "Deliver to room 101.",
-              "kot_count": 0,
-              "modified_at": [],
-              "modified_by": [],
-              "tenant": 1,
-              "tables": []
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "booking": 1,
-          "room": 2,
-          "start_date": "2027-10-01T14:00:00Z",
-          "end_date": "2027-10-05T11:00:00Z",
-          "is_active": false,
-          "check_in_details": {
-            "id": 2,
-            "room_booking": 2,
-            "check_in_date": "2027-10-01T14:00:00Z",
-            "checked_in_by": 2,
-            "guests": [
-              {
-                "id": 6,
-                "email": "33@example.com",
-                "first_name": "John",
-                "last_name": "Doe",
-                "phone": "00345678944",
-                "address_line_1": "123 Main St",
-                "address_line_2": "Yo",
-                "guest_details": {
-                  "coming_from": "CityA",
-                  "going_to": "CityB",
-                  "purpose": "Business",
-                  "guest_id": [],
-                  "foreigner": false,
-                  "c_form": null
-                }
-              }
-            ]
+              "orders": [
+                  {
+                      "id": 2,
+                      "food_items": [
+                          1,
+                          2
+                      ],
+                      "quantity": [
+                          3,
+                          3
+                      ],
+                      "phone": "1234567890",
+                      "customer": {
+                          "id": 5,
+                          "username": "1234567890",
+                          "email": "customer@example.com",
+                          "first_name": "Jane",
+                          "last_name": "Smith",
+                          "phone": "1234567890",
+                          "address_line_1": "456 Elm St",
+                          "address_line_2": "Suite 5A"
+                      },
+                      "room_id": 1,
+                      "booking_id": 1,
+                      "order_type": "hotel",
+                      "payment_method": "cash",
+                      "created_at": "2024-10-14T18:20:50.555396Z",
+                      "status": "in_progress",
+                      "total_price": "190.00",
+                      "discount": "15.00",
+                      "coupon_used": [
+                          "WINTER2023"
+                      ],
+                      "notes": "Deliver to room 101.",
+                      "kot_count": 0,
+                      "modified_at": [],
+                      "modified_by": [],
+                      "tenant": 1,
+                      "tables": []
+                  }
+              ]
           },
-          "check_out_date": "2027-10-05T11:00:00Z",
-          "checked_out_by": 2,
-          "service_usages": [],
-          "orders": []
-        }
+          {
+              "id": 2,
+              "booking": 1,
+              "room": 2,
+              "start_date": "2027-10-01T14:00:00Z",
+              "end_date": "2027-10-05T11:00:00Z",
+              "is_active": false,
+              "check_in_details": {
+                  "id": 2,
+                  "room_booking": 2,
+                  "check_in_date": "2027-10-01T14:00:00Z",
+                  "checked_in_by": 2,
+                  "guests": [
+                      {
+                          "id": 6,
+                          "email": "33@example.com",
+                          "first_name": "John",
+                          "last_name": "Doe",
+                          "phone": "00345678944",
+                          "address_line_1": "123 Main St",
+                          "address_line_2": "Yo",
+                          "guest_details": {
+                              "coming_from": "CityA",
+                              "going_to": "CityB",
+                              "purpose": "Business",
+                              "guest_id": [],
+                              "foreigner": false,
+                              "c_form": null
+                          }
+                      }
+                  ]
+              },
+              "check_out_date": "2027-10-05T11:00:00Z",
+              "checked_out_by": 2,
+              "service_usages": [],
+              "orders": []
+          }
       ],
       "id_card": null
-    },
-    {
+  },
+  {
       "id": 2,
-      "booking_date": "2024-10-15T15:26:28.007462Z",
-      "status": "pending",
+      "booking_date": "2024-10-17T19:16:27.375027Z",
+      "status": "checked_out",
       "total_amount": "0.00",
       "tenant": 1,
       "guest_detail": [
-        {
-          "id": 7,
-          "username": "7002246506",
-          "email": "rz57@example.com",
-          "first_name": "Rohit",
-          "last_name": "Sharma",
-          "phone": "7002246506",
-          "address_line_1": "123 Main St",
-          "address_line_2": "Apt 4B"
-        }
+          {
+              "id": 4,
+              "username": "5555577",
+              "email": "rz57@example.com",
+              "first_name": "Rz",
+              "last_name": "Mz",
+              "phone": "5555577",
+              "address_line_1": "123 Main St",
+              "address_line_2": "Apt 4B"
+          }
       ],
       "rooms": [
-        {
-          "id": 3,
-          "booking": 2,
-          "room": 1,
-          "start_date": "2024-10-13T14:00:00Z",
-          "end_date": "2024-10-16T11:00:00Z",
-          "is_active": true,
-          "check_in_details": null,
-          "check_out_date": null,
-          "checked_out_by": null,
-          "service_usages": [],
-          "orders": []
-        }
+          {
+              "id": 3,
+              "booking": 2,
+              "room": 1,
+              "start_date": "2024-10-01T14:00:00Z",
+              "end_date": "2024-10-05T11:00:00Z",
+              "is_active": false,
+              "check_in_details": {
+                  "id": 3,
+                  "room_booking": 3,
+                  "check_in_date": "2024-10-01T14:00:00Z",
+                  "checked_in_by": 2,
+                  "guests": [
+                      {
+                          "id": 6,
+                          "email": "33@example.com",
+                          "first_name": "John",
+                          "last_name": "Doe",
+                          "phone": "00345678944",
+                          "address_line_1": "123 Main St",
+                          "address_line_2": "Yo",
+                          "guest_details": {
+                              "coming_from": "CityA",
+                              "going_to": "CityB",
+                              "purpose": "Business",
+                              "guest_id": [],
+                              "foreigner": false,
+                              "c_form": null
+                          }
+                      }
+                  ]
+              },
+              "check_out_date": "2024-10-05T11:00:00Z",
+              "checked_out_by": 2,
+              "service_usages": [],
+              "orders": []
+          },
+          {
+              "id": 4,
+              "booking": 2,
+              "room": 2,
+              "start_date": "2024-10-01T14:00:00Z",
+              "end_date": "2024-10-05T11:00:00Z",
+              "is_active": false,
+              "check_in_details": {
+                  "id": 4,
+                  "room_booking": 4,
+                  "check_in_date": "2024-10-01T14:00:00Z",
+                  "checked_in_by": 2,
+                  "guests": [
+                      {
+                          "id": 6,
+                          "email": "33@example.com",
+                          "first_name": "John",
+                          "last_name": "Doe",
+                          "phone": "00345678944",
+                          "address_line_1": "123 Main St",
+                          "address_line_2": "Yo",
+                          "guest_details": {
+                              "coming_from": "CityA",
+                              "going_to": "CityB",
+                              "purpose": "Business",
+                              "guest_id": [],
+                              "foreigner": false,
+                              "c_form": null
+                          }
+                      }
+                  ]
+              },
+              "check_out_date": "2024-10-05T11:00:00Z",
+              "checked_out_by": 2,
+              "service_usages": [],
+              "orders": []
+          }
       ],
       "id_card": null
-    },
-    {
+  },
+  {
       "id": 3,
-      "booking_date": "2024-10-16T15:24:39.113180Z",
-      "status": "pending",
+      "booking_date": "2024-10-17T19:37:26.172233Z",
+      "status": "partial_checked_in_out",
       "total_amount": "0.00",
       "tenant": 1,
       "guest_detail": [
-        {
-          "id": 4,
-          "username": "5555577",
-          "email": "rz57@example.com",
-          "first_name": "Rz",
-          "last_name": "Mz",
-          "phone": "5555577",
-          "address_line_1": "123 Main St",
-          "address_line_2": "Apt 4B"
-        }
+          {
+              "id": 4,
+              "username": "5555577",
+              "email": "rz57@example.com",
+              "first_name": "Rz",
+              "last_name": "Mz",
+              "phone": "5555577",
+              "address_line_1": "123 Main St",
+              "address_line_2": "Apt 4B"
+          }
       ],
       "rooms": [
-        {
-          "id": 4,
-          "booking": 3,
-          "room": 2,
-          "start_date": "2024-10-16T14:00:00Z",
-          "end_date": "2024-10-18T11:00:00Z",
-          "is_active": true,
-          "check_in_details": null,
-          "check_out_date": null,
-          "checked_out_by": null,
-          "service_usages": [],
-          "orders": []
-        }
+          {
+              "id": 5,
+              "booking": 3,
+              "room": 1,
+              "start_date": "2024-11-01T14:00:00Z",
+              "end_date": "2024-11-05T11:00:00Z",
+              "is_active": false,
+              "check_in_details": {
+                  "id": 5,
+                  "room_booking": 5,
+                  "check_in_date": "2024-11-01T14:00:00Z",
+                  "checked_in_by": 2,
+                  "guests": [
+                      {
+                          "id": 6,
+                          "email": "33@example.com",
+                          "first_name": "John",
+                          "last_name": "Doe",
+                          "phone": "00345678944",
+                          "address_line_1": "123 Main St",
+                          "address_line_2": "Yo",
+                          "guest_details": {
+                              "coming_from": "CityA",
+                              "going_to": "CityB",
+                              "purpose": "Business",
+                              "guest_id": [],
+                              "foreigner": false,
+                              "c_form": null
+                          }
+                      }
+                  ]
+              },
+              "check_out_date": "2024-11-05T11:00:00Z",
+              "checked_out_by": 2,
+              "service_usages": [],
+              "orders": []
+          },
+          {
+              "id": 6,
+              "booking": 3,
+              "room": 2,
+              "start_date": "2024-11-01T14:00:00Z",
+              "end_date": "2024-11-05T11:00:00Z",
+              "is_active": true,
+              "check_in_details": {
+                  "id": 6,
+                  "room_booking": 6,
+                  "check_in_date": "2024-11-01T14:00:00Z",
+                  "checked_in_by": 2,
+                  "guests": [
+                      {
+                          "id": 6,
+                          "email": "33@example.com",
+                          "first_name": "John",
+                          "last_name": "Doe",
+                          "phone": "00345678944",
+                          "address_line_1": "123 Main St",
+                          "address_line_2": "Yo",
+                          "guest_details": {
+                              "coming_from": "CityA",
+                              "going_to": "CityB",
+                              "purpose": "Business",
+                              "guest_id": [],
+                              "foreigner": false,
+                              "c_form": null
+                          }
+                      }
+                  ]
+              },
+              "check_out_date": null,
+              "checked_out_by": null,
+              "service_usages": [],
+              "orders": []
+          }
       ],
       "id_card": null
-    },
-    {
-      "id": 4,
-      "booking_date": "2024-10-16T15:26:54.575478Z",
-      "status": "pending",
-      "total_amount": "200.00",
-      "tenant": 1,
-      "guest_detail": [
-        {
-          "id": 4,
-          "username": "5555577",
-          "email": "rz57@example.com",
-          "first_name": "Rz",
-          "last_name": "Mz",
-          "phone": "5555577",
-          "address_line_1": "123 Main St",
-          "address_line_2": "Apt 4B"
-        }
-      ],
-      "rooms": [
-        {
-          "id": 5,
-          "booking": 4,
-          "room": 1,
-          "start_date": "2024-10-16T14:00:00Z",
-          "end_date": "2024-10-18T11:00:00Z",
-          "is_active": true,
-          "check_in_details": null,
-          "check_out_date": null,
-          "checked_out_by": null,
-          "service_usages": [],
-          "orders": []
-        }
-      ],
-      "id_card": null
-    },
-    {
-      "id": 5,
-      "booking_date": "2024-10-16T15:45:57.301033Z",
-      "status": "pending",
-      "total_amount": "0.00",
-      "tenant": 1,
-      "guest_detail": [
-        {
-          "id": 5,
-          "username": "1234567890",
-          "email": "test@gmail.com",
-          "first_name": "test",
-          "last_name": "test",
-          "phone": "1234567890",
-          "address_line_1": "test",
-          "address_line_2": "maharashtra , indian"
-        }
-      ],
-      "rooms": [
-        {
-          "id": 6,
-          "booking": 5,
-          "room": 1,
-          "start_date": "2024-10-21T12:00:00Z",
-          "end_date": "2024-10-22T12:00:00Z",
-          "is_active": true,
-          "check_in_details": null,
-          "check_out_date": null,
-          "checked_out_by": null,
-          "service_usages": [],
-          "orders": []
-        }
-      ],
-      "id_card": null
-    }
-  ]
+  }
+]

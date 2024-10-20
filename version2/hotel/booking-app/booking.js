@@ -61,6 +61,7 @@ async function convertToRequiredFormat_ListView() {
         });
 
         const allBookings = {};
+        const currentDate = new Date();
 
         apiData.forEach(booking => {
             booking.rooms.forEach(room => {
@@ -231,8 +232,6 @@ function convertToRequiredFormat() {
                 status = 'confirmed'
             }
 
-
-
             roomBookings[roomNumber].push({
                 guestName: `${guestDetail.first_name} ${guestDetail.last_name}`,
                 age: 25, // Placeholder as age is not provided
@@ -241,7 +240,8 @@ function convertToRequiredFormat() {
                 checkIn: checkInDate,
                 checkOut: checkOutDate,
                 status: status,
-                bookingDate: new Date(booking.booking_date)
+                bookingDate: new Date(booking.booking_date),
+                bookingId: booking.id
             });
         });
     });

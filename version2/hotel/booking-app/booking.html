@@ -20,7 +20,7 @@
         <span class="toggle-text">Calendar View</span>
     </div>
 
-    <div class="calender-wrapper" >
+    <div class="calender-wrapper">
         <div class="header-row">
             <div id="currentMonth"></div>
             <div class="calendar-view">
@@ -35,31 +35,31 @@
             </div>
         </div>
         <div class="calender-color-indicator">
-                <div class="indicator-available">
-                    <div class="color-box"></div>
-                    Available
-                </div>
-                <div class="indicator-booked">
-                    <div class="color-box"></div>
-                    Booked
-                </div>
-                <div class="indicator-pending">
-                    <div class="color-box"></div>
-                    Pending
-                </div>
-                <div class="indicator-noshow">
-                    <div class="color-box"></div>
-                    NoShow
-                </div>
+            <div class="indicator-available">
+                <div class="color-box"></div>
+                Available
+            </div>
+            <div class="indicator-booked">
+                <div class="color-box"></div>
+                Booked
+            </div>
+            <div class="indicator-pending">
+                <div class="color-box"></div>
+                Pending
+            </div>
+            <div class="indicator-noshow">
+                <div class="color-box"></div>
+                NoShow
+            </div>
 
-                <div class="indicator-checkin">
-                    <div class="color-box"></div>
-                    Checkin
-                </div>
-                <div class="indicator-checkout">
-                    <div class="color-box"></div>
-                    Checkout
-                </div>
+            <div class="indicator-checkin">
+                <div class="color-box"></div>
+                Checkin
+            </div>
+            <div class="indicator-checkout">
+                <div class="color-box"></div>
+                Checkout
+            </div>
         </div>
         <div id="calendar"></div>
     </div>
@@ -194,11 +194,12 @@
                                         <option value="uttar_pradesh">Uttar Pradesh</option>
                                         <option value="uttarakhand">Uttarakhand</option>
                                         <option value="west_bengal">West Bengal</option>
-    
+
                                         <!-- Union Territories -->
                                         <option value="andaman_and_nicobar_islands">Andaman and Nicobar Islands</option>
                                         <option value="chandigarh">Chandigarh</option>
-                                        <option value="dadra_and_nagar_haveli_and_daman_and_diu">Dadra and Nagar Haveli and
+                                        <option value="dadra_and_nagar_haveli_and_daman_and_diu">Dadra and Nagar Haveli
+                                            and
                                             Daman and Diu</option>
                                         <option value="delhi">Delhi</option>
                                         <option value="lakshadweep">Lakshadweep</option>
@@ -208,13 +209,13 @@
                                     </select>
                                 </div>
                             </div>
-                            
+
                             <div class="input-element address">
                                 <label for="bookingAddress">Address</label>
                                 <input type="text" id="bookingAddress" name="bookingAddress" required value="test"
                                     placeholder="Address">
                             </div>
-                            
+
                             <div class="input-element">
                                 <label for="customerId">ID Card</label>
                                 <input type="file" id="customerId" name="customerId" multiple
@@ -245,9 +246,38 @@
     <div class="modal-container-3">
         <div id="checkinModal" class="checkin-modal">
             <div class="modal-content-3">
-                <span class="close3">&times;</span>
-                <div class="modal-body">
+                <div class="modal-checkin-header">
+                    <span class="close3">&times;</span>
                     <div class="heading">Check-In Form</div>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-form">
+                        <div class="input-element-checkin lg">
+                            <label for="roomNumber">Room Number</label>
+                            <input type="text" id="roomNumber" name="roomNumber" disabled required>
+                        </div>
+                        <div class="input-element-checkin lg">
+                            <label for="checkinDate">Check-In Date</label>
+                            <input type="date" id="checkinDate" name="checkinDate" required>
+                        </div>
+                        <div class="input-element-checkin ">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" name="firstName" required>
+                        </div>
+                        <div class="input-element-checkin ">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" name="lastName" required>
+                        </div>
+                        <div class="input-element-checkin ">
+                            <label for="phone">Guest Phone</label>
+                            <input type="text" id="phone" name="phone" required>
+                        </div>
+                        <div class="input-element-checkin ">
+                            <label for="email">Guest Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
