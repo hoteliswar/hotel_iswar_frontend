@@ -485,7 +485,8 @@ td {
     width: 97%;
 }
 
-.new-booking-btn {
+.new-booking-btn,
+.checkin-btn {
     background-color: #f6a903;
     height: 50px;
     width: 100px;
@@ -495,6 +496,11 @@ td {
     margin: 20px 10px 20px 20px;
     font-weight: 500;
     margin-top: 250px;
+}
+
+.checkin-btn {
+    display: block;
+    margin-top: 150px;
 }
 
 /* List View */
@@ -610,11 +616,12 @@ td {
 
 .input-element-checkin label {
     display: block;
-    width: 30%;
+    width: 50%;
     font-weight: 600;
     font-size: 0.9em;
 }
 
+.input-element-checkin select,
 .input-element-checkin input {
     display: inline-block;
     width: 99%;

@@ -530,10 +530,61 @@ function checkInBooking(bookingInfo) {
     modal.style.display = 'block';
 }
 
-function renderCheckinModal(bookingInfo){
+function renderCheckinModal(bookingInfo) {
     // console.log(JSON.stringify(bookingInfo, null, 2));
 
     console.log(bookingInfo);
+    console.log(bookingInfo.bookingId);
+
+    const dataById = getBookingById(bookingInfo.bookingId);
+
+    dataById.then(result => {
+        console.log('Raw JSON string:', result);
+        putBookingDataInModal(result)
+
+        console.log('Booking ID:', result.id);
+        console.log('Booking ID:', result.booking_date);
+    }).catch(error => {
+        console.error('Error fetching booking data:', error);
+    });
+
+    function putBookingDataInModal(result){
+        console.log("Line 552")
+
+
+        const roomNumber = document.getElementById('cim-roomNumber');
+        const checkinDate = document.getElementById('cim-checkinDate');
+        const firstName = document.getElementById('cim-firstName');
+        const lastName = document.getElementById('cim-lastName');
+        const phone = document.getElementById('cim-guestphone');
+        const email = document.getElementById('cim-guestemail');
+
+        firstName.value = result.guest_detail[0].first_name;
+        lastName.value = result.guest_detail[0].last_name;
+        phone.value = result.guest_detail[0].phone;
+        email.value = result.guest_detail[0].email;
+    }
+
+    function getBookingById(bookingId) {
+        const option = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            }
+        }
+        url = `${baseURL}hotel/bookings/${bookingId}`;
+        return refreshAccessToken2(url, option)
+            .then(data => {
+                console.log('Bookings Data by ID:', data);
+                return data;
+                // return JSON.stringify(data); // Return stringified data
+            })
+            .catch(error => {
+                console.log('Error fetching table:', error);
+                throw error; // Re-throw the error to be caught in the calling function
+            });
+    }
 }
 
 // Close action for checkin modal
