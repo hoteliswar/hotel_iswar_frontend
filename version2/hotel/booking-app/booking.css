@@ -500,7 +500,7 @@ td {
 
 .checkin-btn {
     display: block;
-    margin-top: 150px;
+    margin-top: 20px;
 }
 
 /* List View */
@@ -600,6 +600,10 @@ td {
     text-align: center;
 }
 
+.modal-body {
+    padding-bottom: 200px;
+}
+
 .modal-form{
     padding-top: 10px;
 }
@@ -612,6 +616,16 @@ td {
 
 .input-element-checkin.lg {
     width: 99%;
+}
+
+.input-element-checkin.room-number input{
+    font-weight: 600;
+    font-size: 2em;
+    height: 50px;
+}
+
+.input-element-checkin.sm {
+    width: 32%;
 }
 
 .input-element-checkin label {
@@ -630,4 +644,21 @@ td {
     height: 30px;
 }
 
+.input-element-checkin textarea{
+    display: inline-block;
+    width: 99%;
+    border: 1px solid #fcb00b;
+    border-radius: 4px;
+}
 
+.add-more-info-btn,
+.remove-info-btn {
+    color: #f6a903;
+    padding-left: 10px;
+    cursor: pointer;
+}
+
+.row-block {
+    border-bottom: 1px solid #bababa;
+    margin-top: 10px;
+}

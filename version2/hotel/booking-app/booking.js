@@ -530,6 +530,7 @@ function checkInBooking(bookingInfo, roomNumber) {
     modal.style.display = 'block';
 }
 
+// Render data in Check-In Modal
 function renderCheckinModal(bookingInfo, roomNumber) {
     // console.log(JSON.stringify(bookingInfo, null, 2));
 
@@ -548,8 +549,22 @@ function renderCheckinModal(bookingInfo, roomNumber) {
         console.error('Error fetching booking data:', error);
     });
 
-    function putBookingDataInModal(result, roomNumber){
-        console.log("Line 552")
+    function putBookingDataInModal(result, roomNumber) {
+
+        // // fetch id of roomNumber from local storage roomsList
+        const roomsListString = localStorage.getItem('roomsList');
+        const roomsList = JSON.parse(roomsListString);
+        const room = roomsList.find(room => room.room_number == roomNumber);
+
+        let roomId;
+        if (room) {
+            roomId = room.id; // Get the room ID
+            console.log("Room ID:", roomId);
+        } else {
+            console.error("Room not found for room number:", roomNumber);
+        }
+
+        console.log("Line 559")
 
 
         const roomNumberId = document.getElementById('cim-roomNumber');
@@ -560,15 +575,17 @@ function renderCheckinModal(bookingInfo, roomNumber) {
         const email = document.getElementById('cim-guestemail');
 
         roomNumberId.value = roomNumber;
+        roomNumberId.dataset.roomId = roomId;
+        roomNumberId.dataset.bookingId = bookingInfo.bookingId;
         firstName.value = result.guest_detail[0].first_name;
         lastName.value = result.guest_detail[0].last_name;
         phone.value = result.guest_detail[0].phone;
         email.value = result.guest_detail[0].email;
     }
 
-    
 }
 
+// Get Booking Data by ID: GET API Call
 function getBookingById(bookingId) {
     const option = {
         method: 'GET',
@@ -588,6 +605,219 @@ function getBookingById(bookingId) {
             console.log('Error fetching table:', error);
             throw error; // Re-throw the error to be caught in the calling function
         });
+}
+
+// Onclick action for Add more guest info row in Check-In Modal
+document.getElementById('add-more-btn-checkin').addEventListener('click', function () {
+    addGuestInfoRow();
+});
+
+// Add new guest info row in Check-In Modal
+function addGuestInfoRow() {
+    // Create a new div for the guest info row
+    const newRow = document.createElement('div');
+    newRow.className = 'row-block';
+
+    // Set the inner HTML for the new row
+    newRow.innerHTML = `
+        <div class="input-element-checkin">
+            <label for="cim-firstName">First Name</label>
+            <input type="text" id="cim-firstName" name="firstName" placeholder="First Name" required>
+        </div>
+        <div class="input-element-checkin">
+            <label for="cim-lastName">Last Name</label>
+            <input type="text" id="cim-lastName" name="lastName" placeholder="Last Name" required>
+        </div>
+        <div class="input-element-checkin sm">
+            <label for="cim-guestphone">Guest Phone</label>
+            <input type="text" id="cim-guestphone" name="guestphone" placeholder="Guest Phone" required>
+        </div>
+        <div class="input-element-checkin sm">
+            <label for="cim-guestemail">Guest Email</label>
+            <input type="email" id="cim-guestemail" name="guestemail" placeholder="Guest Email" required>
+        </div>
+        <div class="input-element-checkin sm">
+            <label for="cim-dob">D.O.B.</label>
+            <input type="date" id="cim-dob" name="dob" required>
+        </div>
+        <div class="input-element-checkin lg">
+            <label for="cim-address-1">Full Address</label>
+            <textarea type="text" id="cim-address-1" name="address-1" placeholder="Full Address" required rows="3" ></textarea>
+        </div>
+        <div class="input-element-checkin">
+            <label for="cim-customerNationality">Nationality</label>
+            <select name="" id="cim-customerNationality">
+                <option value="" selected disabled>Select Nationality</option>
+                <option value="indian">Indian</option>
+                <option value="others">Others</option>
+            </select>
+        </div>
+        <div class="input-element-checkin" id="customerState-div">
+            <label for="cim-customerState">State / Province</label>
+            <div id="state-input-select">
+                <select name="customerState" id="cim-customerState">
+                    <option selected disabled>Select State</option>
+                    <!-- States -->
+                    <option value="andhra_pradesh">Andhra Pradesh</option>
+                    <option value="arunachal_pradesh">Arunachal Pradesh</option>
+                    <option value="assam">Assam</option>
+                    <option value="bihar">Bihar</option>
+                    <option value="chhattisgarh">Chhattisgarh</option>
+                    <option value="goa">Goa</option>
+                    <option value="gujarat">Gujarat</option>
+                    <option value="haryana">Haryana</option>
+                    <option value="himachal_pradesh">Himachal Pradesh</option>
+                    <option value="jharkhand">Jharkhand</option>
+                    <option value="karnataka">Karnataka</option>
+                    <option value="kerala">Kerala</option>
+                    <option value="madhya_pradesh">Madhya Pradesh</option>
+                    <option value="maharashtra">Maharashtra</option>
+                    <option value="manipur">Manipur</option>
+                    <option value="meghalaya">Meghalaya</option>
+                    <option value="mizoram">Mizoram</option>
+                    <option value="nagaland">Nagaland</option>
+                    <option value="odisha">Odisha</option>
+                    <option value="punjab">Punjab</option>
+                    <option value="rajasthan">Rajasthan</option>
+                    <option value="sikkim">Sikkim</option>
+                    <option value="tamil_nadu">Tamil Nadu</option>
+                    <option value="telangana">Telangana</option>
+                    <option value="tripura">Tripura</option>
+                    <option value="uttar_pradesh">Uttar Pradesh</option>
+                    <option value="uttarakhand">Uttarakhand</option>
+                    <option value="west_bengal">West Bengal</option>
+                    <!-- Union Territories -->
+                    <option value="andaman_and_nicobar_islands">Andaman and Nicobar Islands</option>
+                    <option value="chandigarh">Chandigarh</option>
+                    <option value="dadra_and_nagar_haveli_and_daman_and_diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                    <option value="delhi">Delhi</option>
+                    <option value="lakshadweep">Lakshadweep</option>
+                    <option value="puducherry">Puducherry</option>
+                    <option value="ladakh">Ladakh</option>
+                    <option value="jammu_and_kashmir">Jammu and Kashmir</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="input-element-checkin">
+            <label for="cim-coming">Coming from</label>
+            <input type="text" id="cim-coming" name="coming" placeholder="Coming from" required>
+        </div>
+        <div class="input-element-checkin">
+            <label for="cim-going">Going to</label>
+            <input type="text" id="cim-going" name="going" placeholder="Going to" required>
+        </div>
+        <div class="input-element-checkin">
+            <label for="cim-purpose">Purpose of Visit</label>
+            <input type="text" id="cim-purpose" name="purpose" placeholder="Purpose of Visit" required>
+        </div>
+        <i class="fa-solid fa-circle-minus fa-2x remove-info-btn"></i>
+    `;
+
+    // Append the new row to the guest info section
+    const guestInfoRow = document.getElementById('checkin-form');
+    guestInfoRow.appendChild(newRow);
+
+    // Add event listener to the remove button
+    newRow.querySelector('.remove-info-btn').addEventListener('click', function () {
+        guestInfoRow.removeChild(newRow);
+    });
+}
+
+
+// Onclick action for CheckIn from Check-In Modal
+document.getElementById('checkin-btn').addEventListener('click', checkInSubmit);
+
+function checkInSubmit2() {
+
+    const roomNumber = document.getElementById('cim-roomNumber').value;
+    const checkinDateTime = document.getElementById('cim-checkinDateTime').value;
+
+    console.log("Check-In btn clicked");
+}
+
+function checkInSubmit() {
+    const roomNumber = document.getElementById('cim-roomNumber').value;
+    const roomId = document.getElementById('cim-roomNumber').dataset.roomId;
+    const bookingId = document.getElementById('cim-roomNumber').dataset.bookingId;
+    const checkinDateTime = document.getElementById('cim-checkinDateTime').value;
+    const checkinDateTimeISO = new Date(checkinDateTime).toISOString();
+
+    // Get all guest info rows
+    const guestInfoRows = document.querySelectorAll('.row-block');
+    // const guestInfoRows = document.querySelectorAll('#guest-info-row-checkin .row-block');
+    const guestsData = [];
+
+    guestInfoRows.forEach((row, index) => {
+        const firstName = row.querySelector('input[name="firstName"]');
+        const lastName = row.querySelector('input[name="lastName"]');
+        const guestPhone = row.querySelector('input[name="guestphone"]');
+        const guestEmail = row.querySelector('input[name="guestemail"]');
+        const guestDOB = row.querySelector('input[name="dob"]');
+        const nationality = row.querySelector('#cim-customerNationality');
+        const customerState = row.querySelector('#cim-customerState');
+        const address = row.querySelector('#cim-address-1');
+        const comingFrom = row.querySelector('input[name="coming"]');
+        const goingTo = row.querySelector('input[name="going"]');
+        const purpose = row.querySelector('input[name="purpose"]');
+        const idcard = row.querySelector('input[name="idcard"]');
+        // if any data missing show alert
+        if (!firstName || !lastName || !guestPhone || !guestEmail || !nationality || !customerState || !comingFrom || !goingTo || !purpose) {
+            console.log(`Missing element in row ${index + 1}:`, {
+                firstName: !!firstName,
+                lastName: !!lastName,
+                guestPhone: !!guestPhone,
+                guestEmail: !!guestEmail,
+                address_line_1: !!address,
+                nationality: !!nationality,
+                customerState: !!customerState,
+            });
+            alert(`Error: Some elements are missing in row ${index + 1}. Please check the console for details.`);
+            return;
+        }
+
+        if (firstName.value && lastName.value && guestPhone.value && guestEmail.value && nationality.value && customerState.value && comingFrom.value && goingTo.value && purpose.value) {
+            guestsData.push({
+                first_name: firstName.value,
+                last_name: lastName.value,
+                phone: guestPhone.value,
+                email: guestEmail.value,
+                address_line_1: address.value,
+                address_line_2: nationality.value + ' ' + customerState.value,
+                coming_from: comingFrom.value,
+                going_to: goingTo.value,
+                purpose: purpose.value,
+                dob: guestDOB.value,
+                foreigner: nationality.value === 'others' ? true : false,
+                // guest_id: idcard.value,
+
+            })
+        } else {
+            console.warn(`Incomplete data in row ${index + 1}:`, {
+                firstName: firstName.value,
+                lastName: lastName.value,
+                guestPhone: guestPhone.value,
+                guestEmail: guestEmail.value,
+            });
+            alert(`Please fill all the required fields for row ${index + 1}.`);
+            return;
+        }
+
+    });
+
+    console.log("Guests Data:", guestsData);
+
+    // Create the final check-in object
+    const checkInData = {
+        booking_id: bookingId,
+        room_id : roomId,
+        check_in_date: checkinDateTimeISO,
+        guests: guestsData
+    };
+    console.log("Check-In Data:", JSON.stringify(checkInData, null, 2));
+
+    console.log(`Room Number: ${roomNumber}`);
+    console.log(`Check-In Date and Time: ${checkinDateTime}`);
 }
 
 // Close action for checkin modal
@@ -1201,4 +1431,5 @@ function createStateInput() {
     stateInput.placeholder = 'State, Country';
     return stateInput;
 }
+
 

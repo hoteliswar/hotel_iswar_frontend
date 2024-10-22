@@ -251,119 +251,125 @@
                     <div class="heading">Check-In Form</div>
                 </div>
                 <div class="modal-body" id="checkinModalBody">
-                    <div class="modal-form">
-                        <div class="input-element-checkin lg">
+                    <div class="modal-form" id="checkin-form">
+                        <div class="input-element-checkin lg room-number">
                             <label for="cim-roomNumber">Room Number</label>
                             <input type="text" id="cim-roomNumber" name="roomNumber" disabled required>
                         </div>
-                        <!-- <div class="input-element-checkin">
-                            <label for="cim-checkinDate">Check-In Date</label>
-                            <input type="date" id="cim-checkinDate" name="checkinDate" required>
-                        </div>
-                        <div class="input-element-checkin">
-                            <label for="cim-checkinTime">Check-In Time</label>
-                            <input type="time" id="cim-checkinTime" name="checkinTime" required>
-                        </div> -->
-
                         <div class="input-element-checkin lg">
                             <label for="checkinDateTime">Check-in Date and Time:</label>
                             <input type="datetime-local" id="cim-checkinDateTime" name="checkinDateTime">
                         </div>
 
-                        <div class="input-element-checkin ">
-                            <label for="cim-firstName">First Name</label>
-                            <input type="text" id="cim-firstName" name="firstName" required>
-                        </div>
-                        <div class="input-element-checkin ">
-                            <label for="cim-lastName">Last Name</label>
-                            <input type="text" id="cim-lastName" name="lastName" required>
-                        </div>
-                        <div class="input-element-checkin ">
-                            <label for="cim-guestphone">Guest Phone</label>
-                            <input type="text" id="cim-guestphone" name="guestphone" required>
-                        </div>
-                        <div class="input-element-checkin ">
-                            <label for="cim-guestemail">Guest Email</label>
-                            <input type="email" id="cim-guestemail" name="guestemail" required>
-                        </div>
+                        <div class="row-block" id="guest-info-row-checkin">
+                            <div class="input-element-checkin ">
+                                <label for="cim-firstName">First Name</label>
+                                <input type="text" id="cim-firstName" name="firstName" required>
+                            </div>
+                            <div class="input-element-checkin ">
+                                <label for="cim-lastName">Last Name</label>
+                                <input type="text" id="cim-lastName" name="lastName" required>
+                            </div>
+                            <div class="input-element-checkin sm">
+                                <label for="cim-guestphone">Guest Phone</label>
+                                <input type="text" id="cim-guestphone" name="guestphone" required>
+                            </div>
+                            <div class="input-element-checkin sm">
+                                <label for="cim-guestemail">Guest Email</label>
+                                <input type="email" id="cim-guestemail" name="guestemail" required>
+                            </div>
+                            <div class="input-element-checkin sm">
+                                <label for="cim-dob">D.O.B.</label>
+                                <input type="date" id="cim-dob" name="dob" required>
+                            </div>
 
-                        <div class="input-element-checkin">
-                            <label for="cim-customerNationality">Nationality</label>
-                            <!-- <input type="text" id="customerNationality" name="customerNationality" value="indian"  placeholder="Last Name"> -->
-                            <select name="" id="cim-customerNationality">
-                                <option value="" selected disabled>Select Nationality</option>
-                                <option value="indian">Indian</option>
-                                <option value="others">Others</option>
-                            </select>
-                        </div>
-                        <div class="input-element-checkin" id="customerState-div">
-                            <label for="cim-customerState">State / Province</label>
-                            <div id="state-input-select">
-                                <select name="customerState" id="cim-customerState">
-                                    <option selected disabled>Select State</option>
-                                    <!-- States -->
-                                    <option value="andhra_pradesh">Andhra Pradesh</option>
-                                    <option value="arunachal_pradesh">Arunachal Pradesh</option>
-                                    <option value="assam">Assam</option>
-                                    <option value="bihar">Bihar</option>
-                                    <option value="chhattisgarh">Chhattisgarh</option>
-                                    <option value="goa">Goa</option>
-                                    <option value="gujarat">Gujarat</option>
-                                    <option value="haryana">Haryana</option>
-                                    <option value="himachal_pradesh">Himachal Pradesh</option>
-                                    <option value="jharkhand">Jharkhand</option>
-                                    <option value="karnataka">Karnataka</option>
-                                    <option value="kerala">Kerala</option>
-                                    <option value="madhya_pradesh">Madhya Pradesh</option>
-                                    <option value="maharashtra">Maharashtra</option>
-                                    <option value="manipur">Manipur</option>
-                                    <option value="meghalaya">Meghalaya</option>
-                                    <option value="mizoram">Mizoram</option>
-                                    <option value="nagaland">Nagaland</option>
-                                    <option value="odisha">Odisha</option>
-                                    <option value="punjab">Punjab</option>
-                                    <option value="rajasthan">Rajasthan</option>
-                                    <option value="sikkim">Sikkim</option>
-                                    <option value="tamil_nadu">Tamil Nadu</option>
-                                    <option value="telangana">Telangana</option>
-                                    <option value="tripura">Tripura</option>
-                                    <option value="uttar_pradesh">Uttar Pradesh</option>
-                                    <option value="uttarakhand">Uttarakhand</option>
-                                    <option value="west_bengal">West Bengal</option>
+                            <div class="input-element-checkin lg address-height">
+                                <label for="cim-address-1">Full Address</label>
+                                <textarea type="text" id="cim-address-1" name="address-1" placeholder="Full Address"
+                                    required rows="3"></textarea>
+                            </div>
 
-                                    <!-- Union Territories -->
-                                    <option value="andaman_and_nicobar_islands">Andaman and Nicobar Islands</option>
-                                    <option value="chandigarh">Chandigarh</option>
-                                    <option value="dadra_and_nagar_haveli_and_daman_and_diu">Dadra and Nagar Haveli
-                                        and
-                                        Daman and Diu</option>
-                                    <option value="delhi">Delhi</option>
-                                    <option value="lakshadweep">Lakshadweep</option>
-                                    <option value="puducherry">Puducherry</option>
-                                    <option value="ladakh">Ladakh</option>
-                                    <option value="jammu_and_kashmir">Jammu and Kashmir</option>
+                            <div class="input-element-checkin">
+                                <label for="cim-customerNationality">Nationality</label>
+                                <select name="nationality" id="cim-customerNationality">
+                                    <option value="" selected disabled>Select Nationality</option>
+                                    <option value="indian">Indian</option>
+                                    <option value="others">Others</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="input-element-checkin lg">
-                            <label for="cim-address-1">Full Address</label>
-                            <input type="text" id="cim-address-1" name="address-1" required>
-                        </div>
-                        <div class="input-element-checkin">
-                            <label for="cim-comming">Comming from</label>
-                            <input type="text" id="cim-comming" name="comming" required>
-                        </div>
-                        <div class="input-element-checkin">
-                            <label for="cim-going">Going to</label>
-                            <input type="text" id="cim-going" name="going" required>
-                        </div>
-                        <div class="input-element-checkin">
-                            <label for="cim-purpose">Purpose of Visit</label>
-                            <input type="text" id="cim-purpose" name="purpose" required>
+                            <div class="input-element-checkin" id="customerState-div">
+                                <label for="cim-customerState">State / Province</label>
+                                <div id="state-input-select">
+                                    <select name="customerState" id="cim-customerState">
+                                        <option selected disabled>Select State</option>
+                                        <!-- States -->
+                                        <option value="andhra_pradesh">Andhra Pradesh</option>
+                                        <option value="arunachal_pradesh">Arunachal Pradesh</option>
+                                        <option value="assam">Assam</option>
+                                        <option value="bihar">Bihar</option>
+                                        <option value="chhattisgarh">Chhattisgarh</option>
+                                        <option value="goa">Goa</option>
+                                        <option value="gujarat">Gujarat</option>
+                                        <option value="haryana">Haryana</option>
+                                        <option value="himachal_pradesh">Himachal Pradesh</option>
+                                        <option value="jharkhand">Jharkhand</option>
+                                        <option value="karnataka">Karnataka</option>
+                                        <option value="kerala">Kerala</option>
+                                        <option value="madhya_pradesh">Madhya Pradesh</option>
+                                        <option value="maharashtra">Maharashtra</option>
+                                        <option value="manipur">Manipur</option>
+                                        <option value="meghalaya">Meghalaya</option>
+                                        <option value="mizoram">Mizoram</option>
+                                        <option value="nagaland">Nagaland</option>
+                                        <option value="odisha">Odisha</option>
+                                        <option value="punjab">Punjab</option>
+                                        <option value="rajasthan">Rajasthan</option>
+                                        <option value="sikkim">Sikkim</option>
+                                        <option value="tamil_nadu">Tamil Nadu</option>
+                                        <option value="telangana">Telangana</option>
+                                        <option value="tripura">Tripura</option>
+                                        <option value="uttar_pradesh">Uttar Pradesh</option>
+                                        <option value="uttarakhand">Uttarakhand</option>
+                                        <option value="west_bengal">West Bengal</option>
+
+                                        <!-- Union Territories -->
+                                        <option value="andaman_and_nicobar_islands">Andaman and Nicobar Islands</option>
+                                        <option value="chandigarh">Chandigarh</option>
+                                        <option value="dadra_and_nagar_haveli_and_daman_and_diu">Dadra and Nagar Haveli
+                                            and
+                                            Daman and Diu</option>
+                                        <option value="delhi">Delhi</option>
+                                        <option value="lakshadweep">Lakshadweep</option>
+                                        <option value="puducherry">Puducherry</option>
+                                        <option value="ladakh">Ladakh</option>
+                                        <option value="jammu_and_kashmir">Jammu and Kashmir</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="input-element-checkin">
+                                <label for="cim-coming">Coming from</label>
+                                <input type="text" id="cim-coming" name="coming" placeholder="Coming from" required>
+                            </div>
+                            <div class="input-element-checkin">
+                                <label for="cim-going">Going to</label>
+                                <input type="text" id="cim-going" name="going" placeholder="Going to" required>
+                            </div>
+                            <div class="input-element-checkin">
+                                <label for="cim-purpose">Purpose of Visit</label>
+                                <input type="text" id="cim-purpose" name="purpose" placeholder="Purpose of Visit"
+                                    required>
+                            </div>
+                            <div class="input-element-checkin sm">
+                                <label for="cim-idcard">ID Card</label>
+                                <input type="file" id="cim-idcard" name="idcard" required >
+                            </div>
+
+                            <i class="fa-solid fa-circle-plus fa-2x add-more-info-btn" id="add-more-btn-checkin"></i>
                         </div>
 
-                        <button class="checkin-btn" id="checkin-btn">Check-In</button>
                     </div>
+                    <button class="checkin-btn" id="checkin-btn">Check-In</button>
 
                 </div>
             </div>
