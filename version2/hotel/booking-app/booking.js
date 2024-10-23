@@ -19,6 +19,8 @@ document.getElementById('viewToggle').addEventListener('click', function () {
     });
 });
 
+getAllBookings();
+
 // document.getElementById('viewToggle').click();
 
 function populateListView() {
@@ -172,6 +174,7 @@ var currentDate = new Date();
 
 // JSON formating for calender
 function convertToRequiredFormat() {
+
     const bookingsData = JSON.parse(localStorage.getItem('bookingsList'));
     const roomsList = JSON.parse(localStorage.getItem('roomsList'));
 
@@ -809,15 +812,42 @@ function checkInSubmit() {
 
     // Create the final check-in object
     const checkInData = {
-        booking_id: bookingId,
-        room_id : roomId,
+        booking_id: parseInt(bookingId),
+        room_id : parseInt(roomId),
         check_in_date: checkinDateTimeISO,
         guests: guestsData
     };
+    postCheckInData(checkInData);
     console.log("Check-In Data:", JSON.stringify(checkInData, null, 2));
 
     console.log(`Room Number: ${roomNumber}`);
     console.log(`Check-In Date and Time: ${checkinDateTime}`);
+}
+
+
+
+//  POST API Call for checkin   
+function postCheckInData(checkInData) {
+    console.log(`postCheckInData: ${checkInData}` );
+    console.log("Check-In Data:", JSON.stringify(checkInData, null, 2));
+    
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(checkInData),
+    };
+    const url = `${baseURL}hotel/checkin/`;
+    refreshAccessToken2(url, options)
+        .then(data => {
+            console.log("Check-In Data posted:", data);
+            return data;
+        })
+        .catch(error => {
+            console.error("Error posting check-in data:", error);
+        });
 }
 
 // Close action for checkin modal
