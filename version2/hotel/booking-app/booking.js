@@ -530,8 +530,8 @@ function loadBookingModal(bookingInfo, roomNumber) {
             checkInBtn.className = 'btn-checkin';
             checkInBtn.id = 'btn-checkin';
             checkInBtn.textContent = 'Check-In';
-            // checkInBtn.addEventListener('click', () => checkInBooking(bookingInfo));
-            // checkInBtn.onclick = () => checkInBooking(bookingInfo);
+            // checkInBtn.addEventListener('click', () => checkInBooking(bookingInfo, roomNumber));
+            checkInBtn.onclick = () => checkInBooking(bookingInfo, roomNumber);
             modalContent += checkInBtn.outerHTML;
 
         }
@@ -540,6 +540,13 @@ function loadBookingModal(bookingInfo, roomNumber) {
                 <p><strong>Status:</strong> ${bookingInfo.status}</p>
                 <button class="btn-checkout" id="btn-checkout" onclick="checkOutBooking();">Check-Out</button>
             `;
+            const servicesBtn = document.createElement('button');
+            servicesBtn.className = 'btn-services';
+            servicesBtn.id = 'btn-services';
+            servicesBtn.textContent = 'Services';
+            // servicesBtn.addEventListener('click', () => servicesBooking(bookingInfo, roomNumber));
+            // servicesBtn.onclick = () => servicesBooking(bookingInfo, roomNumber);
+            modalContent += servicesBtn.outerHTML;
         }
 
         const modal = document.getElementById('bookingModal');
@@ -547,14 +554,27 @@ function loadBookingModal(bookingInfo, roomNumber) {
         setTimeout(() => modal.classList.add('show'), 10);
 
         modalBody.innerHTML = modalContent;
-
         modal.style.display = 'block';
     }
 
+
     // Adding event listener to check-in button inside booking details modal
-    document.getElementById('btn-checkin').addEventListener('click', () => checkInBooking(bookingInfo, roomNumber));
+    const checkInBtn = document.getElementById('btn-checkin');
+    const servicesBtn = document.getElementById('btn-services');
+
+    if(checkInBtn){
+    document.getElementById('btn-checkin').onclick = () => checkInBooking(bookingInfo, roomNumber);
+    }
+    if(servicesBtn){
+        document.getElementById('btn-services').onclick = () => servicesBooking(bookingInfo, roomNumber);
+    }
+    
+    // Adding event listener to check-in button inside booking details modal
+    // document.getElementById('btn-checkin').addEventListener('click', () => checkInBooking(bookingInfo, roomNumber));
+    // document.getElementById('btn-services').addEventListener('click', () => servicesBooking(bookingInfo, roomNumber));
 
 }
+
 
 // Show booking details modal
 function showBookingModal2(roomNumber, dateString) {
@@ -592,6 +612,7 @@ function showBookingModal2(roomNumber, dateString) {
             modalContent += `
                 <p><strong>Status:</strong> ${bookingInfo.status}</p>
                 <button class="btn-checkout" id="btn-checkout" onclick="checkOutBooking();">Check-Out</button>
+                <button class="btn-services" id="btn-services" onclick="servicesBooking();">Services</button>
             `;
         }
 
@@ -607,6 +628,20 @@ function showBookingModal2(roomNumber, dateString) {
     // Adding event listener to check-in button inside booking details modal
     document.getElementById('btn-checkin').addEventListener('click', () => checkInBooking(bookingInfo, roomNumber));
 
+}
+
+// continue service modal
+function servicesBooking(bookingInfo, roomNumber){
+    console.log("servicesBooking called");
+    console.log(bookingInfo);
+    console.log(roomNumber);
+
+    const modal = document.getElementById('serviceModal');
+    const modalBody = modal.querySelector('.modal-body');
+    setTimeout(() => modal.classList.add('show'), 10);
+
+    // modalBody.innerHTML = modalContent;
+    modal.style.display = 'block';
 }
 
 // Onclick action for CheckIn from Booking details modal
