@@ -105,7 +105,8 @@ async function convertToRequiredFormat_ListView() {
                     phoneNumber: guestDetail.phone,
                     checkIn: checkIn,
                     checkOut: checkOut,
-                    status: status
+                    status: status,
+                    bookingId: booking.id
                 });
             });
         });
@@ -150,7 +151,7 @@ function renderListView(allBookings) {
     // Display booking details for each booking in each room and sort by date
     for (const roomNumber in allBookings) {
         const bookings = allBookings[roomNumber];
-        console.log(bookings);
+        console.table(bookings);
         bookings.sort((a, b) => new Date(a.checkIn) - new Date(b.checkIn));
 
         bookings.forEach(booking => {
@@ -163,10 +164,19 @@ function renderListView(allBookings) {
                 <div class="col-2">${booking.checkIn.toLocaleString()}</div>
                 <div class="col-2">${booking.checkOut.toLocaleString()}</div>
                 <div class="col-1 status-${booking.status}">${booking.status}</div>
-                <div class="col-1 "> <i class="fa-solid fa-eye eye" id="eye"></i> </div>
+                <div class="col-1 "> <i class="fa-solid fa-eye eye" id="eye-${booking.id}"></i> </div>
             `;
             listviewWrapper.appendChild(roomDiv);
+
+            // Add onclick event to the eye icon
+            const eyeIcon = roomDiv.querySelector(`#eye-${booking.id}`);
+            eyeIcon.addEventListener('click', function() {
+                // Call the function to show booking details
+                showBookingModalListView(roomNumber, booking.bookingId);
+            });
+            
         });
+
     }
 }
 
@@ -467,9 +477,89 @@ monthSelect.addEventListener('change', (e) => {
 
 updateCalendar();
 
+// Function to toggle booking details
+function toggleBookingDetails(booking) {
+    // Implement the logic to show/hide booking details
+    console.log("Toggling details for booking:", booking);
+    // You can add logic here to display or hide additional information about the booking
+}
+
+function showBookingModalListView(roomNumber, bookingId){
+    console.log("showBookingModalListView called");
+    console.log(roomNumber);
+    console.log(bookingId);
+    console.log(roomBookings);
+
+    // Find the booking in the roomBookings object
+    const booking = roomBookings[roomNumber].find(booking => booking.bookingId === bookingId);
+    console.log(booking);
+    loadBookingModal(booking, roomNumber);
+}
+
 // Show booking details modal
 function showBookingModal(roomNumber, dateString) {
+    console.log("showBookingModal called");
+    console.log(roomNumber);
+    console.log(dateString);
+
     const date = new Date(dateString);
+    console.log(date);
+    const bookingInfo = getBookingInfo(roomNumber, date);
+    console.table(bookingInfo);
+    loadBookingModal(bookingInfo, roomNumber);
+}
+
+function loadBookingModal(bookingInfo, roomNumber) {
+    if (bookingInfo) {
+        console.log(bookingInfo);
+        let modalContent = `
+            <h2>Booking Details</h2>
+            <p><strong>Room Number:</strong> ${roomNumber}</p>
+            <p><strong>Guest Name:</strong> ${bookingInfo.guestName}</p>
+            <!--<p><strong>Age:</strong> ${bookingInfo.age}</p>-->
+            <p><strong>Email:</strong> ${bookingInfo.email}</p>
+            <p><strong>Phone Number:</strong> ${bookingInfo.phoneNumber}</p>
+            <p><strong>Start-Date&Time:</strong> ${formatDate(bookingInfo.checkIn)}</p>
+            <p><strong>End-Date&Time:</strong> ${formatDate(bookingInfo.checkOut)}</p>
+        `;
+        if (bookingInfo.status === 'pending' || bookingInfo.status === 'noshow') {
+            modalContent += `
+                <p><strong>Status:</strong> ${bookingInfo.status}</p>
+            `;
+            const checkInBtn = document.createElement('button');
+            checkInBtn.className = 'btn-checkin';
+            checkInBtn.id = 'btn-checkin';
+            checkInBtn.textContent = 'Check-In';
+            // checkInBtn.addEventListener('click', () => checkInBooking(bookingInfo));
+            // checkInBtn.onclick = () => checkInBooking(bookingInfo);
+            modalContent += checkInBtn.outerHTML;
+
+        }
+        if (bookingInfo.status === 'checkin') {
+            modalContent += `
+                <p><strong>Status:</strong> ${bookingInfo.status}</p>
+                <button class="btn-checkout" id="btn-checkout" onclick="checkOutBooking();">Check-Out</button>
+            `;
+        }
+
+        const modal = document.getElementById('bookingModal');
+        const modalBody = modal.querySelector('.modal-body');
+        setTimeout(() => modal.classList.add('show'), 10);
+
+        modalBody.innerHTML = modalContent;
+
+        modal.style.display = 'block';
+    }
+
+    // Adding event listener to check-in button inside booking details modal
+    document.getElementById('btn-checkin').addEventListener('click', () => checkInBooking(bookingInfo, roomNumber));
+
+}
+
+// Show booking details modal
+function showBookingModal2(roomNumber, dateString) {
+    const date = new Date(dateString);
+    console.log(date);
     const bookingInfo = getBookingInfo(roomNumber, date);
     console.table(bookingInfo);
 
@@ -813,7 +903,7 @@ function checkInSubmit() {
     // Create the final check-in object
     const checkInData = {
         booking_id: parseInt(bookingId),
-        room_id : parseInt(roomId),
+        room_id: parseInt(roomId),
         check_in_date: checkinDateTimeISO,
         guests: guestsData
     };
@@ -828,9 +918,9 @@ function checkInSubmit() {
 
 //  POST API Call for checkin   
 function postCheckInData(checkInData) {
-    console.log(`postCheckInData: ${checkInData}` );
+    console.log(`postCheckInData: ${checkInData}`);
     console.log("Check-In Data:", JSON.stringify(checkInData, null, 2));
-    
+
     const options = {
         method: 'POST',
         headers: {
@@ -1050,6 +1140,7 @@ function initializeBooking() {
     allRooms();
 }
 
+// Put Rooms as options in the select element
 function populateRoomOptions(select, startDate, endDate) {
     const roomList = localStorage.getItem('roomsList');
     if (!roomList) {
@@ -1071,6 +1162,7 @@ function populateRoomOptions(select, startDate, endDate) {
     // Create options for each room
     roomListObj.forEach(room => {
         const isAvailable = checkRoomAvailability(room, startDate, endDate);
+        console.log(`isAvailable ${room.room_number} for ${startDate} to ${endDate}: ${isAvailable}`);
         const option = document.createElement('option');
         option.value = room.id;
         option.textContent = `Room ${room.room_number} - ${room.room_type} ${isAvailable ? '' : '(Occupied)'}`;
@@ -1088,10 +1180,23 @@ function populateRoomOptions(select, startDate, endDate) {
     });
 }
 
-function checkRoomAvailability(room, startDate, endDate) {
+
+function checkRoomAvailability2(room, startDate, endDate) {
+    console.log(room.bookings);
+    console.log(JSON.stringify(room));
     return !room.bookings.some(booking => {
         const bookingStart = new Date(booking.start_date);
         const bookingEnd = new Date(booking.end_date);
+        return (startDate < bookingEnd && endDate > bookingStart);
+    });
+}
+
+function checkRoomAvailability(room, startDate, endDate) {
+    console.log(room.bookings);
+    console.log(JSON.stringify(room));
+    return !room.bookings.some(bookingData => {
+        const bookingStart = new Date(bookingData.booking.start_date);
+        const bookingEnd = new Date(bookingData.booking.end_date);
         return (startDate < bookingEnd && endDate > bookingStart);
     });
 }
