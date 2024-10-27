@@ -569,10 +569,13 @@ function loadBookingModal(bookingInfo, roomNumber) {
         document.getElementById('btn-services').onclick = () => servicesBooking(bookingInfo, roomNumber);
     }
     
-    // Adding event listener to check-in button inside booking details modal
-    // document.getElementById('btn-checkin').addEventListener('click', () => checkInBooking(bookingInfo, roomNumber));
-    // document.getElementById('btn-services').addEventListener('click', () => servicesBooking(bookingInfo, roomNumber));
+}
 
+// Close the new booking modal
+document.querySelector('.close4').onclick = function () {
+    const newBookingModal = document.getElementById('serviceModal');
+    newBookingModal.classList.remove('show');
+    setTimeout(() => newBookingModal.style.display = 'none', 300);
 }
 
 

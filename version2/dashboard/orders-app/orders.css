@@ -8,7 +8,7 @@
 
 .orders-head {
     display: flex;
-    background-color: rgb(255, 225, 170);
+    background-color: #fff3e2;
     height: 50px;
     justify-content: space-between;
     margin: 10px;
@@ -83,7 +83,7 @@
 
 .orders-wrapper {
     padding: 10px 15px;
-    background-color: rgb(255, 225, 170);
+    background-color: #fff3e2;
     margin: 10px;
     border-radius: 15px;
     overflow-y: auto;

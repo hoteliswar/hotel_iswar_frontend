@@ -314,6 +314,10 @@ td {
     max-width: 45%;
 }
 
+.service-modal {
+    max-width: 45%;
+}
+
 .booking-details-col {
     width: 65%;
     display: inline-block;
@@ -388,6 +392,7 @@ td {
 /*  */
 .calendar-modal.show,
 .checkin-modal.show,
+.service-modal.show,
 .new-booking.show {
     right: 0;
 }

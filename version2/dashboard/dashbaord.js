@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'ORDERS':
                 fileName = './orders-app/orders';
                 break;
+            case 'SERVICE MANAGEMENT':
+                fileName = './service-management/service-management';
+                break;
             default:
                 fileName = 'not-found';
         }
