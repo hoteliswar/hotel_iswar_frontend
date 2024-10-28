@@ -384,7 +384,30 @@
                         <span class="close4">&times;</span>
                         <div class="heading">Book Services</div>
                     </div>
-                    <div class="modal-body" id="serviceModalBody"></div>
+                    <div class="modal-body-service" id="serviceModalBody">
+                        <div class="input-element-service room-number">
+                            <label for="serviceRoomNumber">Room Number</label>
+                            <input type="text" id="serviceRoomNumber" name="roomNumber" disabled required>
+                        </div>
+                        <div class="input-element-service">
+                            <label for="serviceService">Service</label>
+                            <select name="service" id="serviceService">
+                                <option value="" selected disabled>Select Service</option>
+                            </select>
+                        </div>
+                        <div class="input-element-service">
+                            <label for="serviceQuantity">Quantity</label>
+                            <input type="number" id="serviceQuantity" name="quantity" required min="1">
+                        </div>
+                        <div class="input-element-service total-price">
+                            <label for="serviceTotalPrice">Total Price</label>
+                            <input type="text" id="serviceTotalPrice" name="totalPrice" disabled>
+                        </div>
+
+                        <button class="service-btn" id="service-btn">Book Service</button>
+
+
+                    </div>
                 </div>
             </div>
         </div>

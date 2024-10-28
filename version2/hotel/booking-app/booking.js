@@ -635,6 +635,7 @@ function showBookingModal2(roomNumber, dateString) {
 
 // continue service modal
 function servicesBooking(bookingInfo, roomNumber){
+    renderServiceModal(bookingInfo, roomNumber)
     console.log("servicesBooking called");
     console.log(bookingInfo);
     console.log(roomNumber);
@@ -660,6 +661,74 @@ function checkInBooking(bookingInfo, roomNumber) {
 
     modal.style.display = 'block';
 }
+
+function renderServiceModal(bookingInfo, roomNumber){
+    console.log("renderServiceModal called");
+    console.log(bookingInfo);
+    console.log(roomNumber);
+    const bookingId = bookingInfo.bookingId;
+
+    const dataById = getBookingById(bookingInfo.bookingId);
+    console.log(dataById);
+
+    putBookingDataInServiceModal(bookingId, roomNumber);
+
+    function putBookingDataInServiceModal(bookingId, roomNumber) {
+        const roomElement = document.getElementById('serviceRoomNumber');
+        roomElement.value = roomNumber;
+        roomElement.dataset.bookingId = bookingId;
+
+        const serviceElement = document.getElementById('serviceService');
+        // append services options in serviceElement from local storage servicesList
+        const servicesListString = localStorage.getItem('serviceList');
+        const servicesList = JSON.parse(servicesListString);
+        servicesList.forEach(service => {
+            const option = document.createElement('option');
+            option.value = service.id;
+            option.textContent = service.name;
+            serviceElement.appendChild(option);
+        });
+        // add data in each service option for price
+        servicesList.forEach(service => {
+            const option = serviceElement.querySelector(`option[value="${service.id}"]`);
+            if (option) {
+                option.dataset.price = service.price;
+            }
+        });
+
+        const quantityElement = document.getElementById('serviceQuantity');
+        quantityElement.value = 1;
+    }
+
+}
+
+// If service is selected then calculate total price from dataset price based on Quantity
+document.getElementById('serviceService').addEventListener('change', () => {
+    const serviceSelect = document.getElementById('serviceService');
+    const selectedOption = serviceSelect.options[serviceSelect.selectedIndex]; // Get the selected option
+    const price = parseFloat(selectedOption.dataset.price);
+    const quantity = document.getElementById('serviceQuantity').value;
+    const totalPrice = quantity * price;
+    // console.log(`Selected Service: ${selectedService}`);
+    console.log(`Price: ${price}`);
+    console.log(`Quantity: ${quantity}`);
+    console.log(`Total Price: ${totalPrice}`);
+    document.getElementById('serviceTotalPrice').value = totalPrice;
+});
+
+// If quantity is changed then calculate total price from dataset price based on Quantity
+document.getElementById('serviceQuantity').addEventListener('change', () => {
+    const serviceSelect = document.getElementById('serviceService');
+    const selectedOption = serviceSelect.options[serviceSelect.selectedIndex]; // Get the selected option
+    const price = parseFloat(selectedOption.dataset.price);
+    const quantity = document.getElementById('serviceQuantity').value;
+    const totalPrice = quantity * price;
+    // console.log(`Selected Service: ${selectedService}`);
+    console.log(`Price: ${price}`);
+    console.log(`Quantity: ${quantity}`);
+    console.log(`Total Price: ${totalPrice}`);
+    document.getElementById('serviceTotalPrice').value = totalPrice;
+});
 
 // Render data in Check-In Modal
 function renderCheckinModal(bookingInfo, roomNumber) {
@@ -859,6 +928,10 @@ function addGuestInfoRow() {
 // Onclick action for CheckIn from Check-In Modal
 document.getElementById('checkin-btn').addEventListener('click', checkInSubmit);
 
+// Onclick action for Book Service from Service Modal
+document.getElementById('service-btn').addEventListener('click', serviceSubmit);
+
+
 function checkInSubmit2() {
 
     const roomNumber = document.getElementById('cim-roomNumber').value;
@@ -952,6 +1025,40 @@ function checkInSubmit() {
     console.log(`Check-In Date and Time: ${checkinDateTime}`);
 }
 
+function serviceSubmit() {
+    console.log("Service btn clicked");
+    const roomNumber = document.getElementById('serviceRoomNumber').value;
+    const bookingId = document.getElementById('serviceRoomNumber').dataset.bookingId;
+    const service = document.getElementById('serviceService').value;
+    const quantity = document.getElementById('serviceQuantity').value;
+    const totalPrice = document.getElementById('serviceTotalPrice').value;
+    console.log(`Room Number: ${roomNumber}`);
+    console.log(`Booking ID: ${bookingId}`);
+    console.log(`Service: ${service}`);
+    console.log(`Quantity: ${quantity}`);
+    console.log(`Total Price: ${totalPrice}`);
+
+    // Find roomId from roomNumber by mapping from localStorage roomsList
+    const roomsList = localStorage.getItem('roomsList');
+    if (!roomsList) {
+        console.error('No roomsList found in localStorage');
+        return;
+    }
+    const roomsListObj = JSON.parse(roomsList);
+    const roomId = roomsListObj.find(room => room.room_number === roomNumber).id;
+
+    const serviceData = {
+        booking_id: parseInt(bookingId),
+        room_id: parseInt(roomId),
+        service_id: parseInt(service),
+        quantity: parseInt(quantity),
+        total_price: totalPrice,
+    }
+
+    postServiceData(serviceData);
+
+}
+
 //  POST API Call for checkin   
 function postCheckInData(checkInData) {
     console.log(`postCheckInData: ${checkInData}`);
@@ -974,6 +1081,33 @@ function postCheckInData(checkInData) {
         .catch(error => {
             console.error("Error posting check-in data:", error);
         });
+}
+
+// POST API Call for service
+function postServiceData(serviceData) {
+    console.log(`postServiceData: ${serviceData}`);
+    console.log("Service Data:", JSON.stringify(serviceData, null, 2));
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(serviceData),
+    };
+    const url = `${baseURL}hotel/service-usages/`;
+
+    refreshAccessToken2(url, options)
+        .then(data => {
+            console.log("Service Booked for Room:", data);
+            alert("Service Booked for Room");
+            return data;
+        })
+        .catch(error => {
+            console.error("Error posting check-in data:", error);
+        });
+
 }
 
 // Close action for checkin modal

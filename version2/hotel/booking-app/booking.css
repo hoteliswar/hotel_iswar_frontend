@@ -315,7 +315,7 @@ td {
 }
 
 .service-modal {
-    max-width: 45%;
+    max-width: 35%;
 }
 
 .booking-details-col {
@@ -670,4 +670,51 @@ td {
 .row-block {
     border-bottom: 1px solid #bababa;
     margin-top: 10px;
+}
+
+.modal-body-service {
+    padding-top: 20px;
+}
+
+.input-element-service {
+    display: inline-block;
+    width: 48%;
+    margin-bottom: 10px;
+}
+
+.input-element-service.room-number{
+    width: 100%;
+}
+
+.input-element-service.room-number input{
+    font-size: 2em;
+    font-weight: 600;
+    height: 50px;
+}
+
+.input-element-service label {
+    display: block;
+    width: 50%;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.input-element-service select,
+.input-element-service input {
+    /* display: inline-block; */
+    width: 99%;
+    border: 1px solid #fcb00b;
+    border-radius: 4px;
+    height: 30px;
+}
+
+.service-btn {
+    background-color: #f6a903;
+    height: 50px;
+    width: 120px;
+    border: 0;
+    border-radius: 4px;
+    float: right;
+    font-weight: 500;
+    margin-top: 100px;
 }
