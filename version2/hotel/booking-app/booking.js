@@ -952,8 +952,6 @@ function checkInSubmit() {
     console.log(`Check-In Date and Time: ${checkinDateTime}`);
 }
 
-
-
 //  POST API Call for checkin   
 function postCheckInData(checkInData) {
     console.log(`postCheckInData: ${checkInData}`);

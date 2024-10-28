@@ -1,24 +1,29 @@
 baseURL = 'https://dineops.onrender.com/api/';
 
-function addCatgeoryToList(name, sub_category ,description, status, id) {
+function addCatgeoryToList(name, description, status, id) {
     const itemsContainer = document.querySelector('.all-list-table-items');
+
+    if(status === true){
+        var statusText = 'True';
+    }else{
+        var statusText = 'False';
+    }
 
     const itemHTML = `
         <div class="record-row">
             <div class="col-2" id="name">${name}</div>
-            <div class="col-2" id="sub_category">${sub_category}</div>
             <div class="col-3" id="description">${description}</div>
             <div class="col-3" id="status">
                 <label class="switch">
-                    <input type="checkbox" class="listStatus" id="categoryStatus" ${status === 'enabled' ? 'checked' : ''} disabled>
+                    <input type="checkbox" class="listStatus" id="categoryStatus" ${status === true ? 'checked' : ''} disabled>
                     <span class=" slider sliderList round"></span>
                 </label>
-                <span id="statusDisableText">${capitalizeFirstLetter(status)}</span>
+                <span id="statusDisableText">${statusText}</span>
 
             </div>
             <div class="col-2">
                 <i class="edit-btnn fa-solid fa-pen-to-square"></i>
-                <i class="fa fa-trash delete-btn"  aria-hidden="true"></i>
+                <i class="fa fa-trash delete-btn"  aria-hidden="true" onclick="deleteCategory(${id})"></i>
             </div>
         </div>
         
@@ -35,8 +40,13 @@ function addCatgeoryToList(name, sub_category ,description, status, id) {
     const editButton = lastAddedRow.querySelector('.edit-btnn');
     editButton.addEventListener('click', () => {
         console.log("Edit button clicked");
-        console.log(name, sub_category, description, status, id);
-        openUpdateModal(name, sub_category, description, status, id);
+        console.log(name, description, status, id);
+        
+        // Warning message
+        alert('Servcie Category Update Not Available currently.');
+
+        // Because of no PATCH Call
+        // openUpdateModal(name, description, status, id); 
     });
 }
 
@@ -49,13 +59,13 @@ function deleteCategory(id) {
             'Content-Type': 'application/json'
         }
     }
-    const url = `${baseURL}foods/categories/${id}/`;
+    const url = `${baseURL}hotel/service-categories/${id}/`;
     refreshAccessToken2(url, option)
         // .then(response => response.json())
         .then(data => {
-            console.log('Data:', data);
-            getCategoryList();
-            alert("Category Deleted..");
+            console.log('Service Category Data:', data);
+            getServiceCategoryList();
+            alert("Service Category Deleted..");
         })
         .catch(error => {
             console.log('Error fetching data:', error);
@@ -64,14 +74,12 @@ function deleteCategory(id) {
 }
 
 // Open Update Category Modal
-function openUpdateModal(name, sub_category, description, status, id) {
+function openUpdateModal(name, description, status, id) {
     const modal = document.getElementById('editModal');
     const editName = document.getElementById('editCatgName');
-    const editSubCatgName = document.getElementById('editSubCatgName');
     const editDescription = document.getElementById('editCatgDescription');
     const editStatus = document.getElementById('editCatgStatus');
     const statusModalText = document.getElementById('statusModalText');
-    const editImage = document.getElementById('editCatgImg');
 
     // Check if itemId input already exists
     let catgIdInput = modal.querySelector('#catgId');
@@ -90,9 +98,8 @@ function openUpdateModal(name, sub_category, description, status, id) {
     console.log('ID in Open Update Modal:', id);
 
     editName.value = name;
-    editSubCatgName.value = sub_category;
     editDescription.value = description;
-    statusModalText.textContent = capitalizeFirstLetter(status);
+    statusModalText.textContent = status;
 
 
     // if (status === 'enabled') {
@@ -127,17 +134,16 @@ window.addEventListener('click', (event) => {
 });
 
 
-
 function updateCatgStatus(checkbox) {
-    document.getElementById('statusText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
+    document.getElementById('statusText').textContent = checkbox.checked ? 'True' : 'False';
 }
 
 function updateCatgModalStatus(checkbox) {
-    document.getElementById('statusModalText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
+    document.getElementById('statusModalText').textContent = checkbox.checked ? 'True' : 'False';
 }
 
 function updateDisableStatus(checkbox) {
-    document.getElementById('statusDisableText').textContent = checkbox.checked ? 'Enabled' : 'Disabled';
+    document.getElementById('statusDisableText').textContent = checkbox.checked ? 'True' : 'False';
 }
 
 
@@ -154,7 +160,7 @@ if (categoryData = getServiceCategoryListFromStorage()) {
 
 function passToCategoryList(data) {
     data.forEach(item => {
-        addCatgeoryToList(item.name, item.sub_category, item.description, item.status, item.id);
+        addCatgeoryToList(item.name, item.description, item.status, item.id);
     });
 }
 
@@ -168,7 +174,7 @@ document.getElementById('add-services').addEventListener('click', function (e) {
     e.preventDefault();
 
     const catgName = document.querySelector('#catgName').value;
-    const subCatgName = document.querySelector('#subCatgName').value;
+    // const subCatgName = document.querySelector('#subCatgName').value;
     const catgDescription = document.querySelector('#catgDescription').value;
     const catgStatus = document.querySelector('#catgStatus');
 
@@ -182,7 +188,7 @@ document.getElementById('add-services').addEventListener('click', function (e) {
 
     const catgData = {
         name: catgName,
-        sub_category: subCatgName,
+        // sub_category: subCatgName,
         description: catgDescription,
         status: catgStatusText
     };
@@ -202,7 +208,7 @@ function createCategory(catgData) {
         },
         body: JSON.stringify({
             name: catgData.name,
-            sub_category: catgData.sub_category,
+            // sub_category: catgData.sub_category,
             description: catgData.description,
             status: catgData.status
         })
@@ -215,7 +221,7 @@ function createCategory(catgData) {
         .then(data => {
             console.log('Service Category:', data);
             console.table(data);
-            //getCategoryList(); // new function for service categories
+            getServiceCategoryList();
             alert("Service Category Created Successfully");
             coldReload();
         })
@@ -224,24 +230,21 @@ function createCategory(catgData) {
         });
 }
 
-// API Call PUT Category Items - Update
-document.getElementById('update-category').addEventListener('click', function (e) {
+// API Call PATCH Category Items - Update 
+// Here correct ID is update-category which is removed because no PATCH
+document.getElementById('no-patch').addEventListener('click', function (e) {
     e.preventDefault();
 
     const catgId = document.querySelector('#catgId').value;
     const catgName = document.querySelector('#editCatgName').value;
-    const subCatgName = document.querySelector('#editSubCatgName').value;
     const catgDescription = document.querySelector('#editCatgDescription').value;
     const catgStatus = document.querySelector('#editCatgStatus');
-    const catgImg = document.querySelector('#editCatgImg').value;
 
     const updatedCatgData = {
         id: catgId,
-        sub_category: subCatgName,
         name: catgName,
         description: catgDescription,
-        status: catgStatus.checked ? 'enabled' : 'disabled',
-        image: catgImg
+        status: catgStatus.checked ? true : false
     };
 
     console.table(updatedCatgData);
@@ -257,15 +260,14 @@ document.getElementById('update-category').addEventListener('click', function (e
             },
             body: JSON.stringify({
                 name: updatedCatgData.name,
-                sub_category: updatedCatgData.sub_category,
                 description: updatedCatgData.description,
                 status: updatedCatgData.status
-
             })
         }
 
         console.log(updatedCatgData.id);
         console.log(catgId);
+        console.log(updatedCatgData.status);
 
 
         const url = `${baseURL}hotel/service-categories/${updatedCatgData.id}/`
@@ -289,6 +291,11 @@ document.getElementById('update-category').addEventListener('click', function (e
             });
     }
 
+});
+
+document.getElementById('update-category').addEventListener('click', function (e) {
+    e.preventDefault();
+    alert('Servcie Category Update Not Available currently.');
 });
 
 

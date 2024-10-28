@@ -472,6 +472,117 @@ function getRoomsListFromStorage() {
     }
 }
 
+
+getServiceCategoryList();
+
+// API Call GET Category List - Read
+function getServiceCategoryList() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const url = `${baseURL}hotel/service-categories/`;
+
+    refreshAccessToken2(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Data:', data);
+            // Save the data to local storage
+            localStorage.setItem('serviceCategoryList', JSON.stringify(data));
+            getServiceCategoryListFromStorage();
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+
+    // function passToList(data) {
+    //     data.forEach(item => {
+    //         addCatgeoryToList(item.name, item.description, item.status, '', item.id);
+    //     });
+    // }
+};
+
+
+function getServiceCategoryListFromStorage() {
+    const storedData = localStorage.getItem('serviceCategoryList');
+    if (storedData) {
+        if (storedData === 'undefined') {
+            console.log('No service category list found in local storage');
+            getServiceCategoryList();
+        }
+        const categoryList = JSON.parse(storedData);
+        console.log('Service Category list from local storage:', categoryList);
+        // passToCategoryList(categoryList);
+        return categoryList;
+    } else {
+        console.log('No service category list found in local storage');
+        // Optionally, you can call getCategoryList() here to fetch from API if not in storage
+        getServiceCategoryList();
+    }
+
+}
+
+
+
+getServiceList();
+
+// API Call GET Category List - Read
+function getServiceList() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const url = `${baseURL}hotel/services/`;
+
+    refreshAccessToken2(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('Data:', data);
+            // Save the data to local storage
+            localStorage.setItem('serviceList', JSON.stringify(data));
+            getServiceListFromStorage();
+            resolve(data); // Resolve the promise with the data
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+
+    // function passToList(data) {
+    //     data.forEach(item => {
+    //         addCatgeoryToList(item.name, item.description, item.status, '', item.id);
+    //     });
+    // }
+};
+
+
+function getServiceListFromStorage() {
+    const storedData = localStorage.getItem('serviceList');
+    if (storedData) {
+        if (storedData === 'undefined') {
+            console.log('No service category list found in local storage');
+            getServiceList();
+        }
+        const categoryList = JSON.parse(storedData);
+        console.log('Service Category list from local storage:', categoryList);
+        // passToCategoryList(categoryList);
+        return categoryList;
+    } else {
+        console.log('No service category list found in local storage');
+        // Optionally, you can call getCategoryList() here to fetch from API if not in storage
+        getServiceList();
+    }
+
+}
+
+
 // Disable all console statements
 // console.log = function() {};
 // console.table = function() {};

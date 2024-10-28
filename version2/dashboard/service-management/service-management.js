@@ -53,7 +53,7 @@ function initializeMenuContent() {
     });
 
     // Load 'categories' by default
-    const categoriesItem = Array.from(menuNavItems).find(item => item.textContent.toLowerCase().includes('items'));
+    const categoriesItem = Array.from(menuNavItems).find(item => item.textContent.toLowerCase().includes('services'));
     if (categoriesItem) {
         loadSelectedContent(categoriesItem);
     }
