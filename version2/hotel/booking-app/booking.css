@@ -276,7 +276,8 @@ td {
 .modal-container,
 .modal-container-2,
 .modal-container-3,
-.modal-container-4 {
+.modal-container-4,
+.modal-container-5 {
     position: fixed !important;
     z-index: 10000;
     right: -100%;
@@ -292,7 +293,8 @@ td {
 .calendar-modal,
 .service-modal,
 .checkin-modal,
-.new-booking {
+.new-booking,
+.checkout-modal {
     /* display: none; */
     position: fixed;
     z-index: 1000;
@@ -316,6 +318,10 @@ td {
 
 .service-modal {
     max-width: 35%;
+}
+
+.checkout-modal {
+    max-width: 30%;
 }
 
 .booking-details-col {
@@ -393,14 +399,16 @@ td {
 .calendar-modal.show,
 .checkin-modal.show,
 .service-modal.show,
-.new-booking.show {
+.new-booking.show,
+.checkout-modal.show {
     right: 0;
 }
 
 .modal-content,
 .modal-content-2,
 .modal-content-3,
-.modal-content-4 {
+.modal-content-4,
+.modal-content-5 {
     height: 100%;
     overflow-y: auto;
     padding: 20px;
@@ -426,7 +434,8 @@ td {
 .close,
 .close2,
 .close3,
-.close4 {
+.close4,
+.close5 {
     /* position: absolute; */
     top: 10px;
     right: 20px;
@@ -591,7 +600,8 @@ td {
     cursor: pointer;
 }
 
-.modal-checkin-header {
+.modal-checkin-header,
+.modal-checkout-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -709,6 +719,50 @@ td {
 }
 
 .service-btn {
+    background-color: #f6a903;
+    height: 50px;
+    width: 120px;
+    border: 0;
+    border-radius: 4px;
+    float: right;
+    font-weight: 500;
+    margin-top: 100px;
+}
+
+.modal-body-checkout{
+    padding-top: 20px;
+}
+
+.input-element-checkout{
+    display: inline-block;
+    width: 99%;
+    margin-bottom: 10px;
+}
+
+.input-element-checkout label{
+    display: block;
+    width: 50%;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.input-element-checkout input{
+    display: inline-block;
+    width: 99%;
+    border: 1px solid #fcb00b;
+    border-radius: 4px;
+    height: 30px;
+}
+
+
+
+.input-element-checkout.room-number input{
+    font-size: 2em;
+    font-weight: 600;
+    height: 50px;
+}
+
+.checkout-btn{
     background-color: #f6a903;
     height: 50px;
     width: 120px;

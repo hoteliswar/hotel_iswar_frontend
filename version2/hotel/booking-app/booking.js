@@ -538,8 +538,14 @@ function loadBookingModal(bookingInfo, roomNumber) {
         if (bookingInfo.status === 'checkin') {
             modalContent += `
                 <p><strong>Status:</strong> ${bookingInfo.status}</p>
-                <button class="btn-checkout" id="btn-checkout" onclick="checkOutBooking();">Check-Out</button>
             `;
+
+            const checkoutBtn = document.createElement('button');
+            checkoutBtn.className = 'btn-checkout';
+            checkoutBtn.id = 'btn-checkout';
+            checkoutBtn.textContent = 'Check-Out';
+            modalContent += checkoutBtn.outerHTML;
+
             const servicesBtn = document.createElement('button');
             servicesBtn.className = 'btn-services';
             servicesBtn.id = 'btn-services';
@@ -561,6 +567,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
     // Adding event listener to check-in button inside booking details modal
     const checkInBtn = document.getElementById('btn-checkin');
     const servicesBtn = document.getElementById('btn-services');
+    const checkoutBtn = document.getElementById('btn-checkout');
 
     if(checkInBtn){
     document.getElementById('btn-checkin').onclick = () => checkInBooking(bookingInfo, roomNumber);
@@ -568,12 +575,22 @@ function loadBookingModal(bookingInfo, roomNumber) {
     if(servicesBtn){
         document.getElementById('btn-services').onclick = () => servicesBooking(bookingInfo, roomNumber);
     }
+    if(checkoutBtn){
+        document.getElementById('btn-checkout').onclick = () => checkOutBooking(bookingInfo, roomNumber);
+    }
     
 }
 
-// Close the new booking modal
+// Close the service booking modal
 document.querySelector('.close4').onclick = function () {
     const newBookingModal = document.getElementById('serviceModal');
+    newBookingModal.classList.remove('show');
+    setTimeout(() => newBookingModal.style.display = 'none', 300);
+}
+
+// Close the checkOut modal
+document.querySelector('.close5').onclick = function () {
+    const newBookingModal = document.getElementById('checkOutModal');
     newBookingModal.classList.remove('show');
     setTimeout(() => newBookingModal.style.display = 'none', 300);
 }
@@ -662,6 +679,22 @@ function checkInBooking(bookingInfo, roomNumber) {
     modal.style.display = 'block';
 }
 
+// Onclick action for CheckOut from Booking details modal
+function checkOutBooking(bookingInfo, roomNumber) {
+    renderCheckoutModal(bookingInfo, roomNumber);
+
+    // let modalContent = ` `;
+    console.log("Check-Out btn clicked");
+    const modal = document.getElementById('checkOutModal');
+    const modalBody = modal.querySelector('.modal-body');
+    setTimeout(() => modal.classList.add('show'), 10);
+
+    // modalBody.innerHTML = modalContent;
+
+    modal.style.display = 'block';
+}
+
+// Render Service Modal
 function renderServiceModal(bookingInfo, roomNumber){
     console.log("renderServiceModal called");
     console.log(bookingInfo);
@@ -700,6 +733,30 @@ function renderServiceModal(bookingInfo, roomNumber){
         quantityElement.value = 1;
     }
 
+}
+
+// Render CheckOut Modal
+function renderCheckoutModal(bookingInfo, roomNumber){
+    console.log("renderCheckoutModal called");
+    console.log(bookingInfo);
+    console.log(roomNumber);
+    const bookingId = bookingInfo.bookingId;
+
+    putBookingDataInCheckoutModal(bookingId, roomNumber);
+
+    function putBookingDataInCheckoutModal(bookingId, roomNumber) {
+        const roomElement = document.getElementById('checkoutRoomNumber');
+        roomElement.value = roomNumber;
+        roomElement.dataset.bookingId = bookingId;
+
+        const roomData = localStorage.getItem('roomsList');
+        const roomsList = JSON.parse(roomData);
+        const room = roomsList.find(room => room.room_number == roomNumber);
+        const roomId = room.id;
+        roomElement.dataset.roomId = roomId;
+
+
+    }
 }
 
 // If service is selected then calculate total price from dataset price based on Quantity
@@ -931,6 +988,8 @@ document.getElementById('checkin-btn').addEventListener('click', checkInSubmit);
 // Onclick action for Book Service from Service Modal
 document.getElementById('service-btn').addEventListener('click', serviceSubmit);
 
+// Onclick action for CheckOut from CheckOut Modal
+document.getElementById('checkout-btn').addEventListener('click', checkOutSubmit);
 
 function checkInSubmit2() {
 
@@ -1059,6 +1118,32 @@ function serviceSubmit() {
 
 }
 
+function checkOutSubmit() {
+    console.log("Check-Out btn clicked");
+    const roomNumber = document.getElementById('checkoutRoomNumber').value;
+    const bookingId = document.getElementById('checkoutRoomNumber').dataset.bookingId;
+    const roomId = document.getElementById('checkoutRoomNumber').dataset.roomId;
+    const checkoutDateTime = document.getElementById('checkoutCheckoutDateTime').value;
+    console.log(`Room Number: ${roomNumber}`);
+    console.log(`Booking ID: ${bookingId}`);
+    console.log(`Room ID: ${roomId}`);
+    
+    if (!checkoutDateTime) {
+        alert("Check-Out Date & Time: Required");
+        return;
+    }
+    const checkoutDateTimeISO = new Date(checkoutDateTime).toISOString();
+    console.log(`Check-Out Date and Time: ${checkoutDateTimeISO}`);
+
+    const checkOutData = {
+        booking_id: parseInt(bookingId),
+        room_id: parseInt(roomId),
+        check_out_date: checkoutDateTimeISO,
+    }
+
+    postCheckOutData(checkOutData);
+}
+
 //  POST API Call for checkin   
 function postCheckInData(checkInData) {
     console.log(`postCheckInData: ${checkInData}`);
@@ -1110,6 +1195,33 @@ function postServiceData(serviceData) {
 
 }
 
+// POST API Call for Check Out
+function postCheckOutData(checkOutData) {
+    console.log(`postCheckoutData: ${checkOutData}`);
+    console.log("Check Out Data:", JSON.stringify(checkOutData, null, 2));
+
+    const options = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(checkOutData),
+    };
+    const url = `${baseURL}hotel/checkout/`;
+
+    refreshAccessToken2(url, options)
+        .then(data => {
+            console.log("Check Out for Room:", data);
+            alert("Checked Out for Room");
+            return data;
+        })
+        .catch(error => {
+            console.error("Error posting check-out data:", error);
+        });
+
+}
+
 // Close action for checkin modal
 document.querySelector('.close3').onclick = function () {
     const modal = document.getElementById('checkinModal');
@@ -1118,7 +1230,7 @@ document.querySelector('.close3').onclick = function () {
 }
 
 // Onclick action for CheckOut from Booking details modal
-function checkOutBooking() {
+function checkOutBooking2() {
     console.log("Check-Out btn clicked");
 }
 

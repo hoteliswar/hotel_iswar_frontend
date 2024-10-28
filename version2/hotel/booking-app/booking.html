@@ -413,6 +413,30 @@
         </div>
     </div>
 
+    <!-- Modal: CheckOut for bookings -->
+    <div class="modal-container-5">
+        <div id="checkOutModal" class="checkout-modal">
+            <div class="modal-content-5">
+                <div class="modal-checkout-header">
+                    <span class="close5">&times;</span>
+                    <div class="heading">Check Out Form</div>
+                </div>
+                <div class="modal-body-checkout" id="checkOutModalBody">
+                    <div class="input-element-checkout room-number">
+                        <label for="checkoutRoomNumber">Room Number</label>
+                        <input type="text" id="checkoutRoomNumber" name="roomNumber" disabled required>
+                    </div>
+                    <div class="input-element-checkout">
+                        <label for="checkoutCheckoutDateTime">Check-out Date and Time:</label>
+                        <input type="datetime-local" id="checkoutCheckoutDateTime" name="checkoutDateTime">
+                    </div>
+
+                    <button class="checkout-btn" id="checkout-btn">Check-Out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 
     <script src="booking.js"></script>
