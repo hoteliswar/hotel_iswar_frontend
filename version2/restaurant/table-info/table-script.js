@@ -10,17 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     // console.log(getBrowserHeaderHeight());
 
-    // document.querySelector('.order-type-info').addEventListener('click', function(event) {
-    //     if (event.target.classList.contains('type-selectable')) {
-    //         // Remove 'type-selected' class from all buttons
-    //         this.querySelectorAll('.type-selectable').forEach(button => {
-    //             button.classList.remove('type-selected');
-    //         });
 
-    //         // Add 'type-selected' class to the clicked button
-    //         event.target.classList.add('type-selected');
-    //     }
-    // });
 
     // getAllOrders();
 
@@ -222,8 +212,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             window.location.href = `./../takeorder/takeorder.html?orderType=delivery`;
                         }
                     });
-                } else if (selectedType.textContent === 'PICKUP') {
-                    // Action for PICKUP
+                } else if (selectedType.textContent === 'TAKEAWAY') {
+                    // Action for TAKEAWAY
                     document.querySelectorAll('.table-view-cell').forEach(element => {
                         element.style.cursor = 'not-allowed';
                         element.disabled = true;
@@ -233,8 +223,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         element.disabled = true;
                     });
                     document.addEventListener('click', function (event) {
-                        if (event.target.id.includes('pickup')) {
-                            window.location.href = `./../takeorder/takeorder.html?orderType=pickup`;
+                        if (event.target.id.includes('take_away')) {
+                            window.location.href = `./../takeorder/takeorder.html?orderType=take_away`;
                         }
                     });
                 } else {
@@ -275,17 +265,17 @@ document.addEventListener('DOMContentLoaded', function () {
     function delivery_pickup(data) {
         const validStatuses = ['in_progress', 'kot', 'hold'];
         const filteredOrders = data.filter(order =>
-            (order.order_type === 'delivery' || order.order_type === 'pickup') &&
+            (order.order_type === 'delivery' || order.order_type === 'take_away') &&
             validStatuses.includes(order.status)
         );
 
-        console.log('Filtered Delivery and Pickup Orders:', filteredOrders);
+        console.log('Filtered Delivery and Takeaway Orders:', filteredOrders);
 
         const deliveryOrders = filteredOrders.filter(order => order.order_type === 'delivery');
-        const pickupOrders = filteredOrders.filter(order => order.order_type === 'pickup');
+        const pickupOrders = filteredOrders.filter(order => order.order_type === 'take_away');
 
         console.log('Delivery Orders:', deliveryOrders);
-        console.log('Pickup Orders:', pickupOrders);
+        console.log('Takeaway Orders:', pickupOrders);
 
         if (deliveryOrders.length > 0) {
             console.log('There are multiple delivery orders');
@@ -344,13 +334,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (pickupOrders.length > 0) {
-            console.log('There are multiple pickup orders');
+            console.log('There are multiple Takeaway orders');
             const pickupView = document.querySelector('.pickup-view-row');
         
             const pickupRow = document.createElement('div');
             pickupRow.classList.add('row-caption');
             pickupRow.id = 'pickup-row';
-            pickupRow.textContent = 'Pickup';
+            pickupRow.textContent = 'Takeaway';
         
             pickupView.appendChild(pickupRow);
         

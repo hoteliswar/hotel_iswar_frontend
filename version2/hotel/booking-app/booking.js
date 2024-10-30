@@ -170,11 +170,11 @@ function renderListView(allBookings) {
 
             // Add onclick event to the eye icon
             const eyeIcon = roomDiv.querySelector(`#eye-${booking.id}`);
-            eyeIcon.addEventListener('click', function() {
+            eyeIcon.addEventListener('click', function () {
                 // Call the function to show booking details
                 showBookingModalListView(roomNumber, booking.bookingId);
             });
-            
+
         });
 
     }
@@ -484,7 +484,7 @@ function toggleBookingDetails(booking) {
     // You can add logic here to display or hide additional information about the booking
 }
 
-function showBookingModalListView(roomNumber, bookingId){
+function showBookingModalListView(roomNumber, bookingId) {
     console.log("showBookingModalListView called");
     console.log(roomNumber);
     console.log(bookingId);
@@ -514,6 +514,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
         console.log(bookingInfo);
         let modalContent = `
             <h2>Booking Details</h2>
+            <p><strong>Booking Id:</strong> ${bookingInfo.bookingId}</p>
             <p><strong>Room Number:</strong> ${roomNumber}</p>
             <p><strong>Guest Name:</strong> ${bookingInfo.guestName}</p>
             <!--<p><strong>Age:</strong> ${bookingInfo.age}</p>-->
@@ -521,7 +522,82 @@ function loadBookingModal(bookingInfo, roomNumber) {
             <p><strong>Phone Number:</strong> ${bookingInfo.phoneNumber}</p>
             <p><strong>Start-Date&Time:</strong> ${formatDate(bookingInfo.checkIn)}</p>
             <p><strong>End-Date&Time:</strong> ${formatDate(bookingInfo.checkOut)}</p>
+            <p><strong>Status:</strong> ${bookingInfo.status}</p>
+
         `;
+        
+
+        if (bookingInfo.bookingId ) {
+            // Map room number with room id from local storage roomsList
+            const roomsListString = localStorage.getItem('roomsList');
+            const roomsList = JSON.parse(roomsListString);
+            const room = roomsList.find(room => room.room_number == roomNumber);
+            const roomId = room.id;
+
+            // Get booking data from API by id
+            // const bookingData = getBookingById(bookingInfo.bookingId);
+            // console.log(bookingData);
+
+            // Get booking data from local storage
+            const bookingData = localStorage.getItem('bookingsList');
+            const bookingDataObj = JSON.parse(bookingData);
+            console.warn(bookingDataObj);
+
+            const booking = bookingDataObj.find(booking => booking.id === bookingInfo.bookingId);
+            console.warn(booking);
+
+            console.log(roomId, roomNumber);
+
+
+            // Display services booking and orders assosiated with booking
+
+            // modalContent += `<h3>Services:</h3>`;
+
+            // Display each service usage
+            booking.rooms.forEach(room => {
+                console.log(room);
+                if (room.room == roomId && room.service_usages.length > 0) { // Check if the room ID matches
+                    console.log(room);
+                    modalContent += `<h3>Services:</h3>`;
+                    room.service_usages.forEach(service => {
+                        modalContent += `
+                        <ul>
+                    <li>
+                        <strong>Service Name:</strong> ${service.service_name} <br>
+                        <strong>Quantity:</strong> ${service.quantity} <br>
+                        <strong>Total Price:</strong> ₹${service.total_price} <br>
+                        <strong>Usage Date:</strong> ${new Date(service.usage_date).toLocaleString()} <br>
+                    </li></ul>
+                `;
+                    });
+                }
+            });
+
+            // modalContent += `<h3>Food Orders:</h3>`;
+
+            // Display each order
+            booking.rooms.forEach(room => {
+                if (room.room === roomId && room.orders.length > 0) { // Check if the room ID matches
+                    modalContent += `<h3>Food Orders:</h3>`;
+                    room.orders.forEach(order => {
+                        modalContent += `
+                    <ul><li>
+                        <strong>Order ID:</strong> ${order.id} <br>
+                        <strong>Food Items:</strong> ${order.food_items.join(', ')} <br>
+                        <strong>Quantities:</strong> ${order.quantity.join(', ')} <br>
+                        <strong>Total Price:</strong> ₹${order.total_price} <br>
+                        <strong>Order Status:</strong> ${order.status} <br>
+                        <strong>Created At:</strong> ${new Date(order.created_at).toLocaleString()} <br>
+                    </li></ul>
+                `;
+                    });
+                }
+            });
+
+
+
+        }
+
         if (bookingInfo.status === 'pending' || bookingInfo.status === 'noshow') {
             modalContent += `
                 <p><strong>Status:</strong> ${bookingInfo.status}</p>
@@ -535,6 +611,8 @@ function loadBookingModal(bookingInfo, roomNumber) {
             modalContent += checkInBtn.outerHTML;
 
         }
+        
+
         if (bookingInfo.status === 'checkin') {
             modalContent += `
                 <p><strong>Status:</strong> ${bookingInfo.status}</p>
@@ -553,7 +631,14 @@ function loadBookingModal(bookingInfo, roomNumber) {
             // servicesBtn.addEventListener('click', () => servicesBooking(bookingInfo, roomNumber));
             // servicesBtn.onclick = () => servicesBooking(bookingInfo, roomNumber);
             modalContent += servicesBtn.outerHTML;
+
+            const orderBtn = document.createElement('button');
+            orderBtn.className = 'btn-order';
+            orderBtn.id = 'btn-order';
+            orderBtn.textContent = 'Order';
+            modalContent += orderBtn.outerHTML;
         }
+
 
         const modal = document.getElementById('bookingModal');
         const modalBody = modal.querySelector('.modal-body');
@@ -568,17 +653,21 @@ function loadBookingModal(bookingInfo, roomNumber) {
     const checkInBtn = document.getElementById('btn-checkin');
     const servicesBtn = document.getElementById('btn-services');
     const checkoutBtn = document.getElementById('btn-checkout');
+    const orderBtn = document.getElementById('btn-order');
 
-    if(checkInBtn){
-    document.getElementById('btn-checkin').onclick = () => checkInBooking(bookingInfo, roomNumber);
+    if (checkInBtn) {
+        document.getElementById('btn-checkin').onclick = () => checkInBooking(bookingInfo, roomNumber);
     }
-    if(servicesBtn){
+    if (servicesBtn) {
         document.getElementById('btn-services').onclick = () => servicesBooking(bookingInfo, roomNumber);
     }
-    if(checkoutBtn){
+    if (checkoutBtn) {
         document.getElementById('btn-checkout').onclick = () => checkOutBooking(bookingInfo, roomNumber);
     }
-    
+    if (orderBtn) {
+        document.getElementById('btn-order').onclick = () => orderBooking(bookingInfo, roomNumber);
+    }
+
 }
 
 // Close the service booking modal
@@ -651,7 +740,7 @@ function showBookingModal2(roomNumber, dateString) {
 }
 
 // continue service modal
-function servicesBooking(bookingInfo, roomNumber){
+function servicesBooking(bookingInfo, roomNumber) {
     renderServiceModal(bookingInfo, roomNumber)
     console.log("servicesBooking called");
     console.log(bookingInfo);
@@ -694,8 +783,26 @@ function checkOutBooking(bookingInfo, roomNumber) {
     modal.style.display = 'block';
 }
 
+// Onclick action for Order from Booking details modal
+function orderBooking(bookingInfo, roomNumber) {
+
+    const mobile = bookingInfo.phoneNumber;
+    const name = bookingInfo.guestName;
+    const email = bookingInfo.email;
+
+    // map room number with room id from local storage roomsList
+    const roomsListString = localStorage.getItem('roomsList');
+    const roomsList = JSON.parse(roomsListString);
+    const room = roomsList.find(room => room.room_number == roomNumber);
+    const roomId = room.id;
+
+    console.log("Order btn clicked");
+    // follow order booking url
+    window.location.href = `./../restaurant/takeorder/takeorder.html?room=${roomId}&bookingId=${bookingInfo.bookingId}&orderType=hotel&mobile=${mobile}&name=${name}&email=${email}`;
+}
+
 // Render Service Modal
-function renderServiceModal(bookingInfo, roomNumber){
+function renderServiceModal(bookingInfo, roomNumber) {
     console.log("renderServiceModal called");
     console.log(bookingInfo);
     console.log(roomNumber);
@@ -736,7 +843,7 @@ function renderServiceModal(bookingInfo, roomNumber){
 }
 
 // Render CheckOut Modal
-function renderCheckoutModal(bookingInfo, roomNumber){
+function renderCheckoutModal(bookingInfo, roomNumber) {
     console.log("renderCheckoutModal called");
     console.log(bookingInfo);
     console.log(roomNumber);
@@ -1127,7 +1234,7 @@ function checkOutSubmit() {
     console.log(`Room Number: ${roomNumber}`);
     console.log(`Booking ID: ${bookingId}`);
     console.log(`Room ID: ${roomId}`);
-    
+
     if (!checkoutDateTime) {
         alert("Check-Out Date & Time: Required");
         return;

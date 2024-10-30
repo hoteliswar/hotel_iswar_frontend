@@ -583,6 +583,56 @@ function getServiceListFromStorage() {
 }
 
 
+getAllBookings();
+
+// API Call GET All Bookings - Read
+async function getAllBookings() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const url = `${baseURL}hotel/bookings/`;
+
+    refreshAccessToken2(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('All BookingsData:', data);
+            // Save the data to local storage
+            localStorage.setItem('bookingsList', JSON.stringify(data));
+            getAllBookingsFromStorage();
+            resolve(data);
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+
+};
+
+
+function getAllBookingsFromStorage() {
+    const storedData = localStorage.getItem('bookingsList');
+    if (storedData) {
+        if (storedData === 'undefined') {
+            console.log('No booking list found in local storage');
+            getAllBookings();
+        }
+        const categoryList = JSON.parse(storedData);
+        console.log('Booking list from local storage:', categoryList);
+        return categoryList;
+    } else {
+        console.log('No Booking list found in local storage');
+        getAllBookings();
+    }
+
+}
+
+
+
+
 // Disable all console statements
 // console.log = function() {};
 // console.table = function() {};

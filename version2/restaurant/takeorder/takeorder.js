@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Configure plus/minus delete buttons in Bill Container
     // and also calculate Total and Net Total
+
     function renderBillItems() {
         billContainer.innerHTML = '';
 
@@ -320,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        if (selectedOrderType && selectedOrderType.textContent === 'PICKUP') {
+        if (selectedOrderType && selectedOrderType.textContent === 'take_away') {
             if (!mobileInput.value || !nameInput.value) {
                 e.preventDefault();
                 alert('For delivery orders, please provide mobile number and name.');
@@ -338,7 +339,11 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
 
             getOrderType.textContent = document.querySelector('.type-selected').textContent;
-            getOrderTypeInfo.textContent = selectElement.value;
+            // getOrderTypeInfo.textContent = selectElement.value;
+            // getOrderTypeInfo.textContent = selectElement.textContent;
+
+            const selectedOption = roomSelect.options[roomSelect.selectedIndex].textContent;
+            document.querySelector('.get-order-type-info').textContent = selectedOption;
 
             // alert('Selected a table or room before proceeding');
             document.getElementById('morePopup').style.display = 'none';
@@ -407,7 +412,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         tableNumbersAppended = true;
                     }
                     break;
-                case 'ROOM SERVICE':
+                case 'HOTEL':
                     // orderTypeOptions.innerHTML = getAllRoomNumbers();
                     if (!roomNumbersAppended) {
                         orderTypeOptions.innerHTML = '';
@@ -417,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     break;
                 case 'DELIVERY':
-                case 'PICKUP':
+                case 'TAKEAWAY':
                     orderTypeOptions.innerHTML = '';
                     tableNumbersAppended = false;
                     roomNumbersAppended = false;
@@ -457,11 +462,30 @@ document.addEventListener('DOMContentLoaded', function () {
         return orderTypeOptions;
     }
 
-    // Get all Room Numbers for Room Service
+    // Get all Room Numbers for Hotel
     function getAllRoomNumbers() {
         // Get all tables to add
         // Array of table numbers
-        const roomNumbers = [101, 201, 301, 401];
+        // const roomNumbers2 = [101, 201, 301, 401];
+
+        // Room numbers list from local storage roomsList
+        const roomsListString = localStorage.getItem('roomsList');
+        const roomsList = JSON.parse(roomsListString);
+        const roomNumbers = roomsList.map(room => room.room_number);
+
+        // Room id list from local storage roomsList respectively
+        const roomIds = roomsList.map(room => room.id);
+
+        // Create a dictionary mapping roomIds to roomNumbers
+        const roomDictionary = {};
+        roomIds.forEach((id, index) => {
+            roomDictionary[id] = roomNumbers[index]; // Map roomId to roomNumber
+        });
+
+
+        console.warn('Room Numbers:', roomNumbers);
+        console.warn('Room IDs:', roomIds);
+        console.warn('Room Dictionary:', roomDictionary);
 
         function createRoomServiceOptions2() {
             return roomNumbers.map(number =>
@@ -469,13 +493,22 @@ document.addEventListener('DOMContentLoaded', function () {
             ).join('');
         }
 
-        function createRoomServiceOptions() {
-            return `<select id="room-select" class="order-type-option-select" required>    
+        function createRoomServiceOptions3() {
+            return `<select id="room-select" class="order-type-option-select" required disabled>    
             <option value="">Select a room</option>
             ${roomNumbers.map(number =>
                 `<option value="${number}">Room ${number}</option>`
             ).join('')}
         </select>`;
+        }
+
+        function createRoomServiceOptions() {
+            return `<select id="room-select" class="order-type-option-select" required disabled>    
+                <option value="">Select a room</option>
+                ${Object.keys(roomDictionary).map(roomId =>
+                `<option value="${roomId}">Room ${roomDictionary[roomId]}</option>` // Use roomId as value and roomNumber as text
+            ).join('')}
+            </select>`;
         }
 
         // Usage
@@ -489,35 +522,51 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Get data from Parameters of URL & using helper functions to set order type and select table/room
     // Parse URL parameters
+
     const urlParams = new URLSearchParams(window.location.search);
     const tableNumber = urlParams.get('table');
     const roomNumber = urlParams.get('room');
     const orderType = urlParams.get('orderType');
     const orderId = urlParams.get('orderId');
+    const bookingId = urlParams.get('bookingId');
+    const mobile = urlParams.get('mobile');
+    const name = urlParams.get('name');
+    const email = urlParams.get('email');
 
     // Use the parameters as needed
     if (tableNumber && orderType === 'dine_in') {
         console.log(`Dine-in order for table ${tableNumber}`);
         setOrderType('DINE-IN');
         selectTable(tableNumber);
-    } else if (roomNumber && orderType === 'room_service') {
-        console.log(`Room service order for room ${roomNumber}`);
-        setOrderType('ROOM SERVICE');
-        selectRoom(roomNumber);
-    } else if (orderType === 'pickup') {
-        console.log(`Pickup`);
+    } else if (orderType === 'take_away') {
+        console.log(`Takeaway`);
         document.getElementById('moreButton').click();
-        setOrderType('PICKUP');
-        document.querySelector('.get-order-type').textContent = 'PICKUP';
-    }else if(orderType === 'delivery') {
+        setOrderType('TAKEAWAY');
+        document.querySelector('.get-order-type').textContent = 'TAKEAWAY';
+    } else if (orderType === 'delivery') {
         console.log(`Delivery`);
         document.getElementById('moreButton').click();
         setOrderType('DELIVERY');
         document.querySelector('.get-order-type').textContent = 'DELIVERY';
-    }else if (orderId) {
+    } else if (orderId) {
         document.querySelector('.cancelled-btn').disabled = false;
         console.log(`Order ID: ${orderId}`);
         getDataEditOrder(orderId);
+    } else if (roomNumber && bookingId) {
+        console.log(`Hotel order for room ${roomNumber} with booking ID: ${bookingId}`);
+        setOrderType('HOTEL');
+        selectRoom(roomNumber);
+    }
+
+    if (mobile && name && email) {
+        document.getElementById('mobile').value = mobile;
+        document.getElementById('mobile-input').value = mobile;
+        document.getElementById('name').value = name;
+        document.getElementById('email').value = email;
+        const roomSelect = document.getElementById('room-select');
+        // get the text content of the selected option
+        const selectedOption = roomSelect.options[roomSelect.selectedIndex].textContent;
+        document.querySelector('.get-order-type-info').textContent = selectedOption;
     }
 
 
@@ -539,7 +588,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (tableSelect) {
             tableSelect.value = number;
         }
-        getOrderType.textContent = 'DINE IN';
+        getOrderType.textContent = 'DINE-IN';
         getOrderTypeInfo.textContent = number;
     }
 
@@ -550,7 +599,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (roomSelect) {
             roomSelect.value = number;
         }
-        getOrderType.textContent = 'ROOM SERVICE';
+        getOrderType.textContent = 'HOTEL';
         getOrderTypeInfo.textContent = number;
     }
 
@@ -584,26 +633,62 @@ document.addEventListener('DOMContentLoaded', function () {
         const mobileNumber = document.getElementById('mobile-input').value || document.getElementById('mobile').value;
         // const orderType = document.querySelector('.get-order-type').textContent;
 
+
         let orderType = document.querySelector('.get-order-type').textContent;
-        if (orderType === 'DINE-IN') {
+        if (orderType === 'DINE IN') {
             orderType = 'dine_in';
-        }else if (orderType === 'ROOM SERVICE') {
-            orderType = 'room_service';
-        }else if (orderType === 'PICKUP') {
-            orderType = 'pickup';
-        }else if (orderType === 'DELIVERY') {
+        } else if (orderType === 'HOTEL') {
+            orderType = 'hotel';
+        } else if (orderType === 'TAKEAWAY') {
+            orderType = 'take_away';
+        } else if (orderType === 'DELIVERY') {
             orderType = 'delivery';
         }
 
-        const tableOrRoom = document.querySelector('.get-order-type-info').textContent;
+        // let tableOrRoom = document.querySelector('.get-order-type-info').textContent;
+
+        var tableOrRoom;
+        if (document.getElementById('table-select')) {
+            tableOrRoom = document.getElementById('table-select').value;
+            // document.querySelector('.get-order-type-info').textContent = tableOrRoom;
+        }
+
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const address = document.getElementById('address').value;
+
+
+        const roomSelect2 = document.getElementById('room-select');
+        const tableSelect2 = document.getElementById('table-select');
+
+        let roomNumber2, bookingId2, tableOrRoom2;
+
+        if (roomSelect2) {
+            let roomNumber2 = roomSelect2.value;
+            let bookingId2 = urlParams.get('bookingId');
+            let tableOrRoom2 = null;
+        }
+        if (tableSelect2) {
+            let tableOrRoom2 = tableSelect2.value;
+            let roomNumber2 = null;
+            let bookingId2 = null;
+        }
+
+        console.log(`mobileNumber: ${mobileNumber}`);
+        console.log(`orderType: ${orderType}`);
+        console.log(`name: ${name}`);
+        console.log(`email: ${email}`);
+        console.log(`address: ${address}`);
+        console.log('tableOrRoom2:', tableOrRoom2);
+        console.log('roomNumber2:', roomNumber2);
+        console.log('bookingId2:', bookingId2);
 
         return {
             mobileNumber,
             orderType,
             tableOrRoom,
+            roomNumber,
+            bookingId,
             name,
             email,
             address
@@ -638,7 +723,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 food_items: finalBillItems.map(item => item.id),
                 quantity: finalBillItems.map(item => item.quantity),
                 total_price: totalAmount,
-                discount: discountAmount
+                discount: discountAmount,
+                room_id: parseInt(orderDetails.roomNumber),
+                booking_id: parseInt(orderDetails.bookingId)
             };
 
             const orderData2 = {
@@ -766,7 +853,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    status: 'hold'
+                    status: 'on_hold'
                 })
             }
 
@@ -1187,7 +1274,7 @@ document.addEventListener('DOMContentLoaded', function () {
             orderTypeOptions.innerHTML = `<select id="table-select" class="order-type-option-select">
             <option value="${data.table_number}">Table ${data.table}</option>
         </select>`;
-        } else if (data.order_type === 'room_service') {
+        } else if (data.order_type === 'hotel') {
             orderTypeOptions.innerHTML = `<select id="room-select" class="order-type-option-select">
             <option value="${data.table}">Room ${data.table}</option>
         </select>`;
@@ -1224,7 +1311,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 tableSelect.value = data.tables[0];
             }
             document.querySelector('.doneButton').click();
-        } else if (data.order_type === 'room_service') {
+        } else if (data.order_type === 'hotel') {
             const roomSelect = document.getElementById('room-select');
             if (roomSelect) {
                 roomSelect.value = data.room;
@@ -1260,12 +1347,5 @@ document.addEventListener('DOMContentLoaded', function () {
         const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
         return selectedPaymentMethod ? selectedPaymentMethod.value : null;
     }
-
-
-
-
-
-
-
 
 });
