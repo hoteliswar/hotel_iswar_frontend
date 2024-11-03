@@ -391,5 +391,9 @@ document.addEventListener('DOMContentLoaded', function () {
         
     }
 
+    document.querySelector('#refresh').addEventListener('click', function () {
+        window.location.reload();
+    });
+
 
 });

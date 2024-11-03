@@ -342,8 +342,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // getOrderTypeInfo.textContent = selectElement.value;
             // getOrderTypeInfo.textContent = selectElement.textContent;
 
-            const selectedOption = roomSelect.options[roomSelect.selectedIndex].textContent;
-            document.querySelector('.get-order-type-info').textContent = selectedOption;
+            // const selectedOption = roomSelect.options[roomSelect.selectedIndex].textContent;
+            // document.querySelector('.get-order-type-info').textContent = selectedOption;
 
             // alert('Selected a table or room before proceeding');
             document.getElementById('morePopup').style.display = 'none';
@@ -582,11 +582,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function selectTable(number) {
+        const tableData = localStorage.getItem('tablesList');
+        const tablesList = JSON.parse(tableData);
+        const table = tablesList.find(table => table.table_number == number);
+        const tableId = table.id;
+        console.log('Table Id:', tableId);
+
+
         const getOrderType = document.querySelector('.get-order-type');
         const getOrderTypeInfo = document.querySelector('.get-order-type-info');
         const tableSelect = document.getElementById('table-select');
         if (tableSelect) {
-            tableSelect.value = number;
+            tableSelect.value = tableId;
         }
         getOrderType.textContent = 'DINE-IN';
         getOrderTypeInfo.textContent = number;
@@ -1196,8 +1203,23 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Order ID:', orderId);
             console.log('Selected payment method:', paymentMethod);
 
-            settleOrder(orderId, paymentMethod);
+            // settleOrder(orderId, paymentMethod);
         }
+
+        const settleModal = document.getElementById('settleModal');
+        const settleModalContainer = document.querySelector('.modal-container');
+        const modalBodySettle = settleModal.querySelector('.modal-body');
+
+        // setTimeout(() => settleModal.classList.add('show'), 10);
+        // // modalBodySettle.innerHTML = modalContent;
+        // settleModalContainer.style.display = 'block';
+        // settleModal.style.display = 'block';
+
+        // Change display to flex for centering
+        settleModalContainer.style.display = 'flex';
+        settleModal.style.display = 'block';
+        setTimeout(() => settleModal.classList.add('show'), 10);
+
 
         function settleOrder(orderId, paymentMethod) {
             const option = {
@@ -1223,6 +1245,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Error KOT Order:', error);
                 })
         }
+
+
     });
 
     function getDataEditOrder(orderId) {
@@ -1346,6 +1370,18 @@ document.addEventListener('DOMContentLoaded', function () {
     function getSelectedPaymentMethod() {
         const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
         return selectedPaymentMethod ? selectedPaymentMethod.value : null;
+    }
+
+    // Close the settle modal
+    document.querySelector('.close-settle').onclick = function () {
+        const settleModal = document.getElementById('settleModal');
+        const modalContainer = document.querySelector('.modal-container');
+
+        settleModal.classList.remove('show');
+        setTimeout(() => {
+            modalContainer.style.display = 'none';
+            settleModal.style.display = 'none';
+        }, 300);
     }
 
 });

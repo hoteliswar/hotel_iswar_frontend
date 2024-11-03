@@ -1,7 +1,7 @@
 document.querySelector('.load-table-blocks').textContent = 'Loading...';
 
 // Retrieve tableList from localStorage
-function getTableListFromLocalStorage() {
+async function getTableListFromLocalStorage() {
     const storedTableList = localStorage.getItem('tablesList');
     console.log('Stored Table List:', storedTableList);
     return storedTableList ? JSON.parse(storedTableList) : [];
@@ -10,10 +10,10 @@ function getTableListFromLocalStorage() {
 console.log('Table List:', getTableListFromLocalStorage());
 
 // Function to render the table list in HTML
-function renderTableList() {
-    const tableList = getTableListFromLocalStorage();
+async function renderTableList() {
+    const tableList = await getTableListFromLocalStorage();
     const tableContainer = document.querySelector('.load-table-blocks');
-    
+
     tableContainer.innerHTML = '';
 
     const tableListHead = document.createElement('div');
@@ -21,7 +21,7 @@ function renderTableList() {
     tableListHead.innerHTML = '<div class="table-list-head-text">Table List</div>';
     tableContainer.appendChild(tableListHead);
 
-    
+
     tableList.forEach(table => {
         const tableElement = document.createElement('div');
         tableElement.classList.add('table-item');
@@ -35,10 +35,10 @@ renderTableList();
 
 
 // API - POST Request to add a new table
-function addTable(tableData) {
-    const tableList = getTableListFromLocalStorage();
+async function addTable(tableData) {
+    const tableList = await getTableListFromLocalStorage();
     const existingTable = tableList.find(table => table.table_number === tableData.table_number);
-    
+
     if (!existingTable) {
 
         const option = {
@@ -54,17 +54,20 @@ function addTable(tableData) {
 
         refreshAccessToken2(url, option)
             // .then(response => response.json())
-            .then(data => {
+            .then(async data => {
                 console.log('Data:', data);
+                alert(`Table ${data.table_number} added successfully`);
+
                 getTablesData();
-                coldReload();
+
             })
             .catch(error => {
                 console.log('Error fetching data:', error);
             });
 
+        await coldReload();
 
-        tableList.push(tableData);
+        // tableList.push(tableData);
         localStorage.setItem('tablesList', JSON.stringify(tableList));
         renderTableList();
     } else {
@@ -74,29 +77,33 @@ function addTable(tableData) {
 }
 
 // Take table input and pass to POST method
-document.getElementById('add-table').addEventListener('click', function (e) {
+document.getElementById('add-table').addEventListener('click', async function (e) {
     e.preventDefault();
 
     const tableLocal = getTableListFromLocalStorage();
 
     const tableNumInput = document.getElementById('tableNumberInput').value;
 
-    if (tableNumInput === ''){
+    if (tableNumInput === '') {
         alert('Please enter a table number');
     } else {
         const tableData = {
             table_number: parseInt(tableNumInput),
         };
-        addTable(tableData);
+        await addTable(tableData);
     }
 });
 
-function coldReload() {
-    const page = document.getElementById('nav-item-tableArea');
+async function coldReload() {
+    const page = document.getElementById('nav-item-tabelArea');
     if (page) {
+        page.click();
         page.click();
     }
     else {
         page.click();
+        page.click();
     }
 }
+
+

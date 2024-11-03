@@ -386,6 +386,8 @@ function getTablesData() {
         .catch(error => {
             console.log('Error fetching table:', error);
         });
+    
+    return true;
 
 }
 
