@@ -642,7 +642,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         let orderType = document.querySelector('.get-order-type').textContent;
-        if (orderType === 'DINE IN') {
+        if (orderType === 'DINE-IN') {
             orderType = 'dine_in';
         } else if (orderType === 'HOTEL') {
             orderType = 'hotel';
@@ -661,6 +661,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const name = document.getElementById('name').value;
+        const lname = document.getElementById('lname').value;
         const email = document.getElementById('email').value;
         const address = document.getElementById('address').value;
 
@@ -697,6 +698,7 @@ document.addEventListener('DOMContentLoaded', function () {
             roomNumber,
             bookingId,
             name,
+            lname,
             email,
             address
         };
@@ -717,22 +719,24 @@ document.addEventListener('DOMContentLoaded', function () {
             const totalAmount = parseFloat(document.querySelector('.ta-price').textContent.replace('₹', ''));
             const netTotalAmount = parseFloat(document.querySelector('.na-price').textContent.replace('₹', ''));
             const discountAmount = parseFloat(document.querySelector('.disc-box').value) || 0;
+            const notes = document.getElementById('order-note').value;
 
             const orderData = {
                 phone: orderDetails.mobileNumber,
                 email: orderDetails.email,
                 first_name: orderDetails.name,
-                last_name: orderDetails.name,
+                last_name: orderDetails.lname,
                 address_line_1: orderDetails.address,
                 order_type: orderDetails.orderType,
                 tables: [parseInt(orderDetails.tableOrRoom)],
                 status: 'in_progress',
                 food_items: finalBillItems.map(item => item.id),
                 quantity: finalBillItems.map(item => item.quantity),
-                total_price: totalAmount,
-                discount: discountAmount,
+                // total_price: totalAmount,
+                // discount: discountAmount,
                 room_id: parseInt(orderDetails.roomNumber),
-                booking_id: parseInt(orderDetails.bookingId)
+                booking_id: parseInt(orderDetails.bookingId),
+                notes: notes
             };
 
             const orderData2 = {
@@ -793,6 +797,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
+                    passOrderId = data.id;
+                    passOrderKotCount = data.kot_count;
+
                 })
                 .catch(error => {
                     console.log('Error Saving Order:', error);
@@ -828,6 +835,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => {
                     console.log('Error Saving Order:', error);
+                    alert('Error Saving Order');
                 })
         }
     });
@@ -903,7 +911,22 @@ document.addEventListener('DOMContentLoaded', function () {
                         kotOrder(orderId);
                     }
                 } else {
+                    console.log('1st KOT!');
                     kotOrder(orderId);
+                }
+            } else {
+                // get order id from passOrderId
+                const passedOrderId = passOrderId;
+                const passedOrderKotCount = passOrderKotCount;
+                console.log('Order ID:', passedOrderId);
+                if (passedOrderKotCount > 0) {
+                    // Show Re-KOT confirmation
+                    if (confirm('This is a Re-KOT. Do you want to proceed??')) {
+                        kotOrder(passedOrderId);
+                    }
+                } else {
+                    console.log('1st KOT');
+                    kotOrder(passedOrderId);
                 }
             }
         }
@@ -1194,17 +1217,17 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         const paymentMethod = getSelectedPaymentMethod();
 
-        if (settlebtn.click) {
-            console.log('settle button clicked');
-            console.table('final bill items', finalBillItems);
-            const orderDetails = getOrderDetails();
-            console.table('Order Details:', orderDetails);
-            console.log('takeOrderData:', takeDataToKOT);
-            console.log('Order ID:', orderId);
-            console.log('Selected payment method:', paymentMethod);
+        // if (settlebtn.click) {
+        //     console.log('settle button clicked');
+        //     console.table('final bill items', finalBillItems);
+        //     const orderDetails = getOrderDetails();
+        //     console.table('Order Details:', orderDetails);
+        //     console.log('takeOrderData:', takeDataToKOT);
+        //     // console.log('Order ID:', orderId);
+        //     // console.log('Selected payment method:', paymentMethod);
 
-            // settleOrder(orderId, paymentMethod);
-        }
+        //     // settleOrder(orderId, paymentMethod);
+        // }
 
         const settleModal = document.getElementById('settleModal');
         const settleModalContainer = document.querySelector('.modal-container');
@@ -1219,6 +1242,29 @@ document.addEventListener('DOMContentLoaded', function () {
         settleModalContainer.style.display = 'flex';
         settleModal.style.display = 'block';
         setTimeout(() => settleModal.classList.add('show'), 10);
+
+        const billNoInput = document.getElementById('bill-no');
+        const subTotalInput = document.getElementById('sub-total');
+        const discountInput = document.getElementById('bill-discount');
+        const netTotalInput = document.getElementById('net-total');
+        const cgstInput = document.getElementById('cgst');
+        const sgstInput = document.getElementById('sgst');
+        const netAmtInput = document.getElementById('net-amt');
+
+        const naPrice = document.querySelector('.na-price').textContent;
+        console.log('naPrice:', naPrice);
+        // remove the ruppe symbol the 1st character
+        const naPriceWithoutRupee = naPrice.substring(1);
+        console.log('naPriceWithoutRupee:', naPriceWithoutRupee);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('orderId');
+        const tabelNumber = urlParams.get('table');
+
+
+        subTotalInput.value = parseFloat(naPriceWithoutRupee).toFixed(2);
+        cgstInput.value = "2.5%";
+        sgstInput.value = "2.5%";
 
 
         function settleOrder(orderId, paymentMethod) {

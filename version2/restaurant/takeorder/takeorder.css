@@ -772,13 +772,15 @@ a{
 .settle-modal {
     position: relative;
     z-index: 1000;
-    width: 100%;
-    max-width: 400px;
-    max-height: 90vh;
+    min-width: 500px;
+    min-height: 500px;
+    max-width: 500px;
+    max-height: 500px;
     background-color: #fff;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     /* transform: translateX(100%); */
     transition: transform 0.1s ease-out;
+    border-radius: 5px;
 }
 
 .settle-modal.show {
@@ -816,6 +818,69 @@ a{
     cursor: pointer;
 }
 
+.modal-content{
+    display: inline-block
+}
+
+.modal-head{
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #434343;
+}
+
+.modal-title, .close-settle{
+    display: inline-block;
+}
+
+.modal-title{
+    font-size: 1em;
+    font-weight: 600;
+    margin-bottom: 20px;
+    flex-grow: 1;
+    text-align: center;
+    padding-top: 10px;
+}
+
 .modal-body {
-    padding-bottom: 200px;
+    padding-top: 10px;
+    overflow-y: hidden;
+}
+
+.generate-bill-form label{
+    font-size: 0.9em;
+    font-weight: 500;
+    min-width: 60%;
+}
+
+.generate-bill-form input{
+    width: 3%;
+    border: 0px solid #fcb00b !important;
+    border-radius: 3px;
+    text-align: right;
+}
+
+.input-group input {
+    width: 150px !important;  /* Increased from 30px */
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+
+
+.generate-bill-form input[type="number"]::-webkit-inner-spin-button,
+.generate-bill-form input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.generate-bill-form input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
 }

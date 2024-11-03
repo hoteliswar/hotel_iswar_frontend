@@ -95,11 +95,13 @@
                                     </div>
                                     <div class="input-group">
                                         <label for="name">First Name: </label>
-                                        <input type="text" id="name" placeholder="Customer First Name" autocomplete="name">
+                                        <input type="text" id="name" placeholder="Customer First Name"
+                                            autocomplete="name">
                                     </div>
                                     <div class="input-group">
                                         <label for="lname">Last Name: </label>
-                                        <input type="text" id="lname" placeholder="Customer Last Name" autocomplete="lname">
+                                        <input type="text" id="lname" placeholder="Customer Last Name"
+                                            autocomplete="lname">
                                     </div>
 
                                     <div class="input-group">
@@ -142,7 +144,8 @@
                 <div class="bill-footer">
                     <div class="total-amt">
                         <div class="order-note">
-                            <input type="text" class="order-note-input" name="order-note" id="order-note" placeholder="Order Note">
+                            <input type="text" class="order-note-input" name="order-note" id="order-note"
+                                placeholder="Order Note">
                         </div>
 
                         <div class="total-amount " style="display: none;">
@@ -187,7 +190,7 @@
                         </div>
                     </div>
                     <div class="settle-bill">
-                        <button class="settle-btn">SETTLE BILL</button>
+                        <button class="settle-btn">GENERATE BILL</button>
                     </div>
                 </div>
             </div>
@@ -200,12 +203,50 @@
     <div class="modal-container">
         <div id="settleModal" class="settle-modal">
             <div class="modal-content">
-                <span class="close-settle">&times;</span>
-                <div class="modal-body"></div>
+                <div class="modal-head">
+                    <span class="close-settle">&times;</span>
+                    <div class="modal-title">GENERATE BILL</div>
+                </div>
+                <div class="modal-body">
+                    <div class="generate-bill-form">
+                        <div class="input-group">
+                            <label for="bill-no">Bill No.</label>
+                            <input type="text" id="bill-no" placeholder="Bill No." disabled>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="sub-total">Sub Total (₹)</label>
+                            <input type="number" id="sub-total" placeholder="0.00" disabled>
+                        </div>
+                        <div class="input-group">
+                            <label for="bill-discount">Discount  (₹)</label>
+                            <input type="number" id="bill-discount" placeholder="0.00">
+                        </div>
+                        <div class="input-group">
+                            <label for="net-total">Net Total (₹)</label>
+                            <input type="number" id="net-total" placeholder="0.00" disabled>
+                        </div>
+                        <div class="input-group">
+                            <label for="cgst">CGST</label>
+                            <input type="text" id="cgst" placeholder="CGST" disabled>
+                        </div>
+                        <div class="input-group">
+                            <label for="sgst">SGST</label>
+                            <input type="text" id="sgst" placeholder="SGST" disabled>
+                        </div>
+                        <div class="input-group">
+                            <label for="net-amt">Net Amount (₹)</label>
+                            <input type="number" id="net-amt" placeholder="0.00" disabled>
+                        </div>
+
+
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
-    
+
 
     <script src="./../../common.js"></script>
     <script src="./../../session.js"></script>
