@@ -133,6 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // finalBillItems = [...finalBillItems, ...billItems];
 
         console.log(`Final bill items 1:`, finalBillItems);
+        checkFinalBillItems();
     }
 
     // Update Quantity of Food Item in Bill Container
@@ -216,6 +217,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (index !== -1) {
             billItems.splice(index, 1);
             renderBillItems();
+            checkFinalBillItems();
         }
     }
 
@@ -706,6 +708,24 @@ document.addEventListener('DOMContentLoaded', function () {
 
     globalThis.takeDataToKOT = [];
 
+    // Check if finalBillItems is updated
+    function checkFinalBillItems() {
+        const settleBtn = document.querySelector('.settle-btn');
+        settleBtn.disabled = true;
+
+        // Enable settle button only if there are items in the bill
+        if (finalBillItems.length > 0) {
+            settleBtn.disabled = true;
+        } else {
+            settleBtn.disabled = true;
+        }
+    }
+
+    // Add observer to watch for changes in finalBillItems
+    const finalBillItemsObserver = new MutationObserver(() => {
+        checkFinalBillItems();
+    });
+
     // SAVE: Getting all items data that are in bill after clicking Save Button
     const savebtn = document.querySelector('.save-btn')
     savebtn.addEventListener('click', function (e) {
@@ -755,11 +775,32 @@ document.addEventListener('DOMContentLoaded', function () {
                 "coupon_used": ["69"]
             }
 
-            const urlParams = new URLSearchParams(window.location.search);
             console.log('Order Data:', orderData);
+            const urlParams = new URLSearchParams(window.location.search);
             const orderId = urlParams.get('orderId');
+            const table = urlParams.get('table');
 
-            if (orderId) {
+            if (table) {
+                const tableNumber = parseInt(table);
+                console.log('Looking for table number:', tableNumber);
+
+                const tableData = localStorage.getItem('tablesList');
+                const tablesList = JSON.parse(tableData);
+                console.log('Table Data:', tablesList);
+
+                const tableInfo = tablesList.find(t => t.table_number === tableNumber);
+                console.log('Found table:', tableInfo);
+
+                if (tableInfo && tableInfo.order != null) {
+                    console.log('Table Order:', tableInfo.order);
+                    const orderId2 = tableInfo.order;
+                    saveOrderPATCH(orderData, orderId2);
+                } else {
+                    saveOrderPOST(orderData);
+                }
+            }
+
+            else if (orderId) {
                 saveOrderPATCH(orderData, orderId);
                 // document.querySelector('.cancelled-btn').disabled = false;
                 // document.querySelector('.hold-btn').disabled = false;
@@ -798,6 +839,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
+                    document.querySelector('.settle-btn').disabled = false;
                     passOrderId = data.id;
                     passOrderKotCount = data.kot_count;
 
@@ -834,6 +876,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
+                    document.querySelector('.settle-btn').disabled = false;
                 })
                 .catch(error => {
                     console.log('Error Saving Order:', error);
@@ -1279,8 +1322,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // const displayNetAmt = (naPriceWithoutRupee * 0.05) + naPriceWithoutRupee;
         // netAmtInput.value = parseFloat(displayNetAmt).toFixed(2);
 
-         calculateBillAmounts();
-         discountInput.addEventListener('input', calculateBillAmounts);
+        calculateBillAmounts();
+        discountInput.addEventListener('input', calculateBillAmounts);
 
         function calculateBillAmounts() {
             // Get subtotal (original price before discount)
@@ -1297,7 +1340,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Calculate GST (5% of net total)
             const gstRate = 0.05;
             const gstAmount = netTotal * gstRate;
-            
+
             // Update CGST and SGST (each 2.5%)
             const halfGstAmount = gstAmount / 2;
             cgstInput.value = halfGstAmount.toFixed(2);
@@ -1472,6 +1515,7 @@ document.addEventListener('DOMContentLoaded', function () {
         sendDataToSave();
         renderBillItems();
         updateNetTotal();
+        checkFinalBillItems();
 
     }
 
