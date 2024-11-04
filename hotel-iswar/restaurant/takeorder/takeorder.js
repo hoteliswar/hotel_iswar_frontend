@@ -794,6 +794,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.table(data);
                     takeDataToKOT = data;
                     alert("POST: Saved Order Successfully");
+                    getTablesData();
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
@@ -829,6 +830,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     takeDataToKOT = data;
                     console.table(data);
                     alert("PATCH: Saved Order Successfully");
+                    getTablesData();
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
@@ -1258,37 +1260,97 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('naPriceWithoutRupee:', naPriceWithoutRupee);
 
         const urlParams = new URLSearchParams(window.location.search);
-        const orderId = urlParams.get('orderId');
+        var orderId = urlParams.get('orderId');
         const tabelNumber = urlParams.get('table');
+
+        if (tabelNumber) {
+            const tableData = localStorage.getItem('tablesList');
+            const parsedTableData = JSON.parse(tableData);
+            // find order for table number
+            const tableOrder = parsedTableData.find(table => table.table_number == tabelNumber);
+            console.log('tableOrder:', tableOrder);
+            orderId = tableOrder.order;
+            console.log('orderId:', orderId);
+        }
+
+        billNoInput.value = orderId;
+
+        // netTotalInput.value = parseFloat(naPriceWithoutRupee).toFixed(2);
+        // const displayNetAmt = (naPriceWithoutRupee * 0.05) + naPriceWithoutRupee;
+        // netAmtInput.value = parseFloat(displayNetAmt).toFixed(2);
+
+         calculateBillAmounts();
+         discountInput.addEventListener('input', calculateBillAmounts);
+
+        function calculateBillAmounts() {
+            // Get subtotal (original price before discount)
+            const subTotal = parseFloat(naPriceWithoutRupee);
+            subTotalInput.value = subTotal.toFixed(2);
+
+            // Get discount amount from discount input
+            const discountAmount = parseFloat(discountInput.value) || 0;
+
+            // Calculate net total (subtotal - discount)
+            const netTotal = subTotal - discountAmount;
+            netTotalInput.value = netTotal.toFixed(2);
+
+            // Calculate GST (5% of net total)
+            const gstRate = 0.05;
+            const gstAmount = netTotal * gstRate;
+            
+            // Update CGST and SGST (each 2.5%)
+            const halfGstAmount = gstAmount / 2;
+            cgstInput.value = halfGstAmount.toFixed(2);
+            sgstInput.value = halfGstAmount.toFixed(2);
+
+            // Calculate final net amount (net total + GST)
+            const netAmount = netTotal + gstAmount;
+            netAmtInput.value = netAmount.toFixed(2);
+        }
 
 
         subTotalInput.value = parseFloat(naPriceWithoutRupee).toFixed(2);
         cgstInput.value = "2.5%";
         sgstInput.value = "2.5%";
 
+        if (discountInput.value === "") {
+            discountInput.value = 0;
+        }
 
-        function settleOrder(orderId, paymentMethod) {
+        const settlePayLoad = {
+            order_id: parseInt(orderId),
+            bill_type: "RES",
+            order_discount: parseFloat(discountInput.value)
+        }
+
+        console.log('settlePayLoad:', settlePayLoad);
+
+        const printBillBtn = document.getElementById('print-bill-btn');
+        printBillBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            billOrder(settlePayLoad);
+        });
+
+
+        function billOrder(settlePayLoad) {
             const option = {
-                method: 'PATCH',
+                method: 'POST',
                 headers: {
                     'Authorization': 'Bearer ' + getCookie('access_token'),
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    status: 'settled',
-                    payment_method: paymentMethod
-                })
+                body: settlePayLoad
             }
-            const url = `${baseURL}orders/order/${orderId}/`;
+            const url = `${baseURL}billing/bills/`;
             refreshAccessToken2(url, option)
                 // .then(response => response.json())
                 .then(data => {
                     console.log('Data:', data);
                     console.table(data);
-                    alert("PATCH: Order Settled Successfully");
+                    alert("POST: Order Billed Successfully");
                 })
                 .catch(error => {
-                    console.log('Error KOT Order:', error);
+                    console.log('Error Billing Order:', error);
                 })
         }
 

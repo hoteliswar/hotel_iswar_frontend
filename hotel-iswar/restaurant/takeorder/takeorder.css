@@ -864,6 +864,12 @@ a{
     padding: 5px 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    color: #000;
+}
+
+#bill-discount{
+    border: 2px solid #fcb00b !important;
+    border-radius: 3px;
 }
 
 .input-group {
@@ -873,8 +879,6 @@ a{
     margin-bottom: 10px;
 }
 
-
-
 .generate-bill-form input[type="number"]::-webkit-inner-spin-button,
 .generate-bill-form input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -883,4 +887,13 @@ a{
 
 .generate-bill-form input[type="number"] {
     -moz-appearance: textfield; /* Firefox */
+}
+
+.print-bill-btn{
+    background-color: #e2a600;
+    border: 0px;
+    border-radius: 3px;
+    font-size: 1em;
+    font-weight: 500;
+    padding: 10px 15px;
 }
