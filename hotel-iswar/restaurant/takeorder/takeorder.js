@@ -133,7 +133,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // finalBillItems = [...finalBillItems, ...billItems];
 
         console.log(`Final bill items 1:`, finalBillItems);
-        checkFinalBillItems();
     }
 
     // Update Quantity of Food Item in Bill Container
@@ -217,7 +216,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (index !== -1) {
             billItems.splice(index, 1);
             renderBillItems();
-            checkFinalBillItems();
         }
     }
 
@@ -424,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                     break;
                 case 'DELIVERY':
-                case 'TAKEAWAY':
+                case 'TAKE-AWAY':
                     orderTypeOptions.innerHTML = '';
                     tableNumbersAppended = false;
                     roomNumbersAppended = false;
@@ -540,16 +538,10 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(`Dine-in order for table ${tableNumber}`);
         setOrderType('DINE-IN');
         selectTable(tableNumber);
-    } else if (orderType === 'take_away') {
-        console.log(`Takeaway`);
-        document.getElementById('moreButton').click();
-        setOrderType('TAKEAWAY');
-        document.querySelector('.get-order-type').textContent = 'TAKEAWAY';
-    } else if (orderType === 'delivery') {
-        console.log(`Delivery`);
-        document.getElementById('moreButton').click();
-        setOrderType('DELIVERY');
-        document.querySelector('.get-order-type').textContent = 'DELIVERY';
+    } else if (orderId && orderType) {
+        document.querySelector('.cancelled-btn').disabled = false;
+        console.log(`Order ID: ${orderId}`);
+        getDataEditOrder(orderId);
     } else if (orderId) {
         document.querySelector('.cancelled-btn').disabled = false;
         console.log(`Order ID: ${orderId}`);
@@ -558,6 +550,16 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(`Hotel order for room ${roomNumber} with booking ID: ${bookingId}`);
         setOrderType('HOTEL');
         selectRoom(roomNumber);
+    } else if (orderType === 'take_away') {
+        console.log(`Takeaway`);
+        document.getElementById('moreButton').click();
+        setOrderType('TAKE-AWAY');
+        document.querySelector('.get-order-type').textContent = 'TAKE-AWAY';
+    } else if (orderType === 'delivery') {
+        console.log(`Delivery`);
+        document.getElementById('moreButton').click();
+        setOrderType('DELIVERY');
+        document.querySelector('.get-order-type').textContent = 'DELIVERY';
     }
 
     if (mobile && name && email) {
@@ -581,6 +583,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 button.click();
             }
         });
+
     }
 
     function selectTable(number) {
@@ -648,7 +651,7 @@ document.addEventListener('DOMContentLoaded', function () {
             orderType = 'dine_in';
         } else if (orderType === 'HOTEL') {
             orderType = 'hotel';
-        } else if (orderType === 'TAKEAWAY') {
+        } else if (orderType === 'TAKE-AWAY') {
             orderType = 'take_away';
         } else if (orderType === 'DELIVERY') {
             orderType = 'delivery';
@@ -708,23 +711,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     globalThis.takeDataToKOT = [];
 
-    // Check if finalBillItems is updated
-    function checkFinalBillItems() {
-        const settleBtn = document.querySelector('.settle-btn');
-        settleBtn.disabled = true;
-
-        // Enable settle button only if there are items in the bill
-        if (finalBillItems.length > 0) {
-            settleBtn.disabled = true;
-        } else {
-            settleBtn.disabled = true;
-        }
-    }
-
-    // Add observer to watch for changes in finalBillItems
-    const finalBillItemsObserver = new MutationObserver(() => {
-        checkFinalBillItems();
-    });
 
     // SAVE: Getting all items data that are in bill after clicking Save Button
     const savebtn = document.querySelector('.save-btn')
@@ -741,13 +727,24 @@ document.addEventListener('DOMContentLoaded', function () {
             const discountAmount = parseFloat(document.querySelector('.disc-box').value) || 0;
             const notes = document.getElementById('order-note').value;
 
-            const orderData = {
+            let orderTypeVal
+            const orderType = document.querySelector('.type-selected').textContent;
+            if (orderType == 'DELIVERY') {
+                orderTypeVal = 'delivery';
+            } else if (orderType == 'TAKE-AWAY') {
+                orderTypeVal = 'take_away';
+            }
+
+
+            var orderData = {
                 phone: orderDetails.mobileNumber,
                 email: orderDetails.email,
                 first_name: orderDetails.name,
                 last_name: orderDetails.lname,
                 address_line_1: orderDetails.address,
-                order_type: orderDetails.orderType,
+                // if orderDetails.orderType is empty then use orderTypeVal
+
+                order_type: orderDetails.orderType || orderTypeVal,
                 tables: [parseInt(orderDetails.tableOrRoom)],
                 status: 'in_progress',
                 food_items: finalBillItems.map(item => item.id),
@@ -780,6 +777,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const orderId = urlParams.get('orderId');
             const table = urlParams.get('table');
 
+            const hiddenOrderId = document.getElementById('hidden-order-id');
+
+            if (orderData.order_type === 'delivery') {
+                delete orderData.tables;
+            } else if (orderData.order_type === 'take_away') {
+                delete orderData.tables;
+            }
+
             if (table) {
                 const tableNumber = parseInt(table);
                 console.log('Looking for table number:', tableNumber);
@@ -794,23 +799,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (tableInfo && tableInfo.order != null) {
                     console.log('Table Order:', tableInfo.order);
                     const orderId2 = tableInfo.order;
+
                     saveOrderPATCH(orderData, orderId2);
                 } else {
                     saveOrderPOST(orderData);
                 }
-            }
-
-            else if (orderId) {
+            } else if (orderId) {
                 saveOrderPATCH(orderData, orderId);
                 // document.querySelector('.cancelled-btn').disabled = false;
                 // document.querySelector('.hold-btn').disabled = false;
                 // document.querySelector('.kot-btn').disabled = false;
 
-            } else {
-                saveOrderPOST(orderData);
+            } else if (hiddenOrderId) {
+                const orderId = parseInt(hiddenOrderId.value);
+                saveOrderPATCH(orderData, orderId);
+                // saveOrderPOST(orderData);
                 // document.querySelector('.hold-btn').disabled = false;
                 // document.querySelector('.kot-btn').disabled = false;
 
+            } else {
+                saveOrderPOST(orderData);
             }
 
         }
@@ -842,6 +850,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelector('.settle-btn').disabled = false;
                     passOrderId = data.id;
                     passOrderKotCount = data.kot_count;
+
+                    const createOrderId = document.createElement('input');
+                    createOrderId.value = data.id;
+                    createOrderId.type = 'hidden';
+                    createOrderId.name = 'order-id';
+                    createOrderId.id = 'hidden-order-id';
+                    document.body.appendChild(createOrderId);
 
                 })
                 .catch(error => {
@@ -877,11 +892,41 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
                     document.querySelector('.settle-btn').disabled = false;
+
+                    const createOrderId = document.createElement('input');
+                    createOrderId.value = data.id;
+                    createOrderId.type = 'hidden';
+                    createOrderId.name = 'order-id';
+                    createOrderId.id = 'hidden-order-id';
+                    document.body.appendChild(createOrderId);
                 })
                 .catch(error => {
                     console.log('Error Saving Order:', error);
                     alert('Error Saving Order');
                 })
+        }
+
+        function getOrderType(orderId) {
+            const option = {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                }
+            }
+
+            const url = `${baseURL}orders/order/${orderId}/`;
+
+            refreshAccessToken2(url, option)
+                // .then(response => response.json())
+                .then(data => {
+                    console.log('Data:', data);
+                    console.table(data);
+                    return data.order_type;
+                })
+                .catch(error => {
+                    console.log('Error Getting Order Type:', error);
+                });
         }
     });
 
@@ -950,7 +995,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             if (orderId) {
-                if (takeDataToKOT.kot_count > 0) {
+                if (takeDataToKOT.kot_count > 1) {
                     // Show Re-KOT confirmation
                     if (confirm('This is a Re-KOT. Do you want to proceed?')) {
                         kotOrder(orderId);
@@ -964,7 +1009,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const passedOrderId = passOrderId;
                 const passedOrderKotCount = passOrderKotCount;
                 console.log('Order ID:', passedOrderId);
-                if (passedOrderKotCount > 0) {
+                if (passedOrderKotCount > 1) {
                     // Show Re-KOT confirmation
                     if (confirm('This is a Re-KOT. Do you want to proceed??')) {
                         kotOrder(passedOrderId);
@@ -1007,55 +1052,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
         }
 
-        function printKOT2(orderData) {
-            // Create a new window for printing
-            const printWindow = window.open('', '_blank');
-
-            // Generate KOT HTML content
-            const kotContent = `
-                <html>
-                <head>
-                    <title>Kitchen Order Ticket</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; }
-                        h2 { text-align: center; }
-                        table { width: 100%; border-collapse: collapse; }
-                        th, td { border: 1px solid black; padding: 5px; text-align: left; }
-                    </style>
-                </head>
-                <body>
-                    <h2>Kitchen Order Ticket</h2>
-                    <p>Order ID: ${orderData.id}</p>
-                    <p>Table: ${orderData.tables[0]}</p>
-                    <p>Date: ${new Date().toLocaleString()}</p>
-                    <table>
-                        <tr>
-                            <th>Item</th>
-                            <th>Quantity</th>
-                        </tr>
-                        ${orderData.food_items.map((item, index) => `
-                            <tr>
-                                <td>${allFoodItems.find(food => food.id === item).name}</td>
-                                <td>${orderData.quantity[index]}</td>
-                            </tr>
-                        `).join('')}
-                    </table>
-                </body>
-                </html>
-            `;
-
-            // Write the content to the new window and print
-            printWindow.document.write(kotContent);
-            printWindow.document.close();
-            printWindow.print();
-        }
-
         function printKOT(orderData) {
             let kotHead = ``;
-            if (orderData.kot_count > 0) {
+            if (orderData.kot_count > 1) {
                 kotHead = `<h5>Re-KOT: #${orderData.kot_count}</h5>`;
-            } else if (orderData.kot_count === 0) {
-                kotHead = `<h5>KOT</h5>`;
+            } else if (orderData.kot_count == 1) {
+                kotHead = `<h5>KOT: #${orderData.kot_count}</h5>`;
             } else {
                 console.log('Error: Invalid kot_count value');
             }
@@ -1066,8 +1068,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     <h5>Hotel Iswar & Family Restaurants</h5>
                     <p class="orderId">Order ID: 00${orderData.id}</p>
                     <h5>${kotHead}</h5>
-                    <p class="table-room">Table No: ${orderData.tables[0] || '-'}</p>
-                    <p class="table-room">Room No: ${orderData.room || '-'}</p>
+                    <p class="table-room">Table/Room No: ${orderData.tables[0] || orderData.room || '-'}</p>
+                    <p class="table-room">Order Type: ${orderData.order_type || '-'}</p>
                     <p>Date: ${new Date().toLocaleString()}</p>
                     <table>
                         <tr>
@@ -1108,99 +1110,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        function printKOT3(orderData) {
-            const printWindow = window.open('', '_blank');
 
-            const kotContent = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Kitchen Order Ticket</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; }
-                        h2 { text-align: center; }
-                        table { width: 100%; border-collapse: collapse; }
-                        th, td { border: 1px solid black; padding: 5px; text-align: left; }
-                        @media print {
-                            @page { margin: 0; }
-                            body { margin: 1cm; }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <h2>Kitchen Order Ticket</h2>
-                    <p>Order ID: ${orderData.id}</p>
-                    <p>Table: ${orderData.tables[0]}</p>
-                    <p>Date: ${new Date().toLocaleString()}</p>
-                    <table>
-                        <tr>
-                            <th>Item</th>
-                            <th>Quantity</th>
-                        </tr>
-                        ${orderData.food_items.map((item, index) => `
-                            <tr>
-                                <td>${allFoodItems.find(food => food.id === item).name}</td>
-                                <td>${orderData.quantity[index]}</td>
-                            </tr>
-                        `).join('')}
-                    </table>
-                    <script>
-                        window.onload = function() {
-                            window.print();
-                            window.onafterprint = function() {
-                                window.close();
-                            };
-                        };
-                    </script>
-                </body>
-                </html>
-            `;
-
-            printWindow.document.write(kotContent);
-            printWindow.document.close();
-        }
-
-        function printKOT5(orderData) {
-            const kotContent = `
-                <div style="padding: 10px; width: 74mm; font-size: 12px; font-family: 'Courier New', monospace;">
-                    <h4 style="text-align: center; margin: 0;">Hotel Iswar & Family Restaurants</h4>
-                    <h5 style="text-align: center; margin: 5px 0;">KOT</h5>
-                    <h5 style="text-align: center; margin: 2px 0; font-size: 10px; ">Order ID: 00${orderData.id}</h5>
-                    <p style="margin: 2px 0;">Table: ${orderData.tables[0] || '-'} | Room: ${orderData.room || '-'}</p>
-                    <p style="margin: 2px 0;">Date: ${new Date().toLocaleString()}</p>
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
-                        <tr>
-                            <th style="border-top: 1px dashed #000; border-bottom: 1px dashed #000; text-align: left; padding: 2px;">Item</th>
-                            <th style="border-top: 1px dashed #000; border-bottom: 1px dashed #000; text-align: right; padding: 2px;">Qty</th>
-                        </tr>
-                        ${orderData.food_items.map((item, index) => `
-                            <tr>
-                                <td style="padding: 2px;">${allFoodItems.find(food => food.id === item).name}</td>
-                                <td style="text-align: right; padding: 2px;">x ${orderData.quantity[index]}</td>
-                            </tr>
-                        `).join('')}
-                    </table>
-                    <p style="text-align: center; margin-top: 10px;">* * * *</p>
-                </div>
-            `;
-
-            printJS({
-                printable: kotContent,
-                type: 'raw-html',
-                style: `
-                    @page { size: 74mm 105mm; margin: 0; }
-                    body { margin: 0; padding: 5px; }
-                `,
-                targetStyles: ['*'],
-                documentTitle: 'Kitchen Order Ticket',
-                onPrintDialogClose: () => {
-                    console.log('KOT printed successfully');
-                },
-                onError: (error) => {
-                    console.error('Error printing KOT:', error);
-                }
-            });
-        }
 
 
     });
@@ -1248,6 +1158,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Data:', data);
                     console.table(data);
                     alert("PATCH: Order Cancelled Successfully");
+                    window.location.href = './../table-info/neworder.html';
                 })
                 .catch(error => {
                     console.log('Error Cancelling Order:', error);
@@ -1360,17 +1271,28 @@ document.addEventListener('DOMContentLoaded', function () {
             discountInput.value = 0;
         }
 
-        const settlePayLoad = {
+        var settlePayLoad = {
             order_id: parseInt(orderId),
             bill_type: "RES",
             order_discount: parseFloat(discountInput.value)
         }
 
-        console.log('settlePayLoad:', settlePayLoad);
+        // Update settlePayload when discount changes
+        discountInput.addEventListener('input', function () {
+            settlePayLoad = {
+                ...settlePayLoad,
+                order_discount: parseFloat(this.value) || 0
+            };
+            console.log('Updated settlePayLoad:', settlePayLoad);
+        });
+
+        // console.log('settlePayLoad:', settlePayLoad);
 
         const printBillBtn = document.getElementById('print-bill-btn');
         printBillBtn.addEventListener('click', function (e) {
             e.preventDefault();
+            console.log('printBillBtn clicked');
+            console.log('settlePayLoad:', settlePayLoad);
             billOrder(settlePayLoad);
         });
 
@@ -1382,7 +1304,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Authorization': 'Bearer ' + getCookie('access_token'),
                     'Content-Type': 'application/json'
                 },
-                body: settlePayLoad
+                body: JSON.stringify(settlePayLoad)
             }
             const url = `${baseURL}billing/bills/`;
             refreshAccessToken2(url, option)
@@ -1391,10 +1313,146 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Data:', data);
                     console.table(data);
                     alert("POST: Order Billed Successfully");
+                    generatePrintableBill(data);
                 })
                 .catch(error => {
                     console.log('Error Billing Order:', error);
                 })
+        }
+
+        function generatePrintableBill(billData) {
+            console.log('generatePrintableBill clicked');
+            
+
+
+
+            // Open bill in new window
+            const billWindow = window.open('../../order_bill/order_bill.html', '_blank');
+            
+            billWindow.onload = function() {
+                // Populate bill data
+                const doc = billWindow.document;
+
+                console.log('billData:', billData.bill_no);
+                
+                // Basic Info
+                doc.getElementById('bill-number').textContent =  billData.bill_no;
+                doc.getElementById('bill-date').textContent = new Date(billData.created_at).toLocaleDateString();
+                doc.getElementById('table-number').textContent = billData.table_number || '-';
+                
+                // Customer Details
+                doc.getElementById('customer-name').textContent = billData.customer_name;
+                doc.getElementById('customer-email').textContent = billData.customer_email;
+                doc.getElementById('customer-phone').textContent = billData.customer_phone;
+                
+                // Bill Items
+                const billItemsBody = doc.getElementById('bill-items-body');
+                billItemsBody.innerHTML = ''; // Clear sample data
+                
+                // Add items
+                billData.items.forEach(item => {
+                    const row = doc.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.price.toFixed(2)}</td>
+                        <td>${(item.quantity * item.price).toFixed(2)}</td>
+                    `;
+                    billItemsBody.appendChild(row);
+                });
+                
+                // Add totals
+                const totalsHTML = `
+                    <tr><td></td></tr>
+                    <tr class="bill-total total">
+                        <td></td>
+                        <td>Total</td>
+                        <td></td>
+                        <td>${billData.total_amount.toFixed(2)}</td>
+                    </tr>
+                    <tr class="bill-total discount">
+                        <td></td>
+                        <td>Discount</td>
+                        <td></td>
+                        <td>${billData.discount_amount.toFixed(2)}</td>
+                    </tr>
+                    <tr class="bill-total gst">
+                        <td></td>
+                        <td>Central GST</td>
+                        <td>2.50%</td>
+                        <td>${(billData.gst_amount / 2).toFixed(2)}</td>
+                    </tr>
+                    <tr class="bill-total gst">
+                        <td></td>
+                        <td>State GST</td>
+                        <td>2.50%</td>
+                        <td>${(billData.gst_amount / 2).toFixed(2)}</td>
+                    </tr>
+                    <tr class="bill-total net-amount">
+                        <td></td>
+                        <td>Net Amount</td>
+                        <td class="inr-symbol">INR ₹</td>
+                        <td>${billData.net_amount.toFixed(2)}</td>
+                    </tr>
+                    <tr class="bill-total amount-in-words">
+                        <td>Amount in Words (INR) :</td>
+                        <td colspan="3">${numberToWords(billData.net_amount)} Rupees Only</td>
+                    </tr>
+                `;
+                billItemsBody.insertAdjacentHTML('beforeend', totalsHTML);
+                
+                // KOT and Cashier info
+                doc.querySelector('.kot-nos').textContent = billData.kot_numbers.join(', ');
+                doc.querySelector('.cashier-name').textContent = 'Cashier: ' + billData.cashier_name;
+                doc.querySelector('.cashier-date').textContent = new Date(billData.created_at).toLocaleString();
+                
+                // Trigger print
+                setTimeout(() => {
+                    billWindow.print();
+                }, 500);
+            };
+        }
+
+        // Helper function to convert number to words
+        function numberToWords(number) {
+            const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
+            const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+            const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            
+            if (number === 0) return 'Zero';
+            
+            function convertLessThanThousand(n) {
+                if (n === 0) return '';
+                
+                if (n < 10) return ones[n];
+                
+                if (n < 20) return teens[n - 10];
+                
+                if (n < 100) {
+                    return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
+                }
+                
+                return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' and ' + convertLessThanThousand(n % 100) : '');
+            }
+            
+            const num = Math.floor(number);
+            const decimal = Math.round((number - num) * 100);
+            
+            let result = '';
+            
+            if (num >= 100000) {
+                result += convertLessThanThousand(Math.floor(num / 100000)) + ' Lakh ';
+                num %= 100000;
+            }
+            
+            if (num >= 1000) {
+                result += convertLessThanThousand(Math.floor(num / 1000)) + ' Thousand ';
+                num %= 1000;
+            }
+            
+            result += convertLessThanThousand(num);
+            
+            return result.trim();
         }
 
 
@@ -1461,9 +1519,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('mobile').value = data.phone || '';
         document.getElementById('mobile-input').value = data.phone || '';
         document.getElementById('name').value = data.customer.first_name || '';
-        document.getElementById('address').value = data.customer.address || '';
+        document.getElementById('lname').value = data.customer.last_name || '';
+        document.getElementById('address').value = data.customer.address_line_1 || '';
         document.getElementById('email').value = data.customer.email || '';
         document.getElementById('discount').value = data.discount || '';
+        document.getElementById('order-note').value = data.notes || '';
 
         // Set order type
         const orderTypeButtons = document.querySelectorAll('.type-selectable');
@@ -1476,7 +1536,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        console.log('Order Type:', data.order_type);
+
+        console.warn('Order Type:', data.order_type);
         console.log(`table_number: ${data.table_number}`);
 
         // Set table or room number based on order type
@@ -1515,7 +1576,6 @@ document.addEventListener('DOMContentLoaded', function () {
         sendDataToSave();
         renderBillItems();
         updateNetTotal();
-        checkFinalBillItems();
 
     }
 

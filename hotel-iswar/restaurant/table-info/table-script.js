@@ -324,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 eyeButton.addEventListener('click', function (event) {
                     event.stopPropagation();
-                    window.location.href = `./../takeorder/takeorder.html?orderId=${order.id}`;
+                    window.location.href = `./../takeorder/takeorder.html?orderId=${order.id}&orderType=delivery`;
                 });
 
                 deliveryCell.appendChild(deliveryText);
@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function () {
         
                 eyeButton.addEventListener('click', function (event) {
                     event.stopPropagation();
-                    window.location.href = `./../takeorder/takeorder.html?orderId=${order.id}`;
+                    window.location.href = `./../takeorder/takeorder.html?orderId=${order.id}&orderType=take_away`;
                 });
         
                 pickupCell.appendChild(pickupText);
