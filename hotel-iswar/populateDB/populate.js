@@ -82,9 +82,9 @@ async function createTables() {
 // Main function to populate the database
 async function populateDatabase() {
     try {
-        // await createCategories();
+        await createCategories();
         await createFoodItems();
-        // await createTables();
+        await createTables();
         console.log('Database populated successfully');
         document.querySelector('.message').textContent = 'Database populated successfully';
     } catch (error) {

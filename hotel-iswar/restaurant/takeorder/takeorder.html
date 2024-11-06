@@ -209,35 +209,40 @@
                 </div>
                 <div class="modal-body">
                     <div class="generate-bill-form">
-                        <div class="input-group">
+                        <div class="input-group-bill">
                             <label for="bill-no">Order No.</label>
                             <input type="text" id="bill-no" placeholder="Bill No." disabled>
                         </div>
                         
-                        <div class="input-group">
+                        <div class="input-group-bill">
                             <label for="sub-total">Sub Total (₹):</label>
                             <input type="number" id="sub-total" placeholder="0.00" disabled>
                         </div>
-                        <div class="input-group">
+                        <div class="input-group-bill">
                             <label for="bill-discount">Discount (₹):</label>
                             <input type="number" id="bill-discount" placeholder="0.00">
                         </div>
-                        <div class="input-group">
+                        <div class="input-group-bill">
                             <label for="net-total">Net Total (₹):</label>
                             <input type="number" id="net-total" placeholder="0.00" disabled>
                         </div>
-                        <div class="input-group">
+                        <div class="input-group-bill">
                             <label for="cgst">CGST (%):</label>
                             <input type="text" id="cgst" placeholder="CGST" disabled>
                         </div>
-                        <div class="input-group">
+                        <div class="input-group-bill">
                             <label for="sgst">SGST (%):</label>
                             <input type="text" id="sgst" placeholder="SGST" disabled>
                         </div>
-                        <div class="input-group">
+                        <div class="input-group-bill">
                             <label for="net-amt">Net Amount (₹):</label>
                             <input type="number" id="net-amt" placeholder="0.00" disabled>
                         </div>
+                        <div class="input-group-bill customer_gst">
+                            <label for="customer_gst">Customer GST No:</label>
+                            <input type="text" id="customer_gst" placeholder="11XXXXX0000XX0XX ">
+                        </div>
+
 
 
                     </div>
@@ -269,6 +274,8 @@
             }
         }, { passive: false });
     </script>
+
+
 
 </body>
 

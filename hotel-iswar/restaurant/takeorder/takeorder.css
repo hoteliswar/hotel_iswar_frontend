@@ -773,9 +773,9 @@ a{
     position: relative;
     z-index: 1000;
     min-width: 500px;
-    min-height: 500px;
+    min-height: 520px;
     max-width: 500px;
-    max-height: 500px;
+    max-height: 520px;
     background-color: #fff;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     /* transform: translateX(100%); */
@@ -859,7 +859,7 @@ a{
     text-align: right;
 }
 
-.input-group input {
+.input-group-bill input {
     width: 150px !important;  /* Increased from 30px */
     padding: 5px 10px;
     border: 1px solid #ddd;
@@ -872,7 +872,20 @@ a{
     border-radius: 3px;
 }
 
-.input-group {
+#customer_gst{
+    border: 2px solid #fcb00b !important;
+    border-radius: 3px;
+}
+
+.customer_gst label{
+    min-width: 40% !important;
+}
+
+.customer_gst input{
+    min-width: 245px !important;
+}
+
+.input-group-bill {
     display: flex;
     align-items: center;
     gap: 10px;

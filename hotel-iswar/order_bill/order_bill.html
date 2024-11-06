@@ -32,16 +32,18 @@
             <section class="invoice-customer-info">
                 <div class="invoice-info">
                     <h3>Invoice</h3>
-                    <p>Bill No: <span id="bill-number"> 1234</span></p>
-                    <p>Date: <span id="bill-date">02/11/2024</span></p>
-                    <p>Table: <span id="table-number"> 12</span></p> <!-- Added table number -->
+                    <div>Bill No: <span id="bill-number"> 1234</span></div>
+                    <div>Date: <span id="bill-date">02/11/2024</span></div>
+                    <div>Table: <span id="table-number"> 12</span></div>
+                    <div>Order Type: <span id="order-type"> </span></div>
                 </div>
 
                 <div class="bill-details">
                     <h3>Customer Details</h3>
-                    <p>Name: <span id="customer-name"> Mr. X </span></p>
-                    <p>Email: <span id="customer-email"> xyz@gmail.com </span></p>
-                    <p>Phone: <span id="customer-phone"> 9876543210 </span></p>
+                    <div>Name: <span id="customer-name"> Mr. X </span></div>
+                    <div>Email: <span id="customer-email"> xyz@gmail.com </span></div>
+                    <div>Phone: <span id="customer-phone"> 9876543210 </span></div>
+                    <div>GST No.: <span id="customer-gstno"> 1234567890 </span></div>
                 </div>
             </section>
 
@@ -57,64 +59,70 @@
                     </thead>
                     <tbody id="bill-items-body">
                         <!-- Items will be dynamically inserted here -->
-                         <!-- Sample Data -->
-                         <tr>
+                        <!-- Sample Data -->
+                        <tr>
                             <td>Item 1</td>
                             <td>2</td>
                             <td>100</td>
                             <td>200</td>
-                         </tr>
-                         <tr>
+                        </tr>
+                        <tr>
                             <td>Item 2</td>
                             <td>1</td>
                             <td>150</td>
                             <td>150</td>
-                         </tr>
-                         <tr>
+                        </tr>
+                        <tr>
                             <td>Item 3</td>
                             <td>3</td>
                             <td>200</td>
                             <td>600</td>
-                         </tr>
-                         <tr><td></td></tr>
-                         <tr class="bill-total total">
+                        </tr>
+                        <tr>
                             <td></td>
-                            <td >Total</td>
+                        </tr>
+
+                        <tr class="bill-total total"></tr>
+                        <td></td>
+                        <td>Total</td>
+                        <td></td>
+                        <td>950</td>
+                        </tr>
+                        <tr class="bill-total discount">
                             <td></td>
-                            <td>950</td>
-                         </tr>
-                         <tr class="bill-total discount">
-                            <td></td>
-                            <td >Discount</td>
+                            <td>Discount</td>
                             <td></td>
                             <td>350</td>
-                         </tr>
-                         <tr class="bill-total gst">
+                        </tr>
+                        <tr class="bill-total gst">
                             <td></td>
-                            <td >Central GST</td>
+                            <td>Central GST</td>
                             <td>2.50%</td>
                             <td>50</td>
-                         </tr>
-                         <tr class="bill-total gst">
+                        </tr>
+                        <tr class="bill-total gst">
                             <td></td>
-                            <td >Central GST</td>
+                            <td>Central GST</td>
                             <td>2.50%</td>
                             <td>50</td>
-                         </tr>
-                         <tr class="bill-total net-amount">
+                        </tr>
+                        <tr class="bill-total net-amount">
                             <td></td>
-                            <td >Net Amount</td>
+                            <td>Net Amount</td>
                             <td class="inr-symbol">INR ₹</td>
                             <td>700</td>
-                         </tr>
-                         <tr class="bill-total amount-in-words">
+                        </tr>
+                        <tr class="bill-total amount-in-words">
                             <td> Amount in Words (INR) :</td>
                             <td colspan="3"></td>
-                         </tr>
-                         
+                        </tr>
+
                     </tbody>
                 </table>
             </section>
+
+            
+
 
             <footer class="bill-footer">
                 <div class="kot-section">
@@ -142,6 +150,7 @@
                 </div>
 
             </footer>
+
         </div>
     </div>
 </body>

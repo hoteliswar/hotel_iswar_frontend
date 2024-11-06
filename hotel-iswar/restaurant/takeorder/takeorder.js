@@ -53,6 +53,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let billItems = [];
 
+
+
     // Put Category names in the menu category section & manage the items adding in bill
     const categoryDiv = document.querySelector('.menu-category');
     distinctCategories.forEach(category => {
@@ -75,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const discBox = document.querySelector('.disc-box');
 
     const menuItems = categorizedItems;
+    console.warn(menuItems);
 
     // Adding click on Category Div
     menuCategories.forEach(category => {
@@ -98,6 +101,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const itemNameDiv = document.createElement('div');
             itemNameDiv.classList.add('item-name');
             itemNameDiv.textContent = item.name;
+            itemNameDiv.dataset.id = item.id;
+            itemNameDiv.dataset.price = item.price;
+            itemNameDiv.addEventListener('click', () => disableButtons());
 
             const itemPriceDiv = document.createElement('div');
             itemPriceDiv.classList.add('item-price');
@@ -132,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
         finalBillItems = [...billItems];
         // finalBillItems = [...finalBillItems, ...billItems];
 
-        console.log(`Final bill items 1:`, finalBillItems);
+        console.warn(`Final bill items 1:`, finalBillItems);
     }
 
     // Update Quantity of Food Item in Bill Container
@@ -146,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 renderBillItems();
             }
         }
+        console.warn(`Bill items after update: ${JSON.stringify(billItems)}`);
     }
 
     // Configure plus/minus delete buttons in Bill Container
@@ -166,7 +173,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const minusButton = document.createElement('button');
             minusButton.classList.add('minus-btn');
             minusButton.textContent = '-';
-            minusButton.addEventListener('click', () => updateItemQuantity(item.id, -1));
+            // minusButton.addEventListener('click', () => updateItemQuantity(item.id, -1));
+            minusButton.addEventListener('click', () => {
+                updateItemQuantity(item.id, -1);
+                disableButtons();
+            });
 
             const itemQtyDiv = document.createElement('div');
             itemQtyDiv.classList.add('bill-item-qty');
@@ -175,7 +186,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const plusButton = document.createElement('button');
             plusButton.classList.add('plus-btn');
             plusButton.textContent = '+';
-            plusButton.addEventListener('click', () => updateItemQuantity(item.id, 1));
+            // plusButton.addEventListener('click', () => updateItemQuantity(item.id, 1));
+            plusButton.addEventListener('click', () => {
+                updateItemQuantity(item.id, 1);
+                disableButtons();
+            });
 
             const itemPriceDiv = document.createElement('div');
             itemPriceDiv.classList.add('bill-item-price');
@@ -184,7 +199,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const deleteIcon = document.createElement('div');
             deleteIcon.classList.add('delete-icon');
             deleteIcon.innerHTML = '&#10006;'; // X symbol
-            deleteIcon.addEventListener('click', () => removeItemFromBill(item.id));
+            // deleteIcon.addEventListener('click', () => removeItemFromBill(item.id));
+            deleteIcon.addEventListener('click', () => {
+                removeItemFromBill(item.id);
+                disableButtons();
+            });
+
 
 
             billItemElement.appendChild(itemNameDiv);
@@ -198,6 +218,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             billContainer.appendChild(billItemElement);
         });
+
+        console.warn(`Bill items: ${billItems}`);
 
         // Update the bill total
         billTotal.textContent = `₹${calculateTotal()}`;
@@ -735,6 +757,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 orderTypeVal = 'take_away';
             }
 
+            console.warn(`Final bill items: ${JSON.stringify(finalBillItems)}`);
+
 
             var orderData = {
                 phone: orderDetails.mobileNumber,
@@ -773,6 +797,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             console.log('Order Data:', orderData);
+            console.table(orderData);
+
             const urlParams = new URLSearchParams(window.location.search);
             const orderId = urlParams.get('orderId');
             const table = urlParams.get('table');
@@ -786,6 +812,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (table) {
+                console.warn('IF BLOCK 1');
                 const tableNumber = parseInt(table);
                 console.log('Looking for table number:', tableNumber);
 
@@ -805,12 +832,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     saveOrderPOST(orderData);
                 }
             } else if (orderId) {
+                console.warn('ELSE IF BLOCK 2');
                 saveOrderPATCH(orderData, orderId);
                 // document.querySelector('.cancelled-btn').disabled = false;
                 // document.querySelector('.hold-btn').disabled = false;
                 // document.querySelector('.kot-btn').disabled = false;
 
             } else if (hiddenOrderId) {
+                console.warn('ELSE IF BLOCK 3');
                 const orderId = parseInt(hiddenOrderId.value);
                 saveOrderPATCH(orderData, orderId);
                 // saveOrderPOST(orderData);
@@ -818,6 +847,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // document.querySelector('.kot-btn').disabled = false;
 
             } else {
+                console.warn('ELSE BLOCK 4');
                 saveOrderPOST(orderData);
             }
 
@@ -1206,6 +1236,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const cgstInput = document.getElementById('cgst');
         const sgstInput = document.getElementById('sgst');
         const netAmtInput = document.getElementById('net-amt');
+        const customerGstInput = document.getElementById('customer_gst');
 
         const naPrice = document.querySelector('.na-price').textContent;
         console.log('naPrice:', naPrice);
@@ -1217,6 +1248,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var orderId = urlParams.get('orderId');
         const tabelNumber = urlParams.get('table');
 
+        const hiddenOrderId = document.getElementById('hidden-order-id');
+
         if (tabelNumber) {
             const tableData = localStorage.getItem('tablesList');
             const parsedTableData = JSON.parse(tableData);
@@ -1224,6 +1257,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const tableOrder = parsedTableData.find(table => table.table_number == tabelNumber);
             console.log('tableOrder:', tableOrder);
             orderId = tableOrder.order;
+            console.log('orderId:', orderId);
+        } else if (hiddenOrderId) {
+            orderId = hiddenOrderId.value;
             console.log('orderId:', orderId);
         }
 
@@ -1274,7 +1310,8 @@ document.addEventListener('DOMContentLoaded', function () {
         var settlePayLoad = {
             order_id: parseInt(orderId),
             bill_type: "RES",
-            order_discount: parseFloat(discountInput.value)
+            order_discount: parseFloat(discountInput.value),
+            customer_gst: customerGstInput.value
         }
 
         // Update settlePayload when discount changes
@@ -1282,6 +1319,15 @@ document.addEventListener('DOMContentLoaded', function () {
             settlePayLoad = {
                 ...settlePayLoad,
                 order_discount: parseFloat(this.value) || 0
+            };
+            console.log('Updated settlePayLoad:', settlePayLoad);
+        });
+
+        // Update on customer GST change
+        customerGstInput.addEventListener('input', function () {
+            settlePayLoad = {
+                ...settlePayLoad,
+                customer_gst: this.value
             };
             console.log('Updated settlePayLoad:', settlePayLoad);
         });
@@ -1295,6 +1341,8 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('settlePayLoad:', settlePayLoad);
             billOrder(settlePayLoad);
         });
+
+
 
 
         function billOrder(settlePayLoad) {
@@ -1313,42 +1361,72 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Data:', data);
                     console.table(data);
                     alert("POST: Order Billed Successfully");
-                    generatePrintableBill(data);
+                    return generatePrintableBill(data);
                 })
                 .catch(error => {
                     console.log('Error Billing Order:', error);
                 })
         }
 
-        function generatePrintableBill(billData) {
+        async function generatePrintableBill2(billData) {
             console.log('generatePrintableBill clicked');
-            
-
-
+            console.log('billData:', billData);
 
             // Open bill in new window
             const billWindow = window.open('../../order_bill/order_bill.html', '_blank');
-            
-            billWindow.onload = function() {
+
+            var billDataOrderId2;
+            await getOrderById(billData.order_id);
+            console.log('billDataOrderId:', billDataOrderId2);
+
+
+            // const custbillno = billData.bill_no;
+            // const custcreatedat = new Date(billData.created_at).toLocaleDateString();
+            // const custtableno = billDataOrderId2.tables[0];
+            // const billtotal = billData.total;
+            // const billdiscount = billData.discount;
+            // const billdiscountamt = billData.discounted_amount;
+            // const billcgst = billData.order_cgst;
+            // const billsgst = billData.order_sgst;
+            // const billcgstamt = billData.cgst_amount;
+            // const billsgstamt = billData.sgst_amount;
+            // const billnetamt = billData.net_amount;
+
+            // const custfullname = billDataOrderId2.customer.first_name + ' ' + billDataOrderId2.customer.last_name;
+            // const custemail = billDataOrderId2.customer.email;
+            // const custphone = billDataOrderId2.customer.phone;
+
+            // console.log('custfullname:', custfullname);
+            // console.log('custemail:', custemail);
+            // console.log('custphone:', custphone);
+            // console.log('custtableno:', custtableno);
+            // console.log('billtotal:', billtotal);
+            // console.log('billdiscount:', billdiscount);
+            // console.log('billdiscountamt:', billdiscountamt);
+            // console.log('billcgst:', billcgst);
+            // console.log('billsgst:', billsgst);
+            // console.log('billnetamt:', billnetamt);
+
+            billWindow.onload = function () {
                 // Populate bill data
                 const doc = billWindow.document;
 
                 console.log('billData:', billData.bill_no);
-                
+
                 // Basic Info
-                doc.getElementById('bill-number').textContent =  billData.bill_no;
+                doc.getElementById('bill-number').textContent = '';
                 doc.getElementById('bill-date').textContent = new Date(billData.created_at).toLocaleDateString();
-                doc.getElementById('table-number').textContent = billData.table_number || '-';
-                
+                doc.getElementById('table-number').textContent = '';
+
                 // Customer Details
-                doc.getElementById('customer-name').textContent = billData.customer_name;
-                doc.getElementById('customer-email').textContent = billData.customer_email;
-                doc.getElementById('customer-phone').textContent = billData.customer_phone;
-                
+                doc.getElementById('customer-name').textContent = '';
+                doc.getElementById('customer-email').textContent = '';
+                doc.getElementById('customer-phone').textContent = '';
+
                 // Bill Items
                 const billItemsBody = doc.getElementById('bill-items-body');
                 billItemsBody.innerHTML = ''; // Clear sample data
-                
+
                 // Add items
                 billData.items.forEach(item => {
                     const row = doc.createElement('tr');
@@ -1360,7 +1438,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     `;
                     billItemsBody.appendChild(row);
                 });
-                
+
                 // Add totals
                 const totalsHTML = `
                     <tr><td></td></tr>
@@ -1400,63 +1478,456 @@ document.addEventListener('DOMContentLoaded', function () {
                     </tr>
                 `;
                 billItemsBody.insertAdjacentHTML('beforeend', totalsHTML);
-                
+
                 // KOT and Cashier info
                 doc.querySelector('.kot-nos').textContent = billData.kot_numbers.join(', ');
                 doc.querySelector('.cashier-name').textContent = 'Cashier: ' + billData.cashier_name;
                 doc.querySelector('.cashier-date').textContent = new Date(billData.created_at).toLocaleString();
-                
+
                 // Trigger print
                 setTimeout(() => {
                     billWindow.print();
                 }, 500);
             };
+
+
+            async function getOrderById(billDataOrderId) {
+                const option = {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + getCookie('access_token'),
+                        'Content-Type': 'application/json'
+                    }
+                }
+                const url = `${baseURL}orders/order/${billDataOrderId}/`;
+                await refreshAccessToken2(url, option)
+                    // .then(response => response.json())
+                    .then(data => {
+                        console.log('Data:', data);
+                        console.table(data);
+                        billDataOrderId2 = data;
+                        return data;
+                    })
+                    .catch(error => {
+                        console.log('Error fetching order data:', error);
+                    })
+            }
+        }
+
+        async function generatePrintableBill3(billData) {
+            try {
+                // Get order data first
+                const orderData = await getOrderById(billData.order_id);
+                console.log('Order Data:', orderData);
+
+                // Then open the bill window and set up the load handler
+                const billWindow = window.open('../../order_bill/order_bill.html', '_blank');
+
+                billWindow.onload = function () {
+                    // Add number-to-words script
+                    const script = billWindow.document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/number-to-words';
+                    script.onload = function () {
+                        // Use orderData here to populate the bill
+                        populateBillData(billData, orderData, billWindow);
+                    };
+                    billWindow.document.head.appendChild(script);
+                };
+
+            } catch (error) {
+                console.error('Error in generatePrintableBill:', error);
+            }
+
+            async function getOrderById(billDataOrderId) {
+                const option = {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + getCookie('access_token'),
+                        'Content-Type': 'application/json'
+                    }
+                }
+                const url = `${baseURL}orders/order/${billDataOrderId}/`;
+                await refreshAccessToken2(url, option)
+                    // .then(response => response.json())
+                    .then(data => {
+                        console.log('Data:', data);
+                        console.table(data);
+                        billDataOrderId2 = data;
+                        return data;
+                    })
+                    .catch(error => {
+                        console.log('Error fetching order data:', error);
+                    })
+            }
+        }
+
+        function populateBillData3(billData, orderData, billWindow) {
+            const doc = billWindow.document;
+
+            // Basic Info
+            doc.getElementById('bill-number').textContent = billData.bill_number;
+            doc.getElementById('bill-date').textContent = new Date(billData.created_at).toLocaleDateString();
+            doc.getElementById('table-number').textContent = orderData.tables?.[0] || '-';
+
+            // Customer Details
+            doc.getElementById('customer-name').textContent = `${orderData.customer.first_name} ${orderData.customer.last_name}`;
+            doc.getElementById('customer-email').textContent = orderData.customer.email;
+            doc.getElementById('customer-phone').textContent = orderData.customer.phone;
+
+            // Rest of your bill population code...
+
+            // Trigger print after a short delay
+            setTimeout(() => {
+                billWindow.print();
+            }, 500);
         }
 
         // Helper function to convert number to words
-        function numberToWords(number) {
+        function numberToWords2(number) {
             const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine'];
             const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
             const teens = ['Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
-            
+
             if (number === 0) return 'Zero';
-            
+
             function convertLessThanThousand(n) {
                 if (n === 0) return '';
-                
+
                 if (n < 10) return ones[n];
-                
+
                 if (n < 20) return teens[n - 10];
-                
+
                 if (n < 100) {
                     return tens[Math.floor(n / 10)] + (n % 10 ? ' ' + ones[n % 10] : '');
                 }
-                
+
                 return ones[Math.floor(n / 100)] + ' Hundred' + (n % 100 ? ' and ' + convertLessThanThousand(n % 100) : '');
             }
-            
+
             const num = Math.floor(number);
             const decimal = Math.round((number - num) * 100);
-            
+
             let result = '';
-            
+
             if (num >= 100000) {
                 result += convertLessThanThousand(Math.floor(num / 100000)) + ' Lakh ';
                 num %= 100000;
             }
-            
+
             if (num >= 1000) {
                 result += convertLessThanThousand(Math.floor(num / 1000)) + ' Thousand ';
                 num %= 1000;
             }
-            
+
             result += convertLessThanThousand(num);
-            
+
             return result.trim();
+            // console.warn(`Result: ${result.trim()}`);
+
+            // return capitalizeFirstLetter(result.trim());
         }
+
+        // 
+
+        async function getOrderById2(billDataOrderId) {
+            const option = {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                }
+            }
+            const url = `${baseURL}orders/order/${billDataOrderId}/`;
+            await refreshAccessToken2(url, option)
+                // .then(response => response.json())
+                .then(data => {
+                    console.log('Data:', data);
+                    console.table(data);
+                    billDataOrderId2 = data;
+                    return data;
+                })
+                .catch(error => {
+                    console.log('Error fetching order data:', error);
+                })
+        }
+
+        async function getOrderById(billDataOrderId) {
+            const option = {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + getCookie('access_token'),
+                    'Content-Type': 'application/json'
+                }
+            }
+            const url = `${baseURL}orders/order/${billDataOrderId}/`;
+
+            try {
+                const data = await refreshAccessToken2(url, option);
+                console.log('Order Data:', data);
+                return data;  // Make sure to return the data
+            } catch (error) {
+                console.log('Error fetching order data:', error);
+                throw error;
+            }
+        }
+
+        // Usage in generatePrintableBill
+
+        async function generatePrintableBill(billData) {
+            try {
+                console.log('Bill Data:', billData);
+                const orderData = await getOrderById(billData.order_id);
+
+                if (!orderData) {
+                    throw new Error('Failed to get order data');
+                }
+
+                console.log('Order Data:', orderData);
+
+                // Create new window
+                const billWindow = window.open('', '_blank');
+                const doc = billWindow.document;
+
+                // Add CSS
+                const cssLink = doc.createElement('link');
+                cssLink.rel = 'stylesheet';
+                cssLink.href = './../../order_bill/order_bill.css';
+                doc.head.appendChild(cssLink);
+
+
+
+                function generateBillHeader() {
+                    return `
+                        <header class="bill-header">
+                            <div class="header-content">
+                                <div class="logo">
+                                    <img src="./../../order_bill/logo.png" alt="Restaurant Logo" class="restaurant-logo">
+                                </div>
+                                <div class="restaurant-details">
+                                    <h2>Hotel Iswar & Family Restaurant</h2>
+                                    <p>Address: Central Road, Silchar, Assam, 788001</p>
+                                    <p>Contact: +91 38423 19540 / +91 6003704064</p>
+                                    <p>Website: www.hoteliswar.in</p>
+                                    <p>GST No: 18BDXPS2451N1ZK</p>
+                                </div>
+                            </div>
+                        </header>
+                    `;
+                }
+
+                function generateInvoiceSection() {
+                    return `
+                        <section class="invoice-customer-info">
+                            <div class="invoice-info">
+                                <h3>Invoice</h3>
+                                <div>Bill No: <span id="bill-number"> </span></div>
+                                <div>GST Bill No: <span id="gst-bill-number"> </span></div>
+                                <!-- <div>Date: <span id="bill-date"></span></div> -->
+                                <div>Table: <span id="table-number"> </span></div>
+                                <div>Order Type: <span id="order-type"> </span></div>
+                            </div>
+
+                            <div class="bill-details">
+                                <h3>Customer Details</h3>
+                                <div>Name: <span id="customer-name">  </span></div>
+                                <div>Email: <span id="customer-email">  </span></div>
+                                <div>Phone: <span id="customer-phone">  </span></div>
+                                <div>GST No.: <span id="customer-gstno">  </span></div>
+                            </div>
+                        </section>
+                    `;
+                }
+
+                function generateItemsSection() {
+                    return `
+                        <section class="bill-items">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Item Name</th>
+                                        <th>Quantity</th>
+                                        <th>Rate</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bill-items-body">
+                                    <!-- Items will be added here -->
+                                </tbody>
+                            </table>
+                        </section>
+                    `;
+                }
+
+                function generateFooter() {
+                    return `
+                    
+                        <footer class="bill-footer">
+                            <div class="kot-section">
+                                <div class="kot-head">Kot Nos #</div>
+                                <div class="kot-nos"></div>
+                            </div>
+        
+                            <div class="cashier-info">
+                                <div class="cashier-name">Cashier: </div>
+                                <div class="name"></div>
+                                <div class="cashier-date"></div>
+                            </div>
+        
+                            <div class="license-nos">
+                                <div class="fssai">FSSAI LICENSE NO: 1234567890</div>
+                            </div>
+        
+                            <div class="bill-footer-text">
+                                * * * Thank you for Dining with us! * * *
+                            </div>
+                        </footer>
+                    `;
+                }
+
+                // Use in generatePrintableBill
+                doc.body.innerHTML = `
+                    <div class="bill-wrapper">
+                        <div class="bill-container">
+                            ${generateBillHeader()}
+                            ${generateInvoiceSection()}
+                            ${generateItemsSection()}
+                            ${generateFooter()}
+                        </div>
+                    </div>
+                `;
+
+                // Add number-to-words script
+                const script = doc.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/number-to-words';
+                script.onload = function () {
+                    populateBillData(billWindow, billData, orderData);
+                };
+                doc.head.appendChild(script);
+
+            } catch (error) {
+                console.error('Error in generatePrintableBill:', error);
+            }
+        }
+
+        function populateBillData(billWindow, billData, orderData) {
+            const doc = billWindow.document;
+
+            // Transform food items data
+            const allFoodList = JSON.parse(localStorage.getItem('allFoodList'));
+            const orderBillItems = orderData.food_items.map((foodId, index) => {
+                const foodItem = allFoodList.find(item => item.id === foodId);
+                return {
+                    foodId: foodId,
+                    itemName: foodItem.name,
+                    quantity: orderData.quantity[index],
+                    rate: parseFloat(foodItem.price),
+                    total: parseFloat(foodItem.price) * orderData.quantity[index]
+                };
+            });
+
+            console.log('Order Bill Items:', orderBillItems);
+
+            // Basic Info
+            doc.getElementById('bill-number').textContent = billData.bill_no;
+            // doc.getElementById('bill-date').textContent = new Date(billData.created_at).toLocaleDateString();
+            doc.getElementById('table-number').textContent = orderData.tables?.[0] || '-';
+            doc.getElementById('order-type').textContent = orderData.order_type;
+            doc.getElementById('gst-bill-number').textContent = billData.gst_bill_no;
+
+            // Customer Details
+            doc.getElementById('customer-name').textContent = `${orderData.customer?.first_name || 'NA'} ${orderData.customer?.last_name || ''}`;
+            doc.getElementById('customer-email').textContent = orderData.customer?.email || 'NA';
+            doc.getElementById('customer-phone').textContent = orderData.customer?.phone || 'NA';
+            doc.getElementById('customer-gstno').textContent = billData?.customer_gst || 'NA';
+
+            // Bill Items
+            const billItemsBody = doc.getElementById('bill-items-body');
+
+            // // Add items
+            // orderData.items.forEach(item => {
+            //     const row = doc.createElement('tr');
+            //     row.innerHTML = `
+            //         <td>${item.name}</td>
+            //         <td>${item.quantity}</td>
+            //         <td>${item.price.toFixed(2)}</td>
+            //         <td>${(item.quantity * item.price).toFixed(2)}</td>
+            //     `;
+            //     billItemsBody.appendChild(row);
+            // });
+
+            orderBillItems.forEach(item => {
+                const row = doc.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.itemName}</td>
+                    <td>${item.quantity}</td>
+                    <td>${item.rate.toFixed(2)}</td>
+                    <td>${item.total.toFixed(2)}</td>
+                `;
+                billItemsBody.appendChild(row);
+            });
+
+            // Add totals
+            const totalsHTML = `
+                <tr><td></td></tr>
+                <tr class="bill-total total">
+                    <td></td>
+                    <td>Total</td>
+                    <td></td>
+                    <td>${billData.total}</td>
+                </tr>
+                <tr class="bill-total discount">
+                    <td></td>
+                    <td>Discount</td>
+                    <td></td>
+                    <td>${billData.discount}</td>
+                </tr>
+                <tr class="bill-total gst">
+                    <td></td>
+                    <td>Central GST</td>
+                    <td>2.50%</td>
+                    <td>${(billData.cgst_amount)}</td>
+                </tr>
+                <tr class="bill-total gst">
+                    <td></td>
+                    <td>State GST</td>
+                    <td>2.50%</td>
+                    <td>${(billData.sgst_amount)}</td>
+                </tr>
+                <tr class="bill-total net-amount">
+                    <td></td>
+                    <td>Net Amount</td>
+                    <td class="inr-symbol">INR ₹</td>
+                    <td>${billData.net_amount}</td>
+                </tr>
+                <tr class="bill-total amount-in-words">
+                    <td>Amount in Words (INR) : </td>
+                    <td colspan="3"><i>${capitalizeFirstLetter(billWindow.numberToWords.toWords(Math.floor(billData.net_amount)).replace(/-/g, ' '))} Rupees Only</i></td>
+                </tr>
+            `;
+            billItemsBody.insertAdjacentHTML('beforeend', totalsHTML);
+
+            // Footer info
+            doc.querySelector('.kot-nos').textContent = orderData.kot_count || '0';
+            doc.querySelector('.name').textContent = billData.cashier_by || '';
+            doc.querySelector('.cashier-date').textContent = new Date(billData.created_at).toLocaleString();
+
+            // Trigger print after a short delay
+            setTimeout(() => {
+                billWindow.print();
+            }, 500);
+        }
+
+        // 
+
 
 
     });
+
+    function capitalizeFirstLetter(str) {
+        return str.split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    }
 
     function getDataEditOrder(orderId) {
 
@@ -1596,4 +2067,45 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 300);
     }
 
+    // Disable buttons
+    function disableButtons() {
+        const kotBtn = document.querySelector('.kot-btn');
+        const holdBtn = document.querySelector('.hold-btn');
+        const settleBtn = document.querySelector('.settle-btn');
+
+        // Check if elements exist before disabling
+        if (kotBtn) kotBtn.disabled = true;
+        if (holdBtn) holdBtn.disabled = true;
+        if (settleBtn) settleBtn.disabled = true;
+
+        console.log('Buttons disabled'); // For debugging
+    }
+
+
+
+
 });
+
+const orderbillItems = [
+    {
+        foodId: 1,
+        itemName: 'Item 1',
+        quantity: 2,
+        rate: 100,
+        total: 200
+    },
+    {
+        foodId: 2,
+        itemName: 'Item 2',
+        quantity: 1,
+        rate: 150,
+        total: 150
+    },
+    {
+        foodId: 3,
+        itemName: 'Item 3',
+        quantity: 3,
+        rate: 200,
+        total: 600
+    }
+]

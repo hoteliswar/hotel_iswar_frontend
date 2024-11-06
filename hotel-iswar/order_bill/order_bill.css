@@ -106,11 +106,18 @@
 .invoice-customer-info {
     display: flex; 
     justify-content: space-between; 
+    border-bottom: 1px solid #000;
 }
 
 .bill-details {
     flex: 1; 
-    text-align: right; 
+    text-align: left; 
+}
+
+.invoice-info div,
+.bill-details div {
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 
 .bill-total.amount-in-words{
@@ -132,9 +139,11 @@
 }
 
 .bill-footer {
+    border-top: 2px solid #000;
+    padding-top: 3px;
     position: absolute;
     bottom: 0;
-    width: 100%;
+    width: 98%;
     margin-top: auto; 
     /* text-align: center;  */
 }
@@ -178,3 +187,9 @@
 /* table tr {
     height: 1px !important; 
 } */
+
+
+h3{
+    margin-top: 4px;
+    margin-bottom: 2px;
+}
