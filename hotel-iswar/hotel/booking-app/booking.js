@@ -525,9 +525,9 @@ function loadBookingModal(bookingInfo, roomNumber) {
             <p><strong>Status:</strong> ${bookingInfo.status}</p>
 
         `;
-        
 
-        if (bookingInfo.bookingId ) {
+
+        if (bookingInfo.bookingId) {
             // Map room number with room id from local storage roomsList
             const roomsListString = localStorage.getItem('roomsList');
             const roomsList = JSON.parse(roomsListString);
@@ -551,21 +551,18 @@ function loadBookingModal(bookingInfo, roomNumber) {
 
             // Display services booking and orders assosiated with booking
 
-            // modalContent += `<h3>Services:</h3>`;
-
             // Display each service usage
             booking.rooms.forEach(room => {
                 console.log(room);
                 if (room.room == roomId && room.service_usages.length > 0) { // Check if the room ID matches
                     console.log(room);
-                    modalContent += `<h3>Services:</h3>`;
+                    modalContent += `<h4>Services:</h4>`;
                     room.service_usages.forEach(service => {
                         modalContent += `
-                        <ul>
+                        <ul class="service-list">
                     <li>
                         <strong>Service Name:</strong> ${service.service_name} <br>
-                        <strong>Quantity:</strong> ${service.quantity} <br>
-                        <strong>Total Price:</strong> ₹${service.total_price} <br>
+                        
                         <strong>Usage Date:</strong> ${new Date(service.usage_date).toLocaleString()} <br>
                     </li></ul>
                 `;
@@ -573,23 +570,34 @@ function loadBookingModal(bookingInfo, roomNumber) {
                 }
             });
 
-            // modalContent += `<h3>Food Orders:</h3>`;
+
 
             // Display each order
             booking.rooms.forEach(room => {
                 if (room.room === roomId && room.orders.length > 0) { // Check if the room ID matches
-                    modalContent += `<h3>Food Orders:</h3>`;
+                    modalContent += `<h4>Food Orders:</h4>`;
                     room.orders.forEach(order => {
+                        // Get food items list from localStorage
+                        const allFoodList = JSON.parse(localStorage.getItem('allFoodList'));
+
+                        // Create food items display string
+                        const foodItemsDisplay = order.food_items.map((foodId, index) => {
+                            const foodItem = allFoodList.find(item => item.id === foodId);
+                            return `${foodItem.name.padEnd(20, '  ')} <div class="modal-qty">x${order.quantity[index]}</div>`;
+                        }).join('<br>');
+
                         modalContent += `
-                    <ul><li>
-                        <strong>Order ID:</strong> ${order.id} <br>
-                        <strong>Food Items:</strong> ${order.food_items.join(', ')} <br>
-                        <strong>Quantities:</strong> ${order.quantity.join(', ')} <br>
-                        <strong>Total Price:</strong> ₹${order.total_price} <br>
-                        <strong>Order Status:</strong> ${order.status} <br>
-                        <strong>Created At:</strong> ${new Date(order.created_at).toLocaleString()} <br>
-                    </li></ul>
-                `;
+                                <ul class="order-list"><li>
+                                    <strong>Order ID:</strong> ${order.id} 
+                                        <a href="./../restaurant/takeorder/takeorder.html?orderId=${order.id}&room=${bookingInfo.bookingId}&orderType=hotel">
+                                            <i class="fas fa-eye booking-eye-order"></i>
+                                        </a><br>
+                                    <strong>Food Items:</strong><br><div class="modal-food">${foodItemsDisplay}</div><br>
+                                    <strong>Total Price:</strong> ₹${order.total} (without GST)<br>
+                                    <strong>Order Status:</strong> ${order.status} <br>
+                                    <strong>Ordered At:</strong> ${new Date(order.created_at).toLocaleString()} <br>
+                                </li></ul>
+                            `;
                     });
                 }
             });
@@ -599,9 +607,9 @@ function loadBookingModal(bookingInfo, roomNumber) {
         }
 
         if (bookingInfo.status === 'pending' || bookingInfo.status === 'noshow') {
-            modalContent += `
-                <p><strong>Status:</strong> ${bookingInfo.status}</p>
-            `;
+            // modalContent += `
+            //     <p><strong>Status:</strong> ${bookingInfo.status}</p>
+            // `;
             const checkInBtn = document.createElement('button');
             checkInBtn.className = 'btn-checkin';
             checkInBtn.id = 'btn-checkin';
@@ -611,12 +619,12 @@ function loadBookingModal(bookingInfo, roomNumber) {
             modalContent += checkInBtn.outerHTML;
 
         }
-        
+
 
         if (bookingInfo.status === 'checkin') {
-            modalContent += `
-                <p><strong>Status:</strong> ${bookingInfo.status}</p>
-            `;
+            // modalContent += `
+            //     <p><strong>Status:</strong> ${bookingInfo.status}</p>
+            // `;
 
             const checkoutBtn = document.createElement('button');
             checkoutBtn.className = 'btn-checkout';
@@ -908,7 +916,7 @@ function renderCheckinModal(bookingInfo, roomNumber) {
         putBookingDataInModal(result, roomNumber)
 
         console.log('Booking ID:', result.id);
-        console.log('Booking ID:', result.booking_date);
+        console.log('Booking Date:', result.booking_date);
     }).catch(error => {
         console.error('Error fetching booking data:', error);
     });
@@ -1592,55 +1600,6 @@ function checkRoomAvailability(room, startDate, endDate) {
 
 // Export the initialization function
 window.initializeBooking = initializeBooking;
-
-
-// document.getElementById('new-booking-btn2').addEventListener('click', function (e) {
-//     e.preventDefault();
-//     const roomRows = document.querySelectorAll('.row');
-//     console.log(roomRows)
-//     const bookingData = [];
-
-//     roomRows.forEach((row, index) => {
-//         const roomSelect = row.querySelector('.rooms-btn');
-//         const startDate = row.querySelector('input[name="startDate"]');
-//         const endDate = row.querySelector('input[name="endDate"]');
-
-//         if (!roomSelect || !startDate || !endDate) {
-//             console.error(`Missing elements in row ${index + 1}:`, {
-//                 roomSelect: !!roomSelect,
-//                 startDate: !!startDate,
-//                 endDate: !!endDate
-//             });
-//             alert(`Error: Some elements are missing in row ${index + 1}. Please check the console for details.`);
-//             return;
-//         }
-
-//         if (roomSelect.value && startDate.value && endDate.value) {
-//             bookingData.push({
-//                 room: roomSelect.value,
-//                 startDate: startDate.value,
-//                 endDate: endDate.value
-//             });
-//         } else {
-//             console.warn(`Incomplete data in row ${index + 1}:`, {
-//                 room: roomSelect.value,
-//                 startDate: startDate.value,
-//                 endDate: endDate.value
-//             });
-//             alert(`Please fill all the required fields for room ${index + 1}.`);
-//             return;
-//         }
-//     });
-
-//     if (bookingData.length === 0) {
-//         alert("Please add at least one room booking.");
-//         return;
-//     }
-
-//     console.log("Booking data:", bookingData);
-//     // Process or send bookingData as required
-// });
-
 
 document.getElementById('new-booking-btn').addEventListener('click', function (e) {
     e.preventDefault();

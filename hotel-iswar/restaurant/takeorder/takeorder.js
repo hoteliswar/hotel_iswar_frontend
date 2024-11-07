@@ -557,27 +557,43 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Use the parameters as needed
     if (tableNumber && orderType === 'dine_in') {
+        console.warn('BLOCK 1');
         console.log(`Dine-in order for table ${tableNumber}`);
         setOrderType('DINE-IN');
         selectTable(tableNumber);
-    } else if (orderId && orderType) {
+    }  else if (roomNumber && orderId && orderType==="hotel") {
+        console.warn('BLOCK 4');
+        console.log(`Hotel order for roomid ${roomNumber} with orderid: ${orderId}`);
+        setOrderType('HOTEL');
+        selectRoom(roomNumber);
+        getDataEditOrder(orderId);
+        setOrderType('HOTEL');
+    }
+    
+    else if (orderId && orderType) {
+        console.warn('BLOCK 2');
         document.querySelector('.cancelled-btn').disabled = false;
         console.log(`Order ID: ${orderId}`);
         getDataEditOrder(orderId);
     } else if (orderId) {
+        console.warn('BLOCK 3');
         document.querySelector('.cancelled-btn').disabled = false;
         console.log(`Order ID: ${orderId}`);
         getDataEditOrder(orderId);
-    } else if (roomNumber && bookingId) {
+    // } else if (roomNumber && bookingId) {
+    } else if (roomNumber && orderId && orderType) {
+        console.warn('BLOCK 4');
         console.log(`Hotel order for room ${roomNumber} with booking ID: ${bookingId}`);
         setOrderType('HOTEL');
         selectRoom(roomNumber);
     } else if (orderType === 'take_away') {
+        console.warn('BLOCK 5');
         console.log(`Takeaway`);
         document.getElementById('moreButton').click();
         setOrderType('TAKE-AWAY');
         document.querySelector('.get-order-type').textContent = 'TAKE-AWAY';
     } else if (orderType === 'delivery') {
+        console.warn('BLOCK 6');
         console.log(`Delivery`);
         document.getElementById('moreButton').click();
         setOrderType('DELIVERY');
@@ -627,12 +643,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function selectRoom(number) {
+        console.log('Select Room Working:', number);
         const getOrderType = document.querySelector('.get-order-type');
         const getOrderTypeInfo = document.querySelector('.get-order-type-info');
+        document.getElementById('room-select').disabled = false;
         const roomSelect = document.getElementById('room-select');
+        console.log('Room Select:', roomSelect);
         if (roomSelect) {
-            roomSelect.value = number;
+            console.log('Room Select Value:', roomSelect.value);
+            roomSelect.value = `${number}`;
+            console.log('Room Select Value:', roomSelect.value);
         }
+        document.getElementById('room-select').disabled = true;
         getOrderType.textContent = 'HOTEL';
         getOrderTypeInfo.textContent = number;
     }
@@ -802,6 +824,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const urlParams = new URLSearchParams(window.location.search);
             const orderId = urlParams.get('orderId');
             const table = urlParams.get('table');
+            const urlorderType = urlParams.get('orderType');
 
             const hiddenOrderId = document.getElementById('hidden-order-id');
 
@@ -809,6 +832,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 delete orderData.tables;
             } else if (orderData.order_type === 'take_away') {
                 delete orderData.tables;
+            } else if (orderData.order_type === 'hotel') {
+                delete orderData.tables;
+                delete orderData.booking_id;
+                delete orderData.room_id;
             }
 
             if (table) {
@@ -831,15 +858,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     saveOrderPOST(orderData);
                 }
-            } else if (orderId) {
+            } else if (orderId && urlorderType === "hotel") {
                 console.warn('ELSE IF BLOCK 2');
+                saveOrderPATCH(orderData, orderId);
+            }
+            else if (orderId) {
+                console.warn('ELSE IF BLOCK 3');
                 saveOrderPATCH(orderData, orderId);
                 // document.querySelector('.cancelled-btn').disabled = false;
                 // document.querySelector('.hold-btn').disabled = false;
                 // document.querySelector('.kot-btn').disabled = false;
 
             } else if (hiddenOrderId) {
-                console.warn('ELSE IF BLOCK 3');
+                console.warn('ELSE IF BLOCK 4');
                 const orderId = parseInt(hiddenOrderId.value);
                 saveOrderPATCH(orderData, orderId);
                 // saveOrderPOST(orderData);
@@ -847,7 +878,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // document.querySelector('.kot-btn').disabled = false;
 
             } else {
-                console.warn('ELSE BLOCK 4');
+                console.warn('ELSE BLOCK 5');
                 saveOrderPOST(orderData);
             }
 
@@ -1303,9 +1334,9 @@ document.addEventListener('DOMContentLoaded', function () {
         cgstInput.value = "2.5%";
         sgstInput.value = "2.5%";
 
-        if (discountInput.value === "") {
+        if (discountInput.value == "") {
             discountInput.value = 0;
-        }
+        } 
 
         var settlePayLoad = {
             order_id: parseInt(orderId),
@@ -1322,6 +1353,7 @@ document.addEventListener('DOMContentLoaded', function () {
             };
             console.log('Updated settlePayLoad:', settlePayLoad);
         });
+        
 
         // Update on customer GST change
         customerGstInput.addEventListener('input', function () {

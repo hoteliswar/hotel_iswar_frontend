@@ -307,7 +307,9 @@ td {
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
     transition: right 0.3s ease-out;
 }
-
+.calendar-modal{
+    max-width: 40%;
+}
 .new-booking {
     max-width: 65%;
 }
@@ -621,6 +623,55 @@ td {
 
 .modal-body {
     padding-bottom: 200px;
+}
+
+.service-list li{
+    list-style-type: none;
+    background-color: #fff3e2;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.order-list li{
+    list-style-type: none;
+    background-color: #efffe2;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.booking-eye-order{
+    color: #ee912d;
+    float: right;
+    padding-right: 30px;
+    cursor: pointer;
+}
+
+.modal-body .btn-checkout,
+.modal-body .btn-services,
+.modal-body .btn-order,
+.modal-body .btn-checkin{
+    background-color: #f6a903;
+    border: 0;
+    border-radius: 4px;
+    height: 50px;
+    width: 120px;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.order-list .modal-food{
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.modal-qty{
+    /* display: inline-block; */
+    /* width: 10%; */
+    text-align: right;
+    float: right;
 }
 
 .modal-form{
