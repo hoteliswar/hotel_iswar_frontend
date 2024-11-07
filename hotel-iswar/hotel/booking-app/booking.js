@@ -412,8 +412,26 @@ function getBookingInfo(roomNumber, date) {
     });
 }
 
-function formatDate(date) {
+function formatDate2(date) {
     return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes().toString().padStart(2, '0')}`;
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+
+    // Format date as dd/mm/yyyy
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+
+    // Format time in 12-hour format with AM/PM
+    let hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // Convert 0 to 12
+
+    return `${day}/${month}/${year} ${hours}:${minutes} ${ampm}`;
 }
 
 
@@ -513,17 +531,18 @@ function loadBookingModal(bookingInfo, roomNumber) {
     if (bookingInfo) {
         console.log(bookingInfo);
         let modalContent = `
-            <h2>Booking Details</h2>
-            <p><strong>Booking Id:</strong> ${bookingInfo.bookingId}</p>
-            <p><strong>Room Number:</strong> ${roomNumber}</p>
-            <p><strong>Guest Name:</strong> ${bookingInfo.guestName}</p>
-            <!--<p><strong>Age:</strong> ${bookingInfo.age}</p>-->
-            <p><strong>Email:</strong> ${bookingInfo.email}</p>
-            <p><strong>Phone Number:</strong> ${bookingInfo.phoneNumber}</p>
-            <p><strong>Start-Date&Time:</strong> ${formatDate(bookingInfo.checkIn)}</p>
-            <p><strong>End-Date&Time:</strong> ${formatDate(bookingInfo.checkOut)}</p>
-            <p><strong>Status:</strong> ${bookingInfo.status}</p>
-
+            
+            <div class="booking-modal-data">
+                <p><div class="booking-data-head">Booking Id:</div>  ${bookingInfo.bookingId}</p>
+                <p><div class="booking-data-head">Room No:</div> ${roomNumber}</p>
+                <p><div class="booking-data-head">Guest Name:</div> ${bookingInfo.guestName}</p>
+                <!--<p><strong>Age:</strong> ${bookingInfo.age}</p>-->
+                <p><div class="booking-data-head">Email:</div> ${bookingInfo.email}</p>
+                <p><div class="booking-data-head">Phone:</div> ${bookingInfo.phoneNumber}</p>
+                <p><div class="booking-data-head">Start-Date & Time:</div> ${formatDate(bookingInfo.checkIn)}</p>
+                <p><div class="booking-data-head">End-Date & Time:</div> ${formatDate(bookingInfo.checkOut)}</p>
+                <p><div class="booking-data-head">Status:</div> ${bookingInfo.status}</p>
+            </div>
         `;
 
 
@@ -571,7 +590,6 @@ function loadBookingModal(bookingInfo, roomNumber) {
             });
 
 
-
             // Display each order
             booking.rooms.forEach(room => {
                 if (room.room === roomId && room.orders.length > 0) { // Check if the room ID matches
@@ -588,16 +606,21 @@ function loadBookingModal(bookingInfo, roomNumber) {
 
                         modalContent += `
                                 <ul class="order-list"><li>
-                                    <strong>Order ID:</strong> ${order.id} 
-                                        <a href="./../restaurant/takeorder/takeorder.html?orderId=${order.id}&room=${bookingInfo.bookingId}&orderType=hotel">
-                                            <i class="fas fa-eye booking-eye-order"></i>
-                                        </a><br>
+                                    <strong>Order ID:</strong> <div class="bookingmodal-data">${order.id} </div>
+                                        <br>
+
                                     <strong>Food Items:</strong><br><div class="modal-food">${foodItemsDisplay}</div><br>
-                                    <strong>Total Price:</strong> ₹${order.total} (without GST)<br>
-                                    <strong>Order Status:</strong> ${order.status} <br>
-                                    <strong>Ordered At:</strong> ${new Date(order.created_at).toLocaleString()} <br>
+
+                                    <strong>Total Price:</strong><div class="bookingmodal-data"> ₹${order.total} (without GST)</div><br>
+                                    <strong>Order Status:</strong><div class="bookingmodal-data"> ${order.status} </div><br>
+                                    <strong>Ordered At:</strong><div class="bookingmodal-data"> ${new Date(order.created_at).toLocaleString()} </div><br>
+                                    <a href="./../restaurant/takeorder/takeorder.html?orderId=${order.id}&room=${bookingInfo.bookingId}&orderType=hotel"><br>
+                                        <i class="fas fa-edit booking-eye-order" data-status="${order.status}"></i>
+                                    </a>
+                                    <button class="serve-btn" id="serve-btn" data-order-id="${order.id}" data-status="${order.status}">Serve</button><br>
                                 </li></ul>
                             `;
+
                     });
                 }
             });
@@ -676,7 +699,40 @@ function loadBookingModal(bookingInfo, roomNumber) {
         document.getElementById('btn-order').onclick = () => orderBooking(bookingInfo, roomNumber);
     }
 
+    const serveBtn = document.querySelectorAll('.serve-btn');
+    // for each serveBtn add event listener
+    if (serveBtn) {
+        // document.getElementById('serve-btn').onclick = () => serveOrder(serveBtn.dataset.orderId);
+        serveBtn.forEach(btn => {
+            const serveBtnId = btn.dataset.orderId;
+            const serveBtnStatus = btn.dataset.status;
+            if (serveBtnStatus === 'serve') {
+                // btn.style.display = 'none';
+                btn.textContent = 'Served';
+                btn.style.backgroundColor = '#5e5e5e';
+                btn.style.color = '#fff';
+                btn.style.cursor = 'not-allowed';
+                btn.disabled = true;
+            }
+            btn.onclick = () => serveOrder(serveBtnId);
+        });
+
+    }
+
+    const eyeOrder = document.querySelectorAll('.booking-eye-order');
+    if (eyeOrder) {
+        eyeOrder.forEach(btn => {
+            const eyeOrderStatus = btn.dataset.status;
+            if (eyeOrderStatus === 'serve') {
+                btn.style.display = 'none';
+                btn.style.cursor = 'not-allowed';
+            }
+        });
+    }
+
 }
+
+
 
 // Close the service booking modal
 document.querySelector('.close4').onclick = function () {
@@ -690,6 +746,37 @@ document.querySelector('.close5').onclick = function () {
     const newBookingModal = document.getElementById('checkOutModal');
     newBookingModal.classList.remove('show');
     setTimeout(() => newBookingModal.style.display = 'none', 300);
+}
+
+function serveOrder(orderId) {
+    console.log("serveOrder called");
+    console.log(orderId);
+    serveOrderPATCH(orderId);
+
+    function serveOrderPATCH(orderId) {
+        const option = {
+            method: 'PATCH',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                status: 'serve'
+            })
+        }
+
+        const url = `${baseURL}orders/order/${orderId}/`;
+        refreshAccessToken2(url, option)
+            // .then(response => response.json())
+            .then(data => {
+                console.log('Served Data:', data);
+                console.table(data);
+                alert("Order SERVED Successfully");
+            })
+            .catch(error => {
+                console.log('Error SERVED Order:', error);
+            })
+    }
 }
 
 
