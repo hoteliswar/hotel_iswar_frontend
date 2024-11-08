@@ -81,6 +81,7 @@ a{
 
 .menu-catg {
     height: 92vh;
+    background-color: #ffaf02;
 }
 
 .menu-category-item {
@@ -130,7 +131,7 @@ a{
 .menu-category {
     height: 70.5vh;
     overflow-y: auto;
-    background-color: rgb(255, 175, 2);
+    background-color: #ffaf02;
 }
 
 .menu-category::-webkit-scrollbar {
