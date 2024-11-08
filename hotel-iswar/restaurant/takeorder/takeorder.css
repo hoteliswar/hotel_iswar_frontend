@@ -253,6 +253,7 @@ a{
     display: inline-block;
     flex-direction: column;
     overflow: hidden;
+    background-color: #525252;
     /* width: auto; */
     /* height: 100rem; */
 }
@@ -580,7 +581,7 @@ a{
 
 .order-note{
     padding-left: 13px;
-    width: 65%;
+    width: 60%;
 }
 
 .order-note-input{

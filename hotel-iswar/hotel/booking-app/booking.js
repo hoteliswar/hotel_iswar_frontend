@@ -575,14 +575,18 @@ function loadBookingModal(bookingInfo, roomNumber) {
                 console.log(room);
                 if (room.room == roomId && room.service_usages.length > 0) { // Check if the room ID matches
                     console.log(room);
-                    modalContent += `<h4>Services:</h4>`;
+                    modalContent += `<div class="booking-data-head">Services:</div>`;
                     room.service_usages.forEach(service => {
                         modalContent += `
                         <ul class="service-list">
                     <li>
-                        <strong>Service Name:</strong> ${service.service_name} <br>
+                        <strong>Service Name:</strong> ${service.service_name} 
+                        
+                        <i class="fas fa-trash services-del" id="services-del" data-service-id="${service.id}"></i><br> 
                         
                         <strong>Usage Date:</strong> ${new Date(service.usage_date).toLocaleString()} <br>
+                        
+                        
                     </li></ul>
                 `;
                     });
@@ -593,7 +597,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
             // Display each order
             booking.rooms.forEach(room => {
                 if (room.room === roomId && room.orders.length > 0) { // Check if the room ID matches
-                    modalContent += `<h4>Food Orders:</h4>`;
+                    modalContent += `<div class="booking-data-head">Food Orders:</div>`;
                     room.orders.forEach(order => {
                         // Get food items list from localStorage
                         const allFoodList = JSON.parse(localStorage.getItem('allFoodList'));
@@ -730,6 +734,13 @@ function loadBookingModal(bookingInfo, roomNumber) {
         });
     }
 
+    const servicesDel = document.querySelectorAll('.services-del');
+    if (servicesDel) {
+        servicesDel.forEach(btn => {
+            btn.onclick = () => deleteService(btn.dataset.serviceId);
+        });
+    }
+
 }
 
 
@@ -775,6 +786,34 @@ function serveOrder(orderId) {
             })
             .catch(error => {
                 console.log('Error SERVED Order:', error);
+            })
+    }
+}
+
+function deleteService(serviceId) {
+    console.log("deleteService called");
+    console.log(serviceId);
+
+    deleteServicePATCH(serviceId);
+
+    function deleteServicePATCH(serviceId) {
+        const option = {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            }            
+        }
+
+        const url = `${baseURL}hotel/service-usages/${serviceId}/`;
+        refreshAccessToken2(url, option)
+            .then(data => {
+                // console.log('Deleted Service Data:', data);
+                // console.table(data);
+                alert("Service Deleted Successfully");
+            })
+            .catch(error => {
+                console.log('Error Deleting Service:', error);
             })
     }
 }
