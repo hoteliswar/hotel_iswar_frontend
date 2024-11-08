@@ -221,6 +221,7 @@
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #000000;
 }
 
 .order-detail-item {
@@ -237,12 +238,34 @@
 
 .detail-label {
     font-weight: bold;
-    color: #333;
+    color: #000000;
     flex-basis: 40%;
 }
 
 .detail-value {
-    color: #666;
+    color: #000000;
     flex-basis: 60%;
     text-align: right;
+}
+
+.food-item-qty{
+
+    /* display: inline-block; */
+    font-size: 1em;
+    margin-right: 5px;
+    float: left;
+}
+
+.food-item-name{
+    display: inline-block;
+    font-size: 1em;
+}
+
+.bill-btn{
+    background-color: #ffaf02;
+    color: #0e0e0e;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
 }
