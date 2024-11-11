@@ -223,14 +223,14 @@ function renderDataModal(data) {
                 ${data.status === 'in_progress' ? 'In Progress' :
             data.status === 'hold' ? 'Hold' :
                 data.status === 'kot' ? 'KOT' :
-                    data.status === 'completed' ? 'Settled' :
+                    data.status === 'settled' ? 'Settled' :
                         data.status}
             </span>
         </div>
         
         <div class="order-detail-item">
             <span class="detail-label">Payment Status:</span>
-            <span class="detail-value">${data.payment_method ? data.payment_method : `pending`}</span>
+            <span class="detail-value">${data.status === 'settled' ? 'Paid' : 'Pending'}</span>
         </div>
     `;
 
@@ -306,17 +306,34 @@ function renderDataModal(data) {
         function makepayment(bill) {
             const orderDetails = document.getElementById('orderDetails');
             console.log('Making payment for bill:', bill);
-            const paymentBtn = document.createElement('button');
-            paymentBtn.classList.add('payment-btn');
-            paymentBtn.innerHTML = 'Make Payment';
-            paymentBtn.onclick = () => {
-                console.log('Payment made for bill:', bill);
-                openPaymentModal(bill);
-            };
-            orderDetails.appendChild(paymentBtn);
 
-            // Payment Modal and logic
-            // openPaymentModal(bill);
+            if (bill.status == 'paid') {
+                console.log('BLOCK IF')
+                // alert('Bill already settled');
+                return;
+            } else {
+                console.log('BLOCK ELSE')
+                const paymentBtn = document.createElement('button');
+                paymentBtn.classList.add('payment-btn');
+                paymentBtn.innerHTML = 'Make Payment';
+                paymentBtn.onclick = () => {
+                    console.log('Payment made for bill:', bill);
+                    openPaymentModal(bill);
+                };
+                orderDetails.appendChild(paymentBtn);
+
+            }
+
+            // const paymentBtn = document.createElement('button');
+            // paymentBtn.classList.add('payment-btn');
+            // paymentBtn.innerHTML = 'Make Payment';
+            // paymentBtn.onclick = () => {
+            //     console.log('Payment made for bill:', bill);
+            //     openPaymentModal(bill);
+            // };
+            // orderDetails.appendChild(paymentBtn);
+
+
 
         }
 
@@ -330,6 +347,81 @@ function renderDataModal(data) {
             settleModalContainer.style.display = 'flex';
             settleModal.style.display = 'block';
             setTimeout(() => settleModal.classList.add('show'), 10);
+
+            // Populate the modal with bill data
+            populatePaymentModal(bill);
+
+            const paymentBtnSubmit = document.getElementById('payment-btn');
+            paymentBtnSubmit.onclick = () => {
+                console.log('Payment made for bill:', bill);
+                paymentPOST(bill);
+
+            };
+        }
+
+        function populatePaymentModal(bill) {
+            console.log('Populating payment modal with bill:', bill);
+
+            const orderId = document.getElementById('order-id');
+            orderId.value = bill.order_id;
+
+            const netAmt = document.getElementById('net-amt');
+            netAmt.value = bill.net_amount;
+        }
+
+        function paymentPOST(bill) {
+            console.log('Payment POST');
+
+            const paidAmt = document.getElementById('paid-amt').value;
+            const paymentMessage = document.getElementById('payment-message').value;
+            // const paymentMethod = document.getElementById('payment-method').value;
+            // Get selected payment method
+            function getSelectedPaymentMethod() {
+                const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+                return selectedPayment ? selectedPayment.value : null;
+            }
+
+            const paymentMethod = getSelectedPaymentMethod();
+
+            console.log(paidAmt, paymentMessage, paymentMethod);
+
+            const paymentDetails = {
+                'message': paymentMessage,
+            }
+
+            const paymentData = {
+                'bill_id': bill.id,
+                'paid_amount': paidAmt,
+                'payment_method': paymentMethod,
+                'payment_details': paymentDetails,
+                'status': 'paid'
+            }
+
+            console.log(paymentData);
+
+            paymentPOSTcall(paymentData);
+
+            function paymentPOSTcall(paymentData) {
+                console.log('Payment POST call');
+                const url = `${baseURL}billing/bill-payments/`;
+                const option = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + getCookie('access_token'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(paymentData)
+                }
+
+                refreshAccessToken2(url, option)
+                    .then(data => {
+                        console.log(data);
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.log('Error in payment POST call:', error);
+                    });
+            }
         }
     }
 }

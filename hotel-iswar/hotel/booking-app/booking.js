@@ -223,13 +223,19 @@ function convertToRequiredFormat() {
                 roomBookings[roomNumber] = [];
             }
 
+            
             const guestDetail = booking.guest_detail[0]; // Assuming there's always at least one guest
-            const checkInDate = new Date(room.start_date);
-            const checkOutDate = new Date(room.end_date);
-            let status;
+            const checkInDate = new Date(room.start_date.replace('Z', ''));
+            const checkOutDate = new Date(room.end_date.replace('Z', ''));
 
+            let status;
+            
+            console.log(room.start_date);
             console.log(room.start_date);
             console.log(currentDate);
+
+            console.log(room.check_in_details);
+            console.log(room.check_out_date);
 
             if (booking.status === 'pending') {
                 if (room.start_date > currentDate.toISOString()) {
@@ -1883,6 +1889,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
                 // console.log(response.status);
                 alert("Booked Successfully");
                 // window.location.href = '/hotel/hotel.html';
+                window.location.reload();
             })
             .catch(error => {
                 console.log('Error fetching booked data:', error);

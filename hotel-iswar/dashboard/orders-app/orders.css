@@ -392,7 +392,7 @@
 }
 
 /* Specific Input Styling */
-#bill-discount, #customer_gst {
+#paid-amt, #payment-message {
     border: 2px solid #fcb00b !important;
     border-radius: 3px;
 }
@@ -432,4 +432,81 @@
     align-items: center;
     gap: 10px;
     margin-bottom: 10px;
+}
+
+/* Payment Method */
+
+/* Payment Method Container */
+.payment-method {
+    text-align: center;
+    /* background-color: #eaeaea; */
+    padding: 10px;
+    border-radius: 50px;
+    margin: 10px 0;
+}
+
+/* Payment Method Check Container */
+.pm-check {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.form-check-input{
+background-color: #adadad;
+}
+
+
+/* Radio Button Styling */
+.form-check-input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #ffaf02;
+    accent-color: #ffaf02;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+    position: relative;
+    cursor: pointer;
+}
+
+/* Radio Button Selected State */
+.form-check-input[type="radio"]:checked {
+    background-color: #ffaf02;
+    border-color: #ffaf02;
+}
+
+/* Radio Button Selected Dot */
+.form-check-input[type="radio"]:checked::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background-color: rgb(73, 73, 73);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Label Styling */
+.form-check-label {
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+/* Hover Effects
+.form-check-input[type="radio"]:hover + .form-check-label {
+    color: #ffaf02;
+} */
+
+/* Media Query Adjustments */
+@media screen and (min-height: 700px) {
+    .form-check-label {
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
 }

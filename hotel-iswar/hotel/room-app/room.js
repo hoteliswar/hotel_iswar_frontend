@@ -15,6 +15,8 @@ document.addEventListener('click', function (e) {
 // Show Add Room modal
 function showAddModal() {
 
+    resetRoomForm();
+
     const modal = document.getElementById('roomModal');
     // const modalBody = modal.querySelector('.modal-body');
     setTimeout(() => modal.classList.add('show'), 10);
@@ -22,6 +24,28 @@ function showAddModal() {
     // modalBody.innerHTML = modalContent;
 
     modal.style.display = 'block';
+}
+
+function resetRoomForm() {
+
+    document.querySelector('.model-content-title').textContent = 'Add Room';
+    const actionBtn = document.querySelector('.add-room-save-btn');
+    actionBtn.value = 'Submit';
+    actionBtn.id = 'add-room-save-btn';
+
+    
+    // Reset all input fields
+    document.getElementById('roomNumber').value = '';
+    document.getElementById('roomPrice').value = '';
+    document.getElementById('roomType').value = '';
+    document.getElementById('bedType').value = '';
+    document.getElementById('roomStatus').value = '';
+    
+    // Uncheck all amenities checkboxes
+    const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]');
+    amenityCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
 }
 
 // Close Add Modal
