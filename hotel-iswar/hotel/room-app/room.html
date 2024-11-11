@@ -26,7 +26,7 @@
             <div class="col-2">Room Number</div>
             <div class="col-2">Price</div>
             <div class="col-2">Room Type</div>
-            <div class="col-2">Description</div>
+            <!-- <div class="col-2">Description</div> -->
             <div class="col-3">Bed Type</div>
             <div class="col-1">Actions</div>
         </div>
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="add-room-form">
-                    <div class="input-element-image">
+                    <div class="input-element-image" style="display: none">
                         <div id="imagePreview" class="image-preview"></div>
                         <label for="roomImage">Add Room Images</label>
                         <input type="file" class="roomImage" id="roomImage" name="roomImage" accept="image/*" multiple>
@@ -61,21 +61,20 @@
                         <label for="roomType">Room Type</label>
                         <select id="roomType" name="roomType" required>
                             <option value="" selected disabled>Select Room Type</option>
-                            <option value="standard">Standard</option>
-                            <option value="deluxe">Deluxe</option>
-                            <option value="Suite">Suite</option>
-                            <option value="executive">Executive</option>
+                            <option value="deluxe">Deluxe AC</option>
+                            <option value="suite">Suite AC</option>
+                            <option value="Standard">Standard AC</option>
+                            <option value="super-deluxe">Super Deluxe AC</option>
+                            <option value="standard-nonac">Standard Non AC</option>
                         </select>
                     </div>
                     <div class="input-element">
                         <label for="bedType">Bed Type</label>
                         <select id="bedType" name="bedType" required>
                             <option value="" selected disabled>Select Bed Type</option>
-                            <option value="single">Single Bed</option>
-                            <option value="2single">2 Single Bed</option>
                             <option value="double">Double Bed</option>
-                            <option value="king">King Size Bed</option>
-                            <option value="queen">Queen Size Bed</option>
+                            <option value="double-separated">Double Bed (Separated)</option>
+                            <option value="king">King Size Bed (Front View)</option>
                         </select>
                     </div>
 
@@ -84,10 +83,8 @@
                         <select id="roomStatus" name="roomStatus" required>
                             <option value="" selected disabled>Select Status</option>
                             <option value="available">Available</option>
-                            <option value="dirty">Dirty</option>
-                            <option value="cleaned">Cleaned</option>
-                            <option value="underMaintenance">Under Maintenance</option>
-                            <option value="guestIn">Guest-In</option>
+                            <option value="cleaning">Cleaning</option>
+                            <option value="maintenance">Maintenance</option>
                         </select>
                     </div>
 
@@ -103,7 +100,8 @@
                             <label><input type="checkbox" name="amenities" value="refrigerator"> Refrigerator</label>
                             <label><input type="checkbox" name="amenities" value="air-conditioner"> Air Conditioner</label>
                             <label><input type="checkbox" name="amenities" value="tv-cable"> TV Cable</label>
-                            <label><input type="checkbox" name="amenities" value="internet"> Internet</label>
+                            <label><input type="checkbox" name="amenities" value="wifi"> WiFi</label>
+                            <label><input type="checkbox" name="amenities" value="smart-tv"> Smart TV</label>
                         </div>
                     </div>
                     <!--  -->

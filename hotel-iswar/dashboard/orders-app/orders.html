@@ -27,7 +27,7 @@
                     <option value="mobile">Mobile</option>
                     <option value="date">Date</option>
                     <option value="orderType">Order Type</option>
-                    <option value="reset">Reset</option>
+                    <option value="reset">All</option>
                 </select>
                 <div id="filterInputs" class="filter-inputs">
                     <input type="text" class="searchBox" id="mobileInput" placeholder="Enter mobile number"
@@ -37,9 +37,11 @@
                         <input type="date" id="endDate" placeholder="mm-dd-yyy">
                     </div>
                     <select id="orderTypeSelect" class="searchType" style="display:none;">
-                        <option value="dine_in">Dine In</option>
-                        <option value="takeaway">Takeaway</option>
-                        <option value="delivery">Delivery</option>
+                        <option disabled selected>Select Type</option>
+                        <option value="dine_in">DINE IN</option>
+                        <option value="takeaway">TAKEAWAY</option>
+                        <option value="delivery">DELIVERY</option>
+                        <option value="hotel">HOTEL</option>
                     </select>
                 </div>
             </div>
@@ -58,7 +60,7 @@
                     <div class="olhead-item col-2">Mobile</div>
                     <div class="olhead-item col-2">Date</div>
                     <div class="olhead-item col-2">Type</div>
-                    <div class="olhead-item col-2">Net Amount</div>
+                    <div class="olhead-item col-2">Total</div>
                     <div class="olhead-item col-2">Status</div>
                     <div class="olhead-item col-1">Details</div>
                 </div>
@@ -77,6 +79,63 @@
                 </div>
                 <div id="orderDetails">
                     <!-- Data will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Settling Bill-->
+    <!-- Modal: View Data from bookings -->
+    <div class="modal-container2">
+        <div id="paymentModal" class="payment-modal">
+            <div class="modal-content">
+                <div class="modal-head">
+                    <span class="close-payment">&times;</span>
+                    <div class="modal-title">GENERATE BILL</div>
+                </div>
+                <div class="modal-body">
+                    <div class="generate-bill-form">
+                        <div class="input-group-bill">
+                            <label for="bill-no">Order No.</label>
+                            <input type="text" id="bill-no" placeholder="Bill No." disabled>
+                        </div>
+                        
+                        <div class="input-group-bill">
+                            <label for="sub-total">Sub Total (₹):</label>
+                            <input type="number" id="sub-total" placeholder="0.00" disabled>
+                        </div>
+                        <div class="input-group-bill">
+                            <label for="bill-discount">Discount (₹):</label>
+                            <input type="number" id="bill-discount" placeholder="0.00">
+                        </div>
+                        <div class="input-group-bill">
+                            <label for="net-total">Net Total (₹):</label>
+                            <input type="number" id="net-total" placeholder="0.00" disabled>
+                        </div>
+                        <div class="input-group-bill">
+                            <label for="cgst">CGST (%):</label>
+                            <input type="text" id="cgst" placeholder="CGST" disabled>
+                        </div>
+                        <div class="input-group-bill">
+                            <label for="sgst">SGST (%):</label>
+                            <input type="text" id="sgst" placeholder="SGST" disabled>
+                        </div>
+                        <div class="input-group-bill">
+                            <label for="net-amt">Net Amount (₹):</label>
+                            <input type="number" id="net-amt" placeholder="0.00" disabled>
+                        </div>
+                        <div class="input-group-bill customer_gst">
+                            <label for="customer_gst">Customer GST No:</label>
+                            <input type="text" id="customer_gst" placeholder="11XXXXX0000XX0XX ">
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="button-groups">
+                        <button class="print-bill-btn" id="print-bill-btn">PRINT BILL</button>
+                    </div>
                 </div>
             </div>
         </div>

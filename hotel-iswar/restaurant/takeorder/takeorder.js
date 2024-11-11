@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log(`Dine-in order for table ${tableNumber}`);
         setOrderType('DINE-IN');
         selectTable(tableNumber);
-    }  else if (roomNumber && orderId && orderType==="hotel") {
+    } else if (roomNumber && orderId && orderType === "hotel") {
         console.warn('BLOCK 4');
         console.log(`Hotel order for roomid ${roomNumber} with orderid: ${orderId}`);
         setOrderType('HOTEL');
@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', function () {
         getDataEditOrder(orderId);
         setOrderType('HOTEL');
     }
-    
+
     else if (orderId && orderType) {
         console.warn('BLOCK 2');
         document.querySelector('.cancelled-btn').disabled = false;
@@ -580,7 +580,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.cancelled-btn').disabled = false;
         console.log(`Order ID: ${orderId}`);
         getDataEditOrder(orderId);
-    // } else if (roomNumber && bookingId) {
+        // } else if (roomNumber && bookingId) {
     } else if (roomNumber && orderId && orderType) {
         console.warn('BLOCK 4');
         console.log(`Hotel order for room ${roomNumber} with booking ID: ${bookingId}`);
@@ -600,15 +600,28 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('.get-order-type').textContent = 'DELIVERY';
     }
 
-    if (mobile && name && email) {
+    if (mobile && name && email && roomNumber) {
         document.getElementById('mobile').value = mobile;
         document.getElementById('mobile-input').value = mobile;
         document.getElementById('name').value = name;
         document.getElementById('email').value = email;
+
+        const typeButtons = document.querySelectorAll('.type-selectable');
+
+        const hotelButton = Array.from(typeButtons).find(button => button.textContent === 'HOTEL');
+        if (hotelButton) {
+            hotelButton.classList.add('type-selected');
+        }
+        hotelButton.click();
+
+
+        // document.getElementById('room-select').disabled = false;
         const roomSelect = document.getElementById('room-select');
+        roomSelect.value = String(roomNumber);
         // get the text content of the selected option
         const selectedOption = roomSelect.options[roomSelect.selectedIndex].textContent;
         document.querySelector('.get-order-type-info').textContent = selectedOption;
+        document.querySelector('.get-order-type').textContent = 'HOTEL';
     }
 
 
@@ -760,6 +773,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const savebtn = document.querySelector('.save-btn')
     savebtn.addEventListener('click', function (e) {
         e.preventDefault();
+        console.log('save button clicked');
         if (savebtn.click) {
             console.log('save button clicked');
             console.table(finalBillItems);
@@ -772,7 +786,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const notes = document.getElementById('order-note').value;
 
             let orderTypeVal
-            const orderType = document.querySelector('.type-selected').textContent;
+            let orderType = document.querySelector('.type-selected').textContent;
             if (orderType == 'DELIVERY') {
                 orderTypeVal = 'delivery';
             } else if (orderType == 'TAKE-AWAY') {
@@ -832,11 +846,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 delete orderData.tables;
             } else if (orderData.order_type === 'take_away') {
                 delete orderData.tables;
-            } else if (orderData.order_type === 'hotel') {
-                delete orderData.tables;
-                delete orderData.booking_id;
-                delete orderData.room_id;
             }
+            // else if (orderData.order_type === 'hotel') {
+            //     delete orderData.tables;
+            //     delete orderData.booking_id;
+            //     delete orderData.room_id;
+            // }
 
             if (table) {
                 console.warn('IF BLOCK 1');
@@ -859,6 +874,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     saveOrderPOST(orderData);
                 }
             } else if (orderId && urlorderType === "hotel") {
+
+                if (orderData.order_type === 'hotel') {
+                    delete orderData.tables;
+                    delete orderData.booking_id;
+                    delete orderData.room_id;
+                }
+
                 console.warn('ELSE IF BLOCK 2');
                 saveOrderPATCH(orderData, orderId);
             }
@@ -870,6 +892,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 // document.querySelector('.kot-btn').disabled = false;
 
             } else if (hiddenOrderId) {
+                if (orderData.order_type === 'hotel') {
+                    delete orderData.tables;
+                    delete orderData.booking_id;
+                    delete orderData.room_id;
+                }
                 console.warn('ELSE IF BLOCK 4');
                 const orderId = parseInt(hiddenOrderId.value);
                 saveOrderPATCH(orderData, orderId);
@@ -1336,7 +1363,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (discountInput.value == "") {
             discountInput.value = 0;
-        } 
+        }
 
         var settlePayLoad = {
             order_id: parseInt(orderId),
@@ -1353,7 +1380,7 @@ document.addEventListener('DOMContentLoaded', function () {
             };
             console.log('Updated settlePayLoad:', settlePayLoad);
         });
-        
+
 
         // Update on customer GST change
         customerGstInput.addEventListener('input', function () {

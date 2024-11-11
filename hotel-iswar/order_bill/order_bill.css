@@ -1,13 +1,4 @@
-/* .bill-wrapper {
-    width: 210mm; 
-    min-height: 297mm; 
-    padding: 18mm; 
-    border: 1px solid #000; 
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
-    font-family: Arial, sans-serif; 
-    background-color: #fff; 
-} */
-
+/* 
 .bill-wrapper {
     display: flex; 
     flex-direction: column; 
@@ -16,11 +7,30 @@
     min-height: 297mm; 
     padding: 10px; 
     border: 1px solid #000; 
-    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);  */
     font-family: Arial, sans-serif; 
     background-color: #fff; 
     position: relative;
+} */
+
+body{
+    scale: 0.94;
+} 
+
+.bill-wrapper {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    width: 148mm; 
+    min-height: 210mm; 
+    padding: 10px; 
+    border: 1px solid #000; 
+    font-family: Arial, sans-serif; 
+    background-color: #fff; 
+    position: relative;
+    /* scale: 0.5; */
 }
+
+
 
 
 

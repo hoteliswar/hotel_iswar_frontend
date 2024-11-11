@@ -35,21 +35,21 @@ document.querySelector('.close').onclick = function () {
 
 // let uploadedImages = [];
 
-document.getElementById('roomImage').addEventListener('change', function (event) {
-    const files = event.target.files;
+// document.getElementById('roomImage').addEventListener('change', function (event) {
+//     const files = event.target.files;
 
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const reader = new FileReader();
+//     for (let i = 0; i < files.length; i++) {
+//         const file = files[i];
+//         const reader = new FileReader();
 
-        reader.onload = function (e) {
-            uploadedImages.push(e.target.result);
-            updateImagePreview();
-        }
+//         reader.onload = function (e) {
+//             uploadedImages.push(e.target.result);
+//             updateImagePreview();
+//         }
 
-        reader.readAsDataURL(file);
-    }
-});
+//         reader.readAsDataURL(file);
+//     }
+// });
 
 function updateImagePreview() {
     const preview = document.getElementById('imagePreview');
@@ -87,6 +87,23 @@ function renderRoomData() {
 
     // for each item in roomList
     roomList.forEach(room => {
+
+        let roomTypeValue = '';
+
+        if(room.room_type == 'deluxe'){
+            roomTypeValue = 'Deluxe AC';
+        } else if (room.room_type == 'suite') {
+            roomTypeValue = 'Suite AC';
+        } else if (room.room_type == 'standard') {
+            roomTypeValue = 'Standard AC';
+        } else if (room.room_type == 'super-deluxe') {
+            roomTypeValue = 'Super Deluxe AC';
+        } else if (room.room_type == 'standard-nonac') {
+            roomTypeValue = 'Standard Non AC';
+        } else {
+            roomTypeValue = 'NA';
+        }
+
         const roomRow = document.createElement('div');
         roomRow.classList.add('room-list-table');
         roomRow.classList.add('room-row');
@@ -100,11 +117,11 @@ function renderRoomData() {
 
         const roomType = document.createElement('div');
         roomType.classList.add('col-2');
-        roomType.textContent = room.room_type;
+        roomType.textContent = roomTypeValue
 
-        const description = document.createElement('div');
-        description.classList.add('col-2');
-        description.textContent = room.description;
+        // const description = document.createElement('div');
+        // description.classList.add('col-2');
+        // description.textContent = room.description;
 
         const bedType = document.createElement('div');
         bedType.classList.add('col-3');
@@ -123,7 +140,7 @@ function renderRoomData() {
         roomRow.appendChild(roomNumber);
         roomRow.appendChild(roomPrice);
         roomRow.appendChild(roomType);
-        roomRow.appendChild(description);
+        // roomRow.appendChild(description);
         roomRow.appendChild(bedType);
         roomRow.appendChild(actions);
         appendRoom.appendChild(roomRow);
@@ -133,7 +150,7 @@ function renderRoomData() {
 function viewRoomModal(roomid) {
     // Change Heading and Button
     document.querySelector('.model-content-title').textContent = 'View Room';
-    const actionBtn = document.getElementById('add-room-save-btn');
+    const actionBtn = document.querySelector('.add-room-save-btn');
     actionBtn.value = 'Update';
     actionBtn.id = 'update-room-btn';
 
@@ -164,64 +181,156 @@ function viewRoomModal(roomid) {
     const roomStatus = document.getElementById('roomStatus');
     roomStatus.value = roomData.status;
 
-    const roomImages = document.getElementById('roomImages');
-    roomImages.value = roomData.images;
+    // const roomImages = document.getElementById('roomImages');
+    // roomImages.value = roomData.images;
 
     // Description is amenities which stored as concatatenated checkbox values
 
-    const roomDescription = document.getElementById('amenities');
-    
+    // const roomAmenities = document.getElementById('amenities-container');
+
     // Handle amenities checkboxes
-    const amenities = roomData.description.split(',').map(item => item.trim());
-    const checkboxes = document.querySelectorAll('input[name="amenities"]');
-    
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = amenities.includes(checkbox.value);
+    // const amenities = roomData.description.split(',').map(item => item.trim());
+    // const checkboxes = document.querySelectorAll('input[name="amenities"]');
+
+    // checkboxes.forEach(checkbox => {
+    // checkbox.checked = amenities.includes(checkbox.value);
+    // });
+
+    const amenityCheckboxes = document.querySelectorAll('input[name="amenities"]');
+
+    // Check boxes that match values in roomData.amenities
+    amenityCheckboxes.forEach(checkbox => {
+        if (roomData.amenities && roomData.amenities.includes(checkbox.value)) {
+            checkbox.checked = true;
+        } else {
+            checkbox.checked = false;  // Optional: uncheck others
+        }
     });
 
 
-
+    updateRoomModal();
 
 
 
 
 }
 
+function updateRoomModal() {
+    document.getElementById('update-room-btn').addEventListener('click', function (e) {
+        e.preventDefault();
+        if (e.target.id === 'update-room-btn') {
+            const roomNumber = document.getElementById('roomNumber').value;
+            const roomPrice = document.getElementById('roomPrice').value;
+            const roomType = document.getElementById('roomType').value;
+            const roomBedType = document.getElementById('bedType').value;
+            const roomStatus = document.getElementById('roomStatus').value;
+            const roomDescription = document.querySelectorAll('input[name="amenities"]:checked');
+            const selectedAmenities = Array.from(roomDescription).map(cb => cb.value);
+
+            const roomData = {
+                room_number: roomNumber,
+                price: roomPrice,
+                room_type: roomType,
+                beds: roomBedType,
+                status: roomStatus,
+                amenities: selectedAmenities,
+            }
+
+            // const formData = new FormData();
+            // formData.append('room_number', roomNumber);
+            // formData.append('price', roomPrice);
+            // formData.append('room_type', roomType);
+            // formData.append('beds', roomBedType);
+            // formData.append('status', roomStatus);
+            // formData.append('description', selectedAmenities);
+
+            // console.log('FormData entries:');
+            // for (let [key, value] of formData.entries()) {
+            //     console.log(key, value);
+            // }
+
+            // const formDataObj = Object.fromEntries(formData.entries());
+            // console.log('FormData as object:', formDataObj);
+
+            updateRoom(roomData);
+            // updateRoom(formData);
+            document.querySelector('.close').click();
+
+            function updateRoom(roomData) {
+
+                const url = `${baseURL}hotel/rooms/`;
+                const options = {
+                    method: 'PATCH',
+                    headers: {
+                        'Authorization': 'Bearer ' + getCookie('access_token'),
+                        'Content-Type': 'application/json'
+                        // Remove 'Content-Type' header when sending FormData
+                    },
+                    body: JSON.stringify(roomData),
+                    // body: roomData,
+                };
+                console.log(roomData);
+                refreshAccessToken2(url, options)
+                    // .then(response => response.json())
+                    .then(data => {
+                        console.log('Data:', data);
+                        console.table(data);
+                        alert("Room Created Successfully");
+                        getRoomsData();
+                        return getRoomsData();
+                    })
+                    .then(() => {
+                        alert("Room Created Successfully");
+                        document.querySelector('.append-all-room').innerHTML = '';
+                        renderRoomData();
+                    })
+                    .catch(error => {
+                        console.log('Error fetching data:', error);
+                    });
+            }
+        }
+    });
+}
+
+// const updateRoomModal = document.getElementById('update-room-btn');
+
 // Update Room
-document.getElementById('update-room-btn').addEventListener('click', function (e) {
-    e.preventDefault();
-    if (e.target.id === 'update-room-btn') {
-        const roomNumber = document.getElementById('roomNumber').value;
-        const roomPrice = document.getElementById('roomPrice').value;
-        const roomType = document.getElementById('roomType').value;
-        const roomBedType = document.getElementById('bedType').value;
-        const roomStatus = document.getElementById('roomStatus').value;
-        const roomDescription = document.querySelectorAll('input[name="amenities"]:checked');
-        const selectedAmenities = Array.from(roomDescription).map(cb => cb.value);
+// if (updateRoomModal) {
+//     document.getElementById('update-room-btn').addEventListener('click', function (e) {
+//         e.preventDefault();
+//         if (e.target.id === 'update-room-btn') {
+//             const roomNumber = document.getElementById('roomNumber').value;
+//             const roomPrice = document.getElementById('roomPrice').value;
+//             const roomType = document.getElementById('roomType').value;
+//             const roomBedType = document.getElementById('bedType').value;
+//             const roomStatus = document.getElementById('roomStatus').value;
+//             const roomDescription = document.querySelectorAll('input[name="amenities"]:checked');
+//             const selectedAmenities = Array.from(roomDescription).map(cb => cb.value);
 
-        const formData = new FormData();
-        formData.append('room_number', roomNumber);
-        formData.append('price', roomPrice);
-        formData.append('room_type', roomType);
-        formData.append('beds', roomBedType);
-        formData.append('status', roomStatus);
-        formData.append('description', selectedAmenities);
+//             const formData = new FormData();
+//             formData.append('room_number', roomNumber);
+//             formData.append('price', roomPrice);
+//             formData.append('room_type', roomType);
+//             formData.append('beds', roomBedType);
+//             formData.append('status', roomStatus);
+//             formData.append('description', selectedAmenities);
 
-        console.log('FormData entries:');
-        for (let [key, value] of formData.entries()) {
-            console.log(key, value);
-        }
+//             console.log('FormData entries:');
+//             for (let [key, value] of formData.entries()) {
+//                 console.log(key, value);
+//             }
 
-        const formDataObj = Object.fromEntries(formData.entries());
-        console.log('FormData as object:', formDataObj);
+//             const formDataObj = Object.fromEntries(formData.entries());
+//             console.log('FormData as object:', formDataObj);
 
-        updateRoom(formData);
-        document.querySelector('.close').click();
+//             updateRoom(formData);
+//             document.querySelector('.close').click();
 
-        function updateRoom(roomData) {
-        }
-    }
-});
+//             function updateRoom(roomData) {
+//             }
+//         }
+//     });
+// }
 
 
 // Add New Room
@@ -238,35 +347,38 @@ document.getElementById('add-room-save-btn').addEventListener('click', function 
         const selectedAmenities = Array.from(roomDescription).map(cb => cb.value);
         // const roomImage = document.getElementById('roomImage').value;
 
-        // const roomData = {
-        //     room_number: roomNumber,
-        //     price: roomPrice,
-        //     room_type: roomType,
-        //     beds: roomBedType,
-        //     status: roomStatus,
-        //     description: roomDescription,
-        //     images: uploadedImages
-        // }
-
-        const formData = new FormData();
-        formData.append('room_number', roomNumber);
-        formData.append('price', roomPrice);
-        formData.append('room_type', roomType);
-        formData.append('beds', roomBedType);
-        formData.append('status', roomStatus);
-        formData.append('description', selectedAmenities);
+        console.log('selectedAmenities', selectedAmenities);
 
 
-        console.log('FormData entries:');
-        for (let [key, value] of formData.entries()) {
-            console.log(key, value);
-            // To display the formData need to iterate over the Object
+        const roomData = {
+            room_number: roomNumber,
+            price: roomPrice,
+            room_type: roomType,
+            beds: roomBedType,
+            status: roomStatus,
+            amenities: selectedAmenities,
         }
 
-        const formDataObj = Object.fromEntries(formData.entries());
-        console.log('FormData as object:', formDataObj);
+        // const formData = new FormData();
+        // formData.append('room_number', roomNumber);
+        // formData.append('price', roomPrice);
+        // formData.append('room_type', roomType);
+        // formData.append('beds', roomBedType);
+        // formData.append('status', roomStatus);
+        // formData.append('amenities', selectedAmenities);
 
-        addNewRoom(formData);
+
+        // console.log('FormData entries:');
+        // for (let [key, value] of formData.entries()) {
+        //     console.log(key, value);
+        //     // To display the formData need to iterate over the Object
+        // }
+
+        // const formDataObj = Object.fromEntries(formData.entries());
+        // console.log('FormData as object:', formDataObj);
+
+        addNewRoom(roomData);
+        // addNewRoom(formData);
         document.querySelector('.close').click();
     }
     // POST CALL TO API to add new room
@@ -276,10 +388,11 @@ document.getElementById('add-room-save-btn').addEventListener('click', function 
             method: 'POST',
             headers: {
                 'Authorization': 'Bearer ' + getCookie('access_token'),
-                // 'Content-Type': 'application/json' 
+                'Content-Type': 'application/json'
                 // Remove 'Content-Type' header when sending FormData
             },
-            body: roomData,
+            body: JSON.stringify(roomData),
+            // body: roomData,
         };
         console.log(roomData);
         refreshAccessToken2(url, options)

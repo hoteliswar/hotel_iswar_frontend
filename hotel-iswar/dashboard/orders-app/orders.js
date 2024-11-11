@@ -80,10 +80,10 @@ function getOrderTypeDisplay(order) {
     // Get lists from localStorage
     const roomsList = JSON.parse(localStorage.getItem('roomsList') || '[]');
     const tablesList = JSON.parse(localStorage.getItem('tablesList') || '[]');
-    
+
     // Format order type
     let displayText = order.order_type.replace('_', ' ').toUpperCase();
-    
+
     // Only add table/room info for dine_in and hotel orders
     if (order.order_type === 'dine_in' && order.tables?.length > 0) {
         // Find table name from tablesList
@@ -94,7 +94,7 @@ function getOrderTypeDisplay(order) {
         const room = roomsList.find(r => r.id === order.room_id);
         displayText += room ? ` -R${room.room_number}` : ` -R ${order.room_id}`;
     }
-    
+
     return displayText;
 }
 
@@ -132,7 +132,7 @@ function renderOrders(reversedOrders) {
             <div class="order-item-col col-2">${order.phone ? order.phone : 'N/A'}</div>
             <div class="order-item-col col-2">${new Date(order.created_at).toLocaleDateString()}</div>
             <div class="order-item-col col-2"> ${getOrderTypeDisplay(order)}</div>
-            <div class="order-item-col col-2">${(parseFloat(order.total) + (parseFloat(order.total) * 0.05)).toFixed(2)}</div>
+            <div class="order-item-col col-2">${order.total}</div>
             <div class="order-item-col col-2"> 
                 ${order.status.replace('_', ' ').charAt(0).toUpperCase() + order.status.replace('_', ' ').slice(1).toLowerCase()}
             </div>
@@ -202,20 +202,20 @@ function renderDataModal(data) {
             <span class="detail-label">Food Items:</span>
             <span class="detail-value">
                 ${(() => {
-                    const allFoodsList = JSON.parse(localStorage.getItem('allFoodList'));
-                    return data.food_items.map((foodId, index) => {
-                        const foodName = allFoodsList.find(food => food.id === foodId)?.name || 'Unknown Food';
-                        const quantity = data.quantity[index];
-                        return `<div class="food-item"><div class="food-item-qty">${quantity}x</div><div class="food-item-name"> ${foodName} </div></div>`;
-                    }).join('');
-                })()}
+            const allFoodsList = JSON.parse(localStorage.getItem('allFoodList'));
+            return data.food_items.map((foodId, index) => {
+                const foodName = allFoodsList.find(food => food.id === foodId)?.name || 'Unknown Food';
+                const quantity = data.quantity[index];
+                return `<div class="food-item"><div class="food-item-qty">${quantity}x</div><div class="food-item-name"> ${foodName} </div></div>`;
+            }).join('');
+        })()}
             </span>
         </div>
 
 
         <div class="order-detail-item">
-            <span class="detail-label">Net Amount:</span>
-            <span class="detail-value">₹${(parseFloat(data.total) + (parseFloat(data.total) * 0.05)).toFixed(2)}</span>
+            <span class="detail-label">Total:</span>
+            <span class="detail-value">₹${parseFloat(data.total)}</span>
         </div>
         <div class="order-detail-item">
             <span class="detail-label">Order Status:</span>
@@ -234,13 +234,15 @@ function renderDataModal(data) {
         </div>
     `;
 
-    const billBtn = document.createElement('button');
-    billBtn.classList.add('bill-btn');
-    billBtn.innerHTML = 'View Bill';
-    billBtn.onclick = () => {
-        checkBillStatus(data.id);
-    };
-    orderDetails.appendChild(billBtn);
+    checkBillStatus(data.id);
+
+    // const billBtn = document.createElement('button');
+    // billBtn.classList.add('bill-btn');
+    // billBtn.innerHTML = 'View Bill';
+    // billBtn.onclick = () => {
+    //     checkBillStatus(data.id);
+    // };
+    // orderDetails.appendChild(billBtn);
 
 
     // Check if order_id exists in billing endpoint and display button to open bill
@@ -258,19 +260,90 @@ function renderDataModal(data) {
                 console.log(data);
                 const bills = data.filter(bill => bill.order_id == orderId);
                 console.log('Bills found:', bills);
-                if (bills.length > 1) {
-                    console.log('Latest bill found for order:', bills[0]);
-                    openBill(bills[0]);
-                } else {
-                    console.log('No bill found for order:', orderId);
-                    alert('Bill not generated yet for this order');
-                    document.querySelector('.bill-btn').textContent = 'Bill Not Generated Yet';
-                }
+                checkBill(bills);
+
             })
             .catch(error => {
                 console.log('Error fetching bill status:', error);
             });
+
+        function checkBill(bills) {
+            if (bills.length > 0) {
+
+                const orderDetails = document.getElementById('orderDetails');
+                const billBtn = document.createElement('button');
+                billBtn.classList.add('bill-btn');
+                billBtn.innerHTML = 'View Bill';
+                billBtn.onclick = () => {
+                    // checkBillStatus(data.id);
+                    openBill(bills[0]);
+                };
+                orderDetails.appendChild(billBtn);
+
+
+                console.log('Latest bill found for order:', bills[0]);
+                // openBill(bills[0]);
+                makepayment(bills[0]);
+            } else if (bills.length == 0) {
+
+                const orderDetails = document.getElementById('orderDetails');
+                const billBtn = document.createElement('button');
+                billBtn.classList.add('bill-btn');
+                billBtn.innerHTML = 'Bill Not Generated Yet';
+                billBtn.onclick = () => {
+                    alert('Bill not generated yet for this order');
+                    // checkBillStatus(data.id);
+                    // openBill(bills[0]);
+                };
+                orderDetails.appendChild(billBtn);
+
+                console.log('No bill found for order:', orderId);
+                // alert('Bill not generated yet for this order');
+                // document.querySelector('.bill-btn').textContent = 'Bill Not Generated Yet';
+            }
+        }
+
+        function makepayment(bill) {
+            const orderDetails = document.getElementById('orderDetails');
+            console.log('Making payment for bill:', bill);
+            const paymentBtn = document.createElement('button');
+            paymentBtn.classList.add('payment-btn');
+            paymentBtn.innerHTML = 'Make Payment';
+            paymentBtn.onclick = () => {
+                console.log('Payment made for bill:', bill);
+                openPaymentModal(bill);
+            };
+            orderDetails.appendChild(paymentBtn);
+
+            // Payment Modal and logic
+            // openPaymentModal(bill);
+
+        }
+
+        function openPaymentModal(bill) {
+            console.log('Opening payment modal for bill:', bill);
+            const settleModal = document.getElementById('paymentModal');
+            const settleModalContainer = document.querySelector('.modal-container2');
+            const modalBodySettle = settleModal.querySelector('.modal-body');
+
+            // Change display to flex for centering
+            settleModalContainer.style.display = 'flex';
+            settleModal.style.display = 'block';
+            setTimeout(() => settleModal.classList.add('show'), 10);
+        }
     }
+}
+
+// Close the settle modal
+document.querySelector('.close-payment').onclick = function () {
+    const settleModal = document.getElementById('paymentModal');
+    const modalContainer = document.querySelector('.modal-container2');
+
+    settleModal.classList.remove('show');
+    setTimeout(() => {
+        modalContainer.style.display = 'none';
+        settleModal.style.display = 'none';
+    }, 300);
 }
 
 document.addEventListener('click', function (e) {
@@ -442,10 +515,10 @@ async function generatePrintableBill(billData) {
                             <img src="./../order_bill/logo.png" alt="Restaurant Logo" class="restaurant-logo">
                         </div>
                         <div class="restaurant-details">
-                            <h2>Hotel Iswar & Family Restaurant</h2>
-                            <p>Address: Central Road, Silchar, Assam, 788001</p>
-                            <p>Contact: +91 38423 19540 / +91 6003704064</p>
-                            <p>Website: www.hoteliswar.in</p>
+                            <h3>Hotel Iswar & Family Restaurant</h3>
+                            <p> Central Road, Silchar, Assam, 788001</p>
+                            <p> +91 38423 19540 / +91 6003704064</p>
+                            <p> www.hoteliswar.in</p>
                             <p>GST No: 18BDXPS2451N1ZK</p>
                         </div>
                     </div>

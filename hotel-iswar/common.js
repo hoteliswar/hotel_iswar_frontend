@@ -386,7 +386,7 @@ function getTablesData() {
         .catch(error => {
             console.log('Error fetching table:', error);
         });
-    
+
     return true;
 
 }
@@ -656,7 +656,7 @@ function customAlert(message, type = 'info') {
     alertContainer.style.zIndex = '100002';
 
     // Set color based on alert type
-    switch(type) {
+    switch (type) {
         case 'success':
             alertContainer.style.backgroundColor = '#4CAF50';
             alertContainer.style.color = 'white';
@@ -683,7 +683,7 @@ function customAlert(message, type = 'info') {
     closeButton.style.float = 'right';
     closeButton.style.cursor = 'pointer';
     closeButton.style.marginLeft = '15px';
-    closeButton.onclick = function() {
+    closeButton.onclick = function () {
         document.body.removeChild(alertContainer);
     };
     alertContainer.insertBefore(closeButton, alertContainer.firstChild);
@@ -704,3 +704,42 @@ function customAlert(message, type = 'info') {
 
 // Override default alert
 alert = customAlert;
+
+
+if (document.getElementById('logout')) {
+    const liLogout = document.getElementById('logout');
+    liLogout.style.cursor = 'pointer';
+    // color on hover
+    liLogout.addEventListener('mouseover', function () {
+        liLogout.style.color = 'rgb(255, 175, 2)'; //hover color
+    });
+    liLogout.addEventListener('mouseout', function () {
+        liLogout.style.color = 'black'; //default color
+    });
+
+
+}
+
+// onclick function for logout on logout clear all cookies and local storage
+// and redirect to login page
+document.getElementById('logout').onclick = function () {
+    clearCookies();
+    clearLocalStorage();
+    // window.location.href = './login/login.html';
+    const rootPath = window.location.origin;
+    window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
+}
+
+function clearCookies() {
+    const cookies = document.cookie.split(';');
+
+    cookies.forEach(cookie => {
+        const name = cookie.split('=')[0].trim();
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    });
+
+}
+
+function clearLocalStorage() {
+    localStorage.clear();
+}
