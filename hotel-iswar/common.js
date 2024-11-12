@@ -751,7 +751,7 @@ document.getElementById('logout').onclick = function () {
     clearLocalStorage();
     // window.location.href = './login/login.html';
     const rootPath = window.location.origin;
-    window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
+    window.location.href = `${rootPath}/hotel-iswar-frontend/login/login.html`;
 }
 
 function clearCookies() {
