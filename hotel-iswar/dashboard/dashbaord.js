@@ -46,15 +46,20 @@ document.addEventListener('DOMContentLoaded', function () {
             case 'MENU MANAGEMENT':
                 fileName = './menu-management/menu-content';
                 break;
-            case 'REPORTS':
-                fileName = './reports-app/reports-content';
+            case 'SERVICE MANAGEMENT':
+                fileName = './service-management/service-management';
                 break;
             case 'ORDERS':
                 fileName = './orders-app/orders';
                 break;
-            case 'SERVICE MANAGEMENT':
-                fileName = './service-management/service-management';
+            case 'REPORTS':
+                fileName = './reports-app/reports-content';
                 break;
+            case 'ACCOUNTING':
+                fileName = './accounting-app/accounting';
+                break;
+
+
             default:
                 fileName = 'not-found';
         }

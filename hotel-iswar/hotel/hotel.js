@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const navItems = document.querySelectorAll('.dash-nav-item');
     const insertAllModal = document.querySelector('.insert-all-modal');
 
-    loadContent('BOOKING');   // Load the default content
+    loadContent('HOME');   // Load the default content
 
     navItems.forEach(item => {
         item.addEventListener('click', function () {
@@ -26,6 +26,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
             case 'GUEST':
                 fileName = './guest-app/guest';
+                break;
+            case 'CONFIGURATION':
+                fileName = './configuration-app/configuration';
+                break;
+            case 'USER MANAGEMENT':
+                fileName = './user-management/user-management';
                 break;
             default:
                 fileName = 'not-found';
@@ -69,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     let currentScript = null;
-    
+
     function loadContent(navName) {
         let fileName;
         switch (navName) {
@@ -84,6 +90,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
             case 'GUEST':
                 fileName = './guest-app/guest';
+                break;
+            case 'CONFIGURATION':
+                fileName = './configuration-app/configuration';
+                break;
+            case 'USER MANAGEMENT':
+                fileName = './user-management/user-management';
                 break;
             default:
                 fileName = 'not-found';

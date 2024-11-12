@@ -1,4 +1,6 @@
-baseURL = 'https://dineops.onrender.com/api/';
+// baseURL = 'https://dineops.onrender.com/api/';
+baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+
 
 // Add this at the beginning of your file, after baseURL declaration
 function checkTokensAndRedirect() {
