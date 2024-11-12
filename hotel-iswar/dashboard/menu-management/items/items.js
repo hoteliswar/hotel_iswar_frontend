@@ -1,4 +1,4 @@
-// baseURL = 'https://dineops.onrender.com/api/';
+
 
 // Putting Options in category list
 function putCategoryInSelect() {
@@ -90,11 +90,12 @@ function deleteFood(id) {
         .then(data => {
             console.log('Data Deleted:', data);
             getFooditems();
-            alert('Item Deleted Successfully');
+            alert('Item Deleted Successfully', 'success');
             coldReload();
         })
         .catch(error => {
             console.log('Error fetching data:', error);
+            alert('Item not deleted', 'error');
         });
 
 }

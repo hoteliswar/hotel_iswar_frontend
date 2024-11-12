@@ -1,4 +1,4 @@
-// baseURL = 'https://dineops.onrender.com/api/';
+
 
 function addCatgeoryToList(name, description, status, imageSrc, id) {
     const itemsContainer = document.querySelector('.all-list-table-items');
@@ -52,13 +52,18 @@ function deleteCategory(id) {
     const url = `${baseURL}foods/categories/${id}/`;
     refreshAccessToken2(url, option)
         // .then(response => response.json())
+        .then(response => {
+            console.log(`Status: ${response.status}`);
+        })
         .then(data => {
             console.log('Data:', data);
             getCategoryList();
-            alert("Category Deleted..");
+            alert("Category Deleted Successfully", 'success');
+            
         })
         .catch(error => {
             console.log('Error fetching data:', error);
+            alert("Category not deleted", 'error');
         });
 
 }

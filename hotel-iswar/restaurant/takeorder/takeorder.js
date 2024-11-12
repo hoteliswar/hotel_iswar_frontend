@@ -930,7 +930,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Data:', data);
                     console.table(data);
                     takeDataToKOT = data;
-                    alert("POST: Saved Order Successfully");
+                    alert("Success: Saved Order Successfully", 'success');
                     getTablesData();
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
@@ -949,6 +949,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => {
                     console.log('Error Saving Order:', error);
+                    alert('Error: Order not saved', 'error');
                 });
 
         }
@@ -974,8 +975,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Data:', data);
                     takeDataToKOT = data;
                     console.table(data);
-                    alert("PATCH: Saved Order Successfully");
+                    alert("Success: Order Updated Successfully", 'success');
                     getTablesData();
+                    
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
@@ -990,7 +992,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => {
                     console.log('Error Saving Order:', error);
-                    alert('Error Saving Order');
+                    alert('Error: Order not updated', 'error');
                 })
         }
 
@@ -1032,9 +1034,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // console.log('Order Data:', orderData);
             const orderId = urlParams.get('orderId');
             console.log('Order ID:', orderId);
+            const hiddenOrderId = document.getElementById('hidden-order-id');
 
             if (orderId) {
                 holdOrder(orderId);
+            } else if (hiddenOrderId) {
+                const hiddenOrderId = document.getElementById('hidden-order-id').value;
+                holdOrder(hiddenOrderId);
             }
         }
 
@@ -1058,10 +1064,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     console.log('Data:', data);
                     console.table(data);
-                    alert("PATCH: Order Hold Successfully");
+                    alert("Order on Hold", 'success');
                 })
                 .catch(error => {
                     console.log('Error Holding Order:', error);
+                    alert('Error: Order not on hold', 'error');
                 })
         }
     });
@@ -1130,6 +1137,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     console.log('Data:', data);
                     console.table(data);
+                    alert("Order KOT Successfully", 'success');
                     // alert("PATCH: Order KOT Successfully");
 
                     // Print KOT
@@ -1137,6 +1145,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => {
                     console.log('Error KOT Order:', error);
+                    alert('Error: Order KOT not done', 'error');
                 })
         }
 
@@ -1218,13 +1227,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const orderId = urlParams.get('orderId');
             console.log('Order ID:', orderId);
 
-            const hiddenOrderId = document.getElementById('hidden-order-id').value;
+            const hiddenOrderId = document.getElementById('hidden-order-id');
 
 
 
             if (orderId) {
                 cancOrder(orderId);
             } else if (hiddenOrderId) {
+                const hiddenOrderId = document.getElementById('hidden-order-id').value;
                 cancOrder(hiddenOrderId);
             } else {
                 console.log("OrderId not found")
@@ -1253,11 +1263,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     console.log('Data:', data);
                     console.table(data);
-                    alert("PATCH: Order Cancelled Successfully");
+                    alert("Order Cancelled Successfully", 'success');
                     window.location.href = './../table-info/neworder.html';
                 })
                 .catch(error => {
                     console.log('Error Cancelling Order:', error);
+                    alert('Error: Order not cancelled', 'error');
                 })
         }
 
@@ -1427,11 +1438,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     console.log('Data:', data);
                     console.table(data);
-                    alert("POST: Order Billed Successfully");
+                    alert("Success: Order Billed Successfully", 'success');
                     return generatePrintableBill(data);
                 })
                 .catch(error => {
                     console.log('Error Billing Order:', error);
+                    alert('Error: Order not billed', 'error');
                 })
         }
 
@@ -1445,34 +1457,6 @@ document.addEventListener('DOMContentLoaded', function () {
             var billDataOrderId2;
             await getOrderById(billData.order_id);
             console.log('billDataOrderId:', billDataOrderId2);
-
-
-            // const custbillno = billData.bill_no;
-            // const custcreatedat = new Date(billData.created_at).toLocaleDateString();
-            // const custtableno = billDataOrderId2.tables[0];
-            // const billtotal = billData.total;
-            // const billdiscount = billData.discount;
-            // const billdiscountamt = billData.discounted_amount;
-            // const billcgst = billData.order_cgst;
-            // const billsgst = billData.order_sgst;
-            // const billcgstamt = billData.cgst_amount;
-            // const billsgstamt = billData.sgst_amount;
-            // const billnetamt = billData.net_amount;
-
-            // const custfullname = billDataOrderId2.customer.first_name + ' ' + billDataOrderId2.customer.last_name;
-            // const custemail = billDataOrderId2.customer.email;
-            // const custphone = billDataOrderId2.customer.phone;
-
-            // console.log('custfullname:', custfullname);
-            // console.log('custemail:', custemail);
-            // console.log('custphone:', custphone);
-            // console.log('custtableno:', custtableno);
-            // console.log('billtotal:', billtotal);
-            // console.log('billdiscount:', billdiscount);
-            // console.log('billdiscountamt:', billdiscountamt);
-            // console.log('billcgst:', billcgst);
-            // console.log('billsgst:', billsgst);
-            // console.log('billnetamt:', billnetamt);
 
             billWindow.onload = function () {
                 // Populate bill data

@@ -1,5 +1,5 @@
-// baseURL = 'https://dineops.onrender.com/api/';
-baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+baseURL = 'https://dineops.onrender.com/api/';
+// baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 
 
 // Add this at the beginning of your file, after baseURL declaration
@@ -19,7 +19,7 @@ function checkTokensAndRedirect() {
 }
 
 // Call this function immediately
-checkTokensAndRedirect();
+// checkTokensAndRedirect();
 
 
 
@@ -212,6 +212,9 @@ async function refreshAccessToken2(url, option) {
             // Handle server error
             console.error('Server Error:', await response.text());
             throw new Error('Server Error');
+        } else if (response.status === 204) {
+            const data = ['Deleted successfully'];
+            return data;
         } else if (response.ok) {
             // Handle successful response
             console.log('Status:', response.status);
@@ -760,8 +763,8 @@ document.getElementById('logout').onclick = function () {
     clearLocalStorage();
     // window.location.href = './login/login.html';
     const rootPath = window.location.origin;
-    // window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
-    window.location.href = `${rootPath}/hotel_iswar_frontend/hotel-iswar/login/login.html`;
+    window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
+    // window.location.href = `${rootPath}/hotel_iswar_frontend/hotel-iswar/login/login.html`;
 }
 
 function clearCookies() {

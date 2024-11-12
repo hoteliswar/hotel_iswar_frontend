@@ -1,4 +1,3 @@
-baseURL = 'https://dineops.onrender.com/api/';
 
 // Putting Options in category list
 function putCategoryInSelect() {
@@ -230,13 +229,13 @@ document.getElementById('update-item').addEventListener('click', function (e) {
                 return getServiceList();   // Return the promise from getServiceList()
             })
             .then(() => { // This will execute after getServiceList() completes
-                alert("Food Service Created Successfully");
+                alert("Food Service Created Successfully", 'success');
                 document.querySelector('.close').click();
                 coldReload();   
             })
             .catch(error => {
                 console.error('Error updating Service:', error);
-                alert('Item not updated:', error);
+                alert('Service not updated', 'error');
             });
     }
 });
@@ -325,12 +324,13 @@ function createFood(itemData) {
             console.log('Data:', data);
             console.table(data);
             getServiceList();
-            alert("Service Created Successfully");
+            alert("Service Created Successfully", 'success');
             coldReload();
         })
 
         .catch(error => {
             console.log('Error fetching data:', error);
+            alert('Service not created', 'error');
         });
 }
 

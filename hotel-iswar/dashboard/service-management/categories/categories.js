@@ -1,4 +1,3 @@
-baseURL = 'https://dineops.onrender.com/api/';
 
 function addCatgeoryToList(name, description, status, id) {
     const itemsContainer = document.querySelector('.all-list-table-items');
@@ -65,10 +64,11 @@ function deleteCategory(id) {
         .then(data => {
             console.log('Service Category Data:', data);
             getServiceCategoryList();
-            alert("Service Category Deleted..");
+            alert("Service Category Deleted", 'success');
         })
         .catch(error => {
             console.log('Error fetching data:', error);
+            alert('Service Category not deleted', 'error');
         });
 
 }
@@ -222,11 +222,12 @@ function createCategory(catgData) {
             console.log('Service Category:', data);
             console.table(data);
             getServiceCategoryList();
-            alert("Service Category Created Successfully");
+            alert("Service Category Created Successfully", 'success');
             coldReload();
         })
         .catch(error => {
             console.log('Error fetching data:', error);
+            alert('Service Category not created', 'error');
         });
 }
 
