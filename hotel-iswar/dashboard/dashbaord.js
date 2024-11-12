@@ -12,9 +12,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const navItems = document.querySelectorAll('.dash-nav-item');
 
     loadContent('DASHBOARD');   // Load the default content
+    navItems[0].classList.add('selected');
 
     navItems.forEach(item => {
         item.addEventListener('click', function () {
+
+            navItems.forEach(nav => nav.classList.remove('selected'));
+            this.classList.add('selected');
+
             const navName = this.querySelector('.nav-name').textContent.trim();
             loadContent(navName);
         });
