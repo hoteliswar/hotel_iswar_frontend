@@ -56,13 +56,14 @@ async function addTable(tableData) {
             // .then(response => response.json())
             .then(async data => {
                 console.log('Data:', data);
-                alert(`Table ${data.table_number} added successfully`);
+                alert(`Table ${data.table_number} added successfully`, 'success');
 
                 getTablesData();
 
             })
             .catch(error => {
                 console.log('Error fetching data:', error);
+                alert('Table not added', 'error');
             });
 
         await coldReload();
@@ -71,7 +72,7 @@ async function addTable(tableData) {
         localStorage.setItem('tablesList', JSON.stringify(tableList));
         renderTableList();
     } else {
-        alert(`Table ${tableData.table_number} already exists.`);
+        alert(`Table ${tableData.table_number} already exists.`, 'warning');
         console.log(`Table ${tableData.table_number} already exists.`);
     }
 }

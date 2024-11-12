@@ -1,35 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Login Page</title>
-        <link rel="stylesheet" href="login-style.css">
- 
-        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script> -->
 
-    </head>
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="login-style.css">
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script> -->
+
+</head>
+
+<body>
+    <div class="left-container">
+        <div class="info-container">
+            <img src="./../assets/image/logo.png" alt="logo" class="logo">
+            <div class="logo-title">ISWAR HOTEL AND FAMILY RESTAURANT</div>
+            <div class="logo-subtitle">Central Road, Silchar, Assam - 788001</div>
+            <div class="logo-subtitle">+91 38423 19540 / +91 60037 04064</div>
+            <div class="logo-subtitle">GST No.: 18BDXPS2451N1ZK</div>
+        </div>
+    </div>
+
+    <div class="right-container">
         <div class="login-container">
             <h2>LOGIN</h2>
             <form id="loginForm" method="POST">
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" name="username"
-                        placeholder="Enter Username" required>
+                    <input type="text" id="username" name="username" placeholder="Enter Username" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password"
-                        placeholder="Enter Password" required>
+                    <input type="password" id="password" name="password" placeholder="Enter Password" required>
                 </div>
                 <button type="submit">Login</button>
             </form>
             <p id="error-message"></p>
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-        <!-- <script src="./../common.js"></script> -->
-        <script src="login-script.js"></script>
-    </body>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <!-- <script src="./../common.js"></script> -->
+    <script src="login-script.js"></script>
+</body>
+
 </html>

@@ -248,7 +248,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
             .then(data => {
                 console.log('Item updated successfully:', data);
                 getFooditems();
-                alert("Food Item Created Successfully");
+                alert("Food Item Created Successfully", 'success');
                 document.querySelector('.close').click();
                 coldReload();
                 // alert('Item updated successfully:', data);
@@ -256,7 +256,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
             })
             .catch(error => {
                 console.error('Error updating item:', error);
-                alert('Item not updated :', error);
+                alert('Item not updated', 'error');
                 // Handle the error, show an error message to the user
             });
     }
@@ -397,13 +397,14 @@ function createFood(itemData) {
             console.table(data);
             getFooditems();
             // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status, data.veg);
-            alert("Food Item Created Successfully");
+            alert("Food Item Created Successfully", 'success');
             // window.location.reload();
             coldReload();
         })
 
         .catch(error => {
             console.log('Error fetching data:', error);
+            alert('Food Item not created', 'error');
         });
 }
 

@@ -687,8 +687,13 @@ async function generatePrintableBill(billData) {
             `;
         }
 
+        // <div class="blank-page">
+        //         <!-- First page intentionally left blank -->
+        //     </div>
+
         // Use in generatePrintableBill
         doc.body.innerHTML = `
+            
             <div class="bill-wrapper">
                 <div class="bill-container">
                     ${generateBillHeader()}
@@ -804,9 +809,30 @@ function populateBillData(billWindow, billData, orderData) {
     doc.querySelector('.cashier-date').textContent = new Date(billData.created_at).toLocaleString();
 
     // Trigger print after a short delay
+    // setTimeout(() => {
+    //     billWindow.print();
+    // }, 500);
+
+
     setTimeout(() => {
-        billWindow.print();
+        try {
+            const printSettings = {
+                pageRanges: [{from: 2, to: 2}], // Only print page 2
+                silent: false,
+                printBackground: true,
+                deviceName: ''
+            };
+            console.log('Printing...');
+            billWindow.print(printSettings);
+        } catch (e) {
+            // Fallback to CSS method if print settings not supported
+            console.log('Fallback to CSS method');
+            billWindow.print();
+        }
     }, 500);
+
+
+    
 }
 
 function capitalizeFirstLetter(str) {

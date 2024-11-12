@@ -269,11 +269,12 @@ function createCategory(catgData) {
             console.table(data);
             getCategoryList();
             // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status);
-            alert("Category Created Successfully");
+            alert("Category Created Successfully", 'success');
             coldReload();
         })
         .catch(error => {
             console.log('Error fetching data:', error);
+            alert('Category not created ', 'error');
         });
 }
 
@@ -329,13 +330,13 @@ document.getElementById('update-category').addEventListener('click', function (e
                 console.log("Category Updated Successfully")
                 getCategoryList();
                 console.log('Category updated successfully:', data);
-                alert('Category updated successfully:', data);
+                alert('Category updated successfully', 'success');
                 coldReload();
                 // Optionally, update the UI or show a success message
             })
             .catch(error => {
                 console.error('Error updating item:', error);
-                alert('Category not updated :', error);
+                alert('Category not updated', 'error');
                 // Handle the error, show an error message to the user
             });
     }

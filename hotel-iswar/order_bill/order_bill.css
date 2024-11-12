@@ -1,3 +1,15 @@
+.blank-page {
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    width: 209mm; 
+    min-height: 297mm; 
+    padding: 10px; 
+    border: 0px solid #000; 
+    font-family: Arial, sans-serif; 
+    background-color: #fff; 
+    position: relative;
+}
 
 .bill-wrapper {
     display: flex; 
@@ -11,6 +23,30 @@
     background-color: #fff; 
     position: relative;
 }
+
+@media print {
+    .blank-page {
+        height: 50vh;
+        page-break-after: always;
+        break-after: page;
+    }
+
+    .bill-wrapper {
+        page-break-before: always;
+        break-before: page;
+    }
+}
+
+@page {
+    size: A4;
+    /* margin: 0; */
+}
+/* @media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+} */
 
 /* body{
     scale: 0.94;

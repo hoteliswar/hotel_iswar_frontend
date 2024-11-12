@@ -8,10 +8,10 @@ function checkTokensAndRedirect() {
     if (window.location.pathname.includes('/login/login.html')) {
         return; // Skip redirect if already on login page
     }
-    
+
     const accessToken = getCookie('access_token');
     const refreshToken = getCookie('refresh_token');
-    
+
     if (!accessToken || !refreshToken) {
         const rootPath = window.location.origin;
         window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
@@ -669,7 +669,7 @@ function customAlert(message, type = 'info') {
     // Create alert container
     const alertContainer = document.createElement('div');
     alertContainer.style.position = 'fixed';
-    alertContainer.style.top = '20px';
+    alertContainer.style.top = '40px';
     alertContainer.style.right = '20px';
     alertContainer.style.padding = '15px';
     alertContainer.style.borderRadius = '5px';
@@ -729,6 +729,15 @@ function customAlert(message, type = 'info') {
 // Override default alert
 alert = customAlert;
 
+terminateConsole();
+
+function terminateConsole() {
+    console.log = function () { }
+    console.table = function () { }
+    console.warn = function () { }
+    console.error = function () { }
+}
+
 
 if (document.getElementById('logout')) {
     const liLogout = document.getElementById('logout');
@@ -751,6 +760,7 @@ document.getElementById('logout').onclick = function () {
     clearLocalStorage();
     // window.location.href = './login/login.html';
     const rootPath = window.location.origin;
+    // window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
     window.location.href = `${rootPath}/hotel_iswar_frontend/hotel-iswar/login/login.html`;
 }
 
@@ -768,7 +778,7 @@ function clearLocalStorage() {
     localStorage.clear();
 }
 
-function logout(){
+function logout() {
     clearCookies();
     clearLocalStorage();
     // window.location.href = './login/login.html';
