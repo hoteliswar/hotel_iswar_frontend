@@ -684,7 +684,8 @@ td {
 .modal-body .btn-checkout,
 .modal-body .btn-services,
 .modal-body .btn-order,
-.modal-body .btn-checkin{
+.modal-body .btn-checkin,
+.modal-body .btn-bill{
     background-color: #f6a903;
     border: 0;
     border-radius: 4px;

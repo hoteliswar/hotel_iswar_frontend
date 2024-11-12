@@ -1,5 +1,26 @@
 baseURL = 'https://dineops.onrender.com/api/';
 
+// Add this at the beginning of your file, after baseURL declaration
+function checkTokensAndRedirect() {
+    // Check if current page is login page
+    if (window.location.pathname.includes('/login/login.html')) {
+        return; // Skip redirect if already on login page
+    }
+    
+    const accessToken = getCookie('access_token');
+    const refreshToken = getCookie('refresh_token');
+    
+    if (!accessToken || !refreshToken) {
+        const rootPath = window.location.origin;
+        window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
+    }
+}
+
+// Call this function immediately
+// checkTokensAndRedirect();
+
+
+
 // Helper function to save a cookie value
 function setCookie(name, value, minutes) {
     const d = new Date();
@@ -156,6 +177,7 @@ async function refreshAccessToken2(url, option) {
             if (refreshResponse.status === 401) {
                 // Refresh token is also invalid, redirect to login
                 window.location.href = 'index.html';
+                // logout();
                 return;
             } else if (refreshResponse.status === 200) {
                 const data = await refreshResponse.json();
@@ -742,4 +764,12 @@ function clearCookies() {
 
 function clearLocalStorage() {
     localStorage.clear();
+}
+
+function logout(){
+    clearCookies();
+    clearLocalStorage();
+    // window.location.href = './login/login.html';
+    const rootPath = window.location.origin;
+    window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
 }

@@ -1,4 +1,4 @@
-/* 
+
 .bill-wrapper {
     display: flex; 
     flex-direction: column; 
@@ -10,9 +10,9 @@
     font-family: Arial, sans-serif; 
     background-color: #fff; 
     position: relative;
-} */
+}
 
-body{
+/* body{
     scale: 0.94;
 } 
 
@@ -27,8 +27,8 @@ body{
     font-family: Arial, sans-serif; 
     background-color: #fff; 
     position: relative;
-    /* scale: 0.5; */
-}
+     scale: 0.5; 
+} */
 
 
 

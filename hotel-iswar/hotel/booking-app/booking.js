@@ -223,19 +223,30 @@ function convertToRequiredFormat() {
                 roomBookings[roomNumber] = [];
             }
 
-            
+
             const guestDetail = booking.guest_detail[0]; // Assuming there's always at least one guest
-            const checkInDate = new Date(room.start_date.replace('Z', ''));
-            const checkOutDate = new Date(room.end_date.replace('Z', ''));
+            let checkInDate = new Date(room.start_date.replace('Z', ''));
+            let checkOutDate = new Date(room.end_date.replace('Z', ''));
 
             let status;
-            
+
             console.log(room.start_date);
             console.log(room.start_date);
             console.log(currentDate);
 
             console.log(room.check_in_details);
+            if (room.check_in_details) {
+                console.log("Check-in date:", room.check_in_details.check_in_date);
+                checkInDate = new Date(room.check_in_details.check_in_date.replace('Z', ''));
+            }
             console.log(room.check_out_date);
+            if (room.check_out_date) {
+                console.log("Check-out date:", room.check_out_date);
+                checkOutDate = new Date(room.check_out_date.replace('Z', ''));
+            }
+
+
+
 
             if (booking.status === 'pending') {
                 if (room.start_date > currentDate.toISOString()) {
@@ -680,13 +691,225 @@ function loadBookingModal(bookingInfo, roomNumber) {
             modalContent += orderBtn.outerHTML;
         }
 
+        if (bookingInfo.status === 'checkout') {
+            // const billBtn = document.createElement('button');
+            // billBtn.className = 'btn-bill';
+            // billBtn.id = 'btn-bill';
+            // billBtn.textContent = 'Generate Bill';
+            // modalContent += billBtn.outerHTML;
+
+            const bookingId = bookingInfo.bookingId;
+            console.log(bookingId);
+
+            checkBillStatus(bookingId);
+
+
+            function checkBillStatus(bookingId) {
+                const url = `${baseURL}billing/bills/`;
+                const option = {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + getCookie('access_token'),
+                        'Content-Type': 'application/json'
+                    }
+                };
+                refreshAccessToken2(url, option)
+                    // .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        const bills = data.filter(bill => bill.booking_id == bookingId);
+                        console.log('Bills found:', bills);
+                        checkBill(bills);
+                        // return bills;
+                    })
+                    
+                    .catch(error => {
+                        console.log('Error fetching bill status:', error);
+                    });
+
+                function checkBill(bills) {
+                    console.log('checkBill called');
+                    let buttonsHTML = '';
+                    if (bills.length > 0) {
+
+                        // const orderDetails = document.getElementById('orderDetails');
+                        const billBtn = document.createElement('button');
+                        billBtn.classList.add('bill-btn');
+                        billBtn.id = 'view-bill-btn';
+                        billBtn.innerHTML = 'View Bill';
+                        // billBtn.onclick = () => {
+                        //     // checkBillStatus(data.id);
+                        //     openBill(bills[0]);
+                        // };
+                        // orderDetails.appendChild(billBtn);
+                        buttonsHTML += billBtn.outerHTML;
+
+
+                        console.log('Latest bill found for order:', bills[0]);
+                        // openBill(bills[0]);
+                        makepayment(bills[0]);
+                    } else if (bills.length == 0) {
+
+                        // const orderDetails = document.getElementById('orderDetails');
+                        const billBtn = document.createElement('button');
+                        billBtn.classList.add('bill-btn');
+                        billBtn.id = 'no-bill-btn';
+                        billBtn.innerHTML = 'Bill Not Generated Yet';
+                        // billBtn.onclick = () => {
+                        //     alert('Bill not generated yet for this order');
+                        //     // checkBillStatus(data.id);
+                        //     // openBill(bills[0]);
+                        // };
+                        // orderDetails.appendChild(billBtn);
+                        buttonsHTML += billBtn.outerHTML;
+
+                        console.log('No bill found for order:', orderId);
+                        // alert('Bill not generated yet for this order');
+                        // document.querySelector('.bill-btn').textContent = 'Bill Not Generated Yet';
+                    }
+                }
+
+                function makepayment(bill) {
+                    // const orderDetails = document.getElementById('orderDetails');
+                    console.log('Making payment for bill:', bill);
+
+                    if (bill.status == 'paid') {
+                        console.log('BLOCK IF')
+                        // alert('Bill already settled');
+                        // return;
+                    } else {
+                        console.log('BLOCK ELSE')
+                        const paymentBtn = document.createElement('button');
+                        paymentBtn.classList.add('payment-btn');
+                        paymentBtn.id = 'payment-btn';
+                        paymentBtn.innerHTML = 'Make Payment';
+                        // paymentBtn.onclick = () => {
+                        //     console.log('Payment made for bill:', bill);
+                        //     openPaymentModal(bill);
+                        // };
+                        // orderDetails.appendChild(paymentBtn);
+                        modalContent += paymentBtn.outerHTML;
+                        // console.log(modalContent);
+
+                    }
+
+                }
+
+
+
+
+                function openPaymentModal(bill) {
+                    console.log('Opening payment modal for bill:', bill);
+                    const settleModal = document.getElementById('paymentModal');
+                    const settleModalContainer = document.querySelector('.modal-container2');
+                    const modalBodySettle = settleModal.querySelector('.modal-body');
+
+                    // Change display to flex for centering
+                    settleModalContainer.style.display = 'flex';
+                    settleModal.style.display = 'block';
+                    setTimeout(() => settleModal.classList.add('show'), 10);
+
+                    // Populate the modal with bill data
+                    populatePaymentModal(bill);
+
+                    const paymentBtnSubmit = document.getElementById('payment-btn');
+                    paymentBtnSubmit.onclick = () => {
+                        console.log('Payment made for bill:', bill);
+                        paymentPOST(bill);
+
+                    };
+                }
+
+                function populatePaymentModal(bill) {
+                    console.log('Populating payment modal with bill:', bill);
+
+                    const orderId = document.getElementById('order-id');
+                    orderId.value = bill.order_id;
+
+                    const netAmt = document.getElementById('net-amt');
+                    netAmt.value = bill.net_amount;
+                }
+
+                function paymentPOST(bill) {
+                    console.log('Payment POST');
+
+                    const paidAmt = document.getElementById('paid-amt').value;
+                    const paymentMessage = document.getElementById('payment-message').value;
+                    // const paymentMethod = document.getElementById('payment-method').value;
+                    // Get selected payment method
+                    function getSelectedPaymentMethod() {
+                        const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+                        return selectedPayment ? selectedPayment.value : null;
+                    }
+
+                    const paymentMethod = getSelectedPaymentMethod();
+
+                    console.log(paidAmt, paymentMessage, paymentMethod);
+
+                    const paymentDetails = {
+                        'message': paymentMessage,
+                    }
+
+                    const paymentData = {
+                        'bill_id': bill.id,
+                        'paid_amount': paidAmt,
+                        'payment_method': paymentMethod,
+                        'payment_details': paymentDetails,
+                        'status': 'paid'
+                    }
+
+                    console.log(paymentData);
+
+                    paymentPOSTcall(paymentData);
+
+                    function paymentPOSTcall(paymentData) {
+                        console.log('Payment POST call');
+                        const url = `${baseURL}billing/bill-payments/`;
+                        const option = {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': 'Bearer ' + getCookie('access_token'),
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(paymentData)
+                        }
+
+                        refreshAccessToken2(url, option)
+                            .then(data => {
+                                console.log(data);
+                                window.location.reload();
+                            })
+                            .catch(error => {
+                                console.log('Error in payment POST call:', error);
+                            });
+                    }
+                }
+            }
+
+        }
+
 
         const modal = document.getElementById('bookingModal');
         const modalBody = modal.querySelector('.modal-body');
         setTimeout(() => modal.classList.add('show'), 10);
 
+        console.log(modalContent);
+
         modalBody.innerHTML = modalContent;
         modal.style.display = 'block';
+    }
+
+    const viewBillBtn = document.getElementById('view-bill-btn');
+    const noBillBtn = document.getElementById('no-bill-btn');
+    const paymentBtn = document.getElementById('payment-btn');
+    if (viewBillBtn) {
+        viewBillBtn.onclick = () => openBill(bill[0]);
+    }
+    if (noBillBtn) {
+        noBillBtn.onclick = () => alert('Bill not generated yet for this order');
+    }
+    if (paymentBtn) {
+        paymentBtn.onclick = () => openPaymentModal(bill);
     }
 
 
@@ -695,6 +918,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
     const servicesBtn = document.getElementById('btn-services');
     const checkoutBtn = document.getElementById('btn-checkout');
     const orderBtn = document.getElementById('btn-order');
+    const billBtn = document.getElementById('btn-bill');
 
     if (checkInBtn) {
         document.getElementById('btn-checkin').onclick = () => checkInBooking(bookingInfo, roomNumber);
@@ -707,6 +931,9 @@ function loadBookingModal(bookingInfo, roomNumber) {
     }
     if (orderBtn) {
         document.getElementById('btn-order').onclick = () => orderBooking(bookingInfo, roomNumber);
+    }
+    if (billBtn) {
+        document.getElementById('btn-bill').onclick = () => generateHotelBill(bookingInfo, roomNumber);
     }
 
     const serveBtn = document.querySelectorAll('.serve-btn');
@@ -808,7 +1035,7 @@ function deleteService(serviceId) {
             headers: {
                 'Authorization': 'Bearer ' + getCookie('access_token'),
                 'Content-Type': 'application/json'
-            }            
+            }
         }
 
         const url = `${baseURL}hotel/service-usages/${serviceId}/`;
@@ -921,6 +1148,13 @@ function checkOutBooking(bookingInfo, roomNumber) {
     // modalBody.innerHTML = modalContent;
 
     modal.style.display = 'block';
+}
+
+// Onclick action for Generate Bill from Booking details modal
+function generateHotelBill(bookingInfo, roomNumber) {
+    console.log("generateHotelBill called");
+    console.log(bookingInfo);
+    console.log(roomNumber);
 }
 
 // Onclick action for Order from Booking details modal
@@ -1251,7 +1485,8 @@ function checkInSubmit() {
     const roomId = document.getElementById('cim-roomNumber').dataset.roomId;
     const bookingId = document.getElementById('cim-roomNumber').dataset.bookingId;
     const checkinDateTime = document.getElementById('cim-checkinDateTime').value;
-    const checkinDateTimeISO = new Date(checkinDateTime).toISOString();
+    const checkinDateTimeISO = `${checkinDateTime}:00.000Z`;
+    // const checkinDateTimeISO = new Date(checkinDateTime).toISOString();
 
     // Get all guest info rows
     const guestInfoRows = document.querySelectorAll('.row-block');

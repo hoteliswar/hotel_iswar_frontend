@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard App</title>
+    <link rel="stylesheet" href="./dashboard-app/dashboard-content.css">
 </head>
+
 <body>
-    <h3>Welcome to Dashboard</h3>
+
+
+    <div class="dashboard-header">Welcome to Hotel Iswar & Family Restaurant</div>
+
+    <div class="dashboard-container" id="dashboardContainer">
+        <!-- Cards will be inserted here by JavaScript -->
+    </div>
+
+    <!-- Add this after your existing dashboard-container -->
+    <div class="availability-container">
+        <div class="small-card available-tables">
+            <i class="fas fa-chair card-icon"></i>
+            <div class="small-card-content">
+                <div class="small-card-title">Available Tables</div>
+                <div class="small-count" id="availableTablesCount">0</div>
+            </div>
+        </div>
+        <div class="small-card available-rooms">
+            <i class="fas fa-bed card-icon"></i>
+            <div class="small-card-content">
+                <div class="small-card-title">Available Rooms</div>
+                <div class="small-count" id="availableRoomsCount">0</div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <script src="./../../common.js"></script>
 </body>
+
 </html>
