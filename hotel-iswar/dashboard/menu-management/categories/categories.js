@@ -1,4 +1,4 @@
-baseURL = 'https://dineops.onrender.com/api/';
+// baseURL = 'https://dineops.onrender.com/api/';
 
 function addCatgeoryToList(name, description, status, imageSrc, id) {
     const itemsContainer = document.querySelector('.all-list-table-items');

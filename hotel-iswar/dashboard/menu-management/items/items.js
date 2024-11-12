@@ -1,4 +1,4 @@
-baseURL = 'https://dineops.onrender.com/api/';
+// baseURL = 'https://dineops.onrender.com/api/';
 
 // Putting Options in category list
 function putCategoryInSelect() {
