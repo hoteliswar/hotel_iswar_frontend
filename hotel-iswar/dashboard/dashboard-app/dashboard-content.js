@@ -49,7 +49,7 @@ function updateAvailabilityCounts() {
     const rooms = JSON.parse(localStorage.getItem('roomsList') || '[]');
     
     // Count available tables (assuming there's a status or isOccupied property)
-    const availableTables = tables.filter(table => !table.isOccupied).length;
+    const availableTables = tables.filter(table => !table.occupied).length;
     
     // Count available rooms (assuming there's a status or isOccupied property)
     const availableRooms = rooms.filter(room => !room.isOccupied).length;

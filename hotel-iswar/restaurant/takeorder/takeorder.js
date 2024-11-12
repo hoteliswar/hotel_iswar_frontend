@@ -1218,8 +1218,16 @@ document.addEventListener('DOMContentLoaded', function () {
             const orderId = urlParams.get('orderId');
             console.log('Order ID:', orderId);
 
+            const hiddenOrderId = document.getElementById('hidden-order-id').value;
+
+
+
             if (orderId) {
                 cancOrder(orderId);
+            } else if (hiddenOrderId) {
+                cancOrder(hiddenOrderId);
+            } else {
+                console.log("OrderId not found")
             }
 
         }

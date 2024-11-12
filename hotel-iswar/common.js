@@ -19,7 +19,7 @@ function checkTokensAndRedirect() {
 }
 
 // Call this function immediately
-// checkTokensAndRedirect();
+checkTokensAndRedirect();
 
 
 
@@ -729,7 +729,7 @@ function customAlert(message, type = 'info') {
 // Override default alert
 alert = customAlert;
 
-terminateConsole();
+// terminateConsole();
 
 function terminateConsole() {
     console.log = function () { }
