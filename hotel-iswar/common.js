@@ -18,6 +18,7 @@ function checkTokensAndRedirect() {
     }
 }
 
+
 // Call this function immediately
 // checkTokensAndRedirect();
 

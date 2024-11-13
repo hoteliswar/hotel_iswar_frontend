@@ -935,7 +935,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
-                    document.querySelector('.settle-btn').disabled = false;
+
+                    if (data.order_type == 'hotel') {
+                        document.querySelector('.settle-btn').disabled = true;
+                    } else {
+                        document.querySelector('.settle-btn').disabled = false;
+                    }
+                    
                     passOrderId = data.id;
                     passOrderKotCount = data.kot_count;
 
@@ -981,7 +987,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
-                    document.querySelector('.settle-btn').disabled = false;
+
+                    if (data.order_type == 'hotel') {
+                        document.querySelector('.settle-btn').disabled = true;
+                    } else {
+                        document.querySelector('.settle-btn').disabled = false;
+                    }
 
                     const createOrderId = document.createElement('input');
                     createOrderId.value = data.id;
@@ -1721,10 +1732,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 throw error;
             }
         }
-
+        
         // Usage in generatePrintableBill
+        async function generatePrintableBill3(billData) {
 
-        async function generatePrintableBill(billData) {
             try {
                 console.log('Bill Data:', billData);
                 const orderData = await getOrderById(billData.order_id);
@@ -1860,7 +1871,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        function populateBillData(billWindow, billData, orderData) {
+        function populateBillData3(billWindow, billData, orderData) {
+
+            console.warn(orderData);
+
             const doc = billWindow.document;
 
             // Transform food items data
@@ -1877,6 +1891,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             console.log('Order Bill Items:', orderBillItems);
+            console.warn(orderBillItems.length);
 
             // Basic Info
             doc.getElementById('bill-number').textContent = billData.bill_no;
@@ -1968,7 +1983,295 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 500);
         }
 
-        // 
+        // new 
+
+        async function generatePrintableBill(billData) {
+            try {
+                console.log('Bill Data:', billData);
+                const orderData = await getOrderById(billData.order_id);
+        
+                if (!orderData) {
+                    throw new Error('Failed to get order data');
+                }
+        
+                console.log('Order Data:', orderData);
+        
+                // Create new window
+                const billWindow = window.open('', '_blank');
+                const doc = billWindow.document;
+        
+                // Add CSS
+                const cssLink = doc.createElement('link');
+                cssLink.rel = 'stylesheet';
+                cssLink.href = './../../order_bill/order_bill.css';
+                doc.head.appendChild(cssLink);
+        
+                // Add print-specific styles
+                const style = doc.createElement('style');
+                // style.textContent = `
+                //     @media print {
+                //         .page-break {
+                //             page-break-before: always;
+                //         }
+                //         .bill-wrapper {
+                //             page-break-after: avoid;
+                //         }
+                //         .page-number {
+                //             text-align: center;
+                //             margin-top: 10px;
+                //             font-size: 12px;
+                //             color: #666;
+                //         }
+                //         .bill-container {
+                //             display: flex;
+                //             flex-direction: column;
+                //             min-height: 100vh;
+                //         }
+                //         .bill-items {
+                //             flex: 1;
+                //         }
+                //         .bill-footer {
+                //             margin-top: auto;
+                //         }
+                //         .page-subtotal td {
+                //             padding-top: 10px;
+                //             font-weight: bold;
+                //             border-top: 1px solid #ddd;
+                //         }
+                //     }
+                // `;
+                doc.head.appendChild(style);
+        
+                // Transform food items data
+                const allFoodList = JSON.parse(localStorage.getItem('allFoodList'));
+                const orderBillItems = orderData.food_items.map((foodId, index) => {
+                    const foodItem = allFoodList.find(item => item.id === foodId);
+                    return {
+                        foodId: foodId,
+                        itemName: foodItem.name,
+                        quantity: orderData.quantity[index],
+                        rate: parseFloat(foodItem.price),
+                        total: parseFloat(foodItem.price) * orderData.quantity[index]
+                    };
+                });
+        
+                const ITEMS_PER_PAGE = 10;
+                const totalPages = Math.ceil(orderBillItems.length / ITEMS_PER_PAGE);
+        
+                // Generate content for all pages
+                let pagesHTML = '';
+                for (let page = 1; page <= totalPages; page++) {
+                    pagesHTML += `
+                        ${page > 1 ? '<div class="page-break"></div>' : ''}
+                        <div class="bill-wrapper">
+                            <div class="bill-container">
+                                ${generateBillHeader()}
+                                ${generateInvoiceSection()}
+                                ${generateItemsSection(page, totalPages)}
+                                ${generateFooter()}
+                            </div>
+                        </div>
+                    `;
+                }
+        
+                // Set the HTML content
+                doc.body.innerHTML = pagesHTML;
+        
+                // Add number-to-words script
+                const script = doc.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/number-to-words';
+                script.onload = function () {
+                    populateBillData(billWindow, billData, orderData, orderBillItems);
+                };
+                doc.head.appendChild(script);
+        
+            } catch (error) {
+                console.error('Error in generatePrintableBill:', error);
+            }
+        }
+        
+        function generateBillHeader() {
+            return `
+                <header class="bill-header">
+                    <div class="header-content">
+                        <div class="logo">
+                            <img src="./../../order_bill/logo.png" alt="Restaurant Logo" class="restaurant-logo">
+                        </div>
+                        <div class="restaurant-details">
+                            <h2>Hotel Iswar & Family Restaurant</h2>
+                            <p>Address: Central Road, Silchar, Assam, 788001</p>
+                            <p>Contact: +91 38423 19540 / +91 6003704064</p>
+                            <p>Website: www.hoteliswar.in</p>
+                            <p>GST No: 18BDXPS2451N1ZK</p>
+                        </div>
+                    </div>
+                </header>
+            `;
+        }
+        
+        function generateInvoiceSection() {
+            return `
+                <section class="invoice-customer-info">
+                    <div class="invoice-info">
+                        <h3>Invoice</h3>
+                        <div>Bill No: <span id="bill-number"> </span></div>
+                        <div>GST Bill No: <span id="gst-bill-number"> </span></div>
+                        <div>Table: <span id="table-number"> </span></div>
+                        <div>Order Type: <span id="order-type"> </span></div>
+                    </div>
+        
+                    <div class="bill-details">
+                        <h3>Customer Details</h3>
+                        <div>Name: <span id="customer-name">  </span></div>
+                        <div>Email: <span id="customer-email">  </span></div>
+                        <div>Phone: <span id="customer-phone">  </span></div>
+                        <div>GST No.: <span id="customer-gstno">  </span></div>
+                    </div>
+                </section>
+            `;
+        }
+        
+        function generateItemsSection(pageNumber, totalPages) {
+            return `
+                <section class="bill-items">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Rate</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bill-items-body-${pageNumber}">
+                            <!-- Items will be added here -->
+                        </tbody>
+                    </table>
+                    <div class="page-number">Page ${pageNumber} of ${totalPages}</div>
+                </section>
+            `;
+        }
+        
+        function generateFooter() {
+            return `
+                <footer class="bill-footer">
+                    <div class="kot-section">
+                        <div class="kot-head">Kot Nos #</div>
+                        <div class="kot-nos"></div>
+                    </div>
+        
+                    <div class="cashier-info">
+                        <div class="cashier-name">Cashier: </div>
+                        <div class="name"></div>
+                        <div class="cashier-date"></div>
+                    </div>
+        
+                    <div class="license-nos">
+                        <div class="fssai">FSSAI LICENSE NO: 10324025000094</div>
+                    </div>
+        
+                    <div class="bill-footer-text">
+                        * * * Thank you for Dining with us! * * *
+                    </div>
+                </footer>
+            `;
+        }
+        
+        function populateBillData(billWindow, billData, orderData, orderBillItems) {
+            const doc = billWindow.document;
+        
+            // Basic Info
+            doc.getElementById('bill-number').textContent = billData.bill_no;
+            doc.getElementById('table-number').textContent = orderData.tables?.[0] || '-';
+            doc.getElementById('order-type').textContent = orderData.order_type;
+            doc.getElementById('gst-bill-number').textContent = billData.gst_bill_no;
+        
+            // Customer Details
+            doc.getElementById('customer-name').textContent = `${orderData.customer?.first_name || 'NA'} ${orderData.customer?.last_name || ''}`;
+            doc.getElementById('customer-email').textContent = orderData.customer?.email || 'NA';
+            doc.getElementById('customer-phone').textContent = orderData.customer?.phone || 'NA';
+            doc.getElementById('customer-gstno').textContent = billData?.customer_gst || 'NA';
+        
+            // Split items into pages
+            const ITEMS_PER_PAGE = 10;
+            const totalPages = Math.ceil(orderBillItems.length / ITEMS_PER_PAGE);
+        
+            for (let page = 1; page <= totalPages; page++) {
+                const startIndex = (page - 1) * ITEMS_PER_PAGE;
+                const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, orderBillItems.length);
+                const pageItems = orderBillItems.slice(startIndex, endIndex);
+        
+                const billItemsBody = doc.getElementById(`bill-items-body-${page}`);
+        
+                // Add items for this page
+                pageItems.forEach(item => {
+                    const row = doc.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.itemName}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.rate.toFixed(2)}</td>
+                        <td>${item.total.toFixed(2)}</td>
+                    `;
+                    billItemsBody.appendChild(row);
+                });
+        
+                // Add totals only to the last page
+                if (page === totalPages) {
+                    const totalsHTML = `
+                        <tr><td colspan="4">&nbsp;</td></tr>
+                        <tr class="bill-total total">
+                            <td colspan="2"></td>
+                            <td>Total</td>
+                            <td>${billData.total}</td>
+                        </tr>
+                        <tr class="bill-total discount">
+                            <td colspan="2"></td>
+                            <td>Discount</td>
+                            <td>${billData.discount}</td>
+                        </tr>
+                        <tr class="bill-total gst">
+                            <td colspan="2"></td>
+                            <td>CGST (2.50%)</td>
+                            <td>${billData.cgst_amount}</td>
+                        </tr>
+                        <tr class="bill-total gst">
+                            <td colspan="2"></td>
+                            <td>SGST (2.50%)</td>
+                            <td>${billData.sgst_amount}</td>
+                        </tr>
+                        <tr class="bill-total net-amount">
+                            <td colspan="2"></td>
+                            <td>Net Amount</td>
+                            <td>₹${billData.net_amount}</td>
+                        </tr>
+                        <tr class="bill-total amount-in-words">
+                            <td colspan="4">Amount in Words: 
+                                <i>${capitalizeFirstLetter(billWindow.numberToWords.toWords(Math.floor(billData.net_amount)).replace(/-/g, ' '))} Rupees Only</i>
+                            </td>
+                        </tr>
+                    `;
+                    billItemsBody.insertAdjacentHTML('beforeend', totalsHTML);
+                }
+            }
+        
+            // Footer info
+            doc.querySelector('.kot-nos').textContent = orderData.kot_count || '0';
+            doc.querySelector('.name').textContent = billData.cashier_by || '';
+            doc.querySelector('.cashier-date').textContent = new Date(billData.created_at).toLocaleString();
+        
+            // Trigger print after a short delay
+            setTimeout(() => {
+                billWindow.print();
+            }, 500);
+        }
+        
+        // Helper function to capitalize first letter
+        function capitalizeFirstLetter2(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        
+
 
 
 
