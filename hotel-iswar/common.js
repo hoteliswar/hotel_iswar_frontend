@@ -1,5 +1,5 @@
-baseURL = 'https://dineops.onrender.com/api/';
-// baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+// baseURL = 'https://dineops.onrender.com/api/';
+baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 
 
 // Add this at the beginning of your file, after baseURL declaration
@@ -283,7 +283,7 @@ async function refreshAccessToken3(url, option) {
 // Local Storage
 
 
-getCategoryList();
+// getCategoryList();
 
 // API Call GET Category List - Read
 function getCategoryList() {
@@ -337,7 +337,7 @@ function getCategoryListFromStorage() {
 
 }
 
-getFooditems();
+// getFooditems();
 
 // API Call GET Food Items
 function getFooditems() {
@@ -393,7 +393,8 @@ function getAllFoodListFromStorage() {
 }
 
 
-getTablesData();
+// getTablesData();
+
 // API Call to GET Tables data
 function getTablesData() {
     const option = {
@@ -439,7 +440,8 @@ function getTablesListFromStorage() {
 }
 
 
-getRoomsData();
+// getRoomsData();
+
 // API Call to GET Rooms data
 function getRoomsData2() {
     const option = {
@@ -503,7 +505,7 @@ function getRoomsListFromStorage() {
 }
 
 
-getServiceCategoryList();
+// getServiceCategoryList();
 
 // API Call GET Category List - Read
 function getServiceCategoryList() {
@@ -558,7 +560,7 @@ function getServiceCategoryListFromStorage() {
 
 
 
-getServiceList();
+// getServiceList();
 
 // API Call GET Category List - Read
 function getServiceList() {
@@ -613,7 +615,7 @@ function getServiceListFromStorage() {
 }
 
 
-getAllBookings();
+// getAllBookings();
 
 // API Call GET All Bookings - Read
 async function getAllBookings() {
@@ -659,8 +661,6 @@ function getAllBookingsFromStorage() {
     }
 
 }
-
-
 
 
 // Disable all console statements
@@ -755,18 +755,28 @@ if (document.getElementById('logout')) {
     });
 
 
+    document.getElementById('logout').onclick = function () {
+        clearCookies();
+        clearLocalStorage();
+        // window.location.href = './login/login.html';
+        const rootPath = window.location.origin;
+        window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
+        // window.location.href = `${rootPath}/hotel_iswar_frontend/hotel-iswar/login/login.html`;
+    }
+
 }
 
 // onclick function for logout on logout clear all cookies and local storage
 // and redirect to login page
-document.getElementById('logout').onclick = function () {
-    clearCookies();
-    clearLocalStorage();
-    // window.location.href = './login/login.html';
-    const rootPath = window.location.origin;
-    window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
-    // window.location.href = `${rootPath}/hotel_iswar_frontend/hotel-iswar/login/login.html`;
-}
+
+// document.getElementById('logout').onclick = function () {
+//     clearCookies();
+//     clearLocalStorage();
+//     // window.location.href = './login/login.html';
+//     const rootPath = window.location.origin;
+//     window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
+//     // window.location.href = `${rootPath}/hotel_iswar_frontend/hotel-iswar/login/login.html`;
+// }
 
 function clearCookies() {
     const cookies = document.cookie.split(';');

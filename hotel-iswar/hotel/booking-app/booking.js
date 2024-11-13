@@ -199,7 +199,7 @@ function convertToRequiredFormat() {
         roomIdToNumberMap[room.id] = room.room_number;
     });
 
-    console.log(`roomIdToNumberMap: ${roomIdToNumberMap}`);
+    console.log(`roomIdToNumberMap: ${JSON.stringify(roomIdToNumberMap)}`);
 
     // null is used for replacing values (not needed here).
     // 2 is the number of spaces for indentation, which makes it more readable.
@@ -703,7 +703,6 @@ function loadBookingModal(bookingInfo, roomNumber) {
 
             checkBillStatus(bookingId);
 
-
             function checkBillStatus(bookingId) {
                 const url = `${baseURL}billing/bills/`;
                 const option = {
@@ -722,13 +721,14 @@ function loadBookingModal(bookingInfo, roomNumber) {
                         checkBill(bills);
                         // return bills;
                     })
-                    
+
                     .catch(error => {
                         console.log('Error fetching bill status:', error);
                     });
 
                 function checkBill(bills) {
                     console.log('checkBill called');
+                    console.warn(bills);
                     let buttonsHTML = '';
                     if (bills.length > 0) {
 
@@ -737,35 +737,27 @@ function loadBookingModal(bookingInfo, roomNumber) {
                         billBtn.classList.add('bill-btn');
                         billBtn.id = 'view-bill-btn';
                         billBtn.innerHTML = 'View Bill';
-                        // billBtn.onclick = () => {
-                        //     // checkBillStatus(data.id);
-                        //     openBill(bills[0]);
-                        // };
-                        // orderDetails.appendChild(billBtn);
-                        buttonsHTML += billBtn.outerHTML;
 
+                        document.querySelector('.modal-body').appendChild(billBtn);
 
+                        document.getElementById('view-bill-btn').onclick = () => openBill(bills[0]);
                         console.log('Latest bill found for order:', bills[0]);
-                        // openBill(bills[0]);
+
                         makepayment(bills[0]);
+
                     } else if (bills.length == 0) {
 
                         // const orderDetails = document.getElementById('orderDetails');
                         const billBtn = document.createElement('button');
                         billBtn.classList.add('bill-btn');
-                        billBtn.id = 'no-bill-btn';
-                        billBtn.innerHTML = 'Bill Not Generated Yet';
-                        // billBtn.onclick = () => {
-                        //     alert('Bill not generated yet for this order');
-                        //     // checkBillStatus(data.id);
-                        //     // openBill(bills[0]);
-                        // };
-                        // orderDetails.appendChild(billBtn);
-                        buttonsHTML += billBtn.outerHTML;
+                        billBtn.id = 'gen-bill-btn';
+                        billBtn.innerHTML = 'Generate Bill';
+
+                        // buttonsHTML += billBtn.outerHTML;
+                        document.querySelector('.modal-body').appendChild(billBtn);
+                        document.getElementById('gen-bill-btn').onclick = () => generateHotelBill(bookingInfo, roomNumber);
 
                         console.log('No bill found for order:', orderId);
-                        // alert('Bill not generated yet for this order');
-                        // document.querySelector('.bill-btn').textContent = 'Bill Not Generated Yet';
                     }
                 }
 
@@ -778,25 +770,19 @@ function loadBookingModal(bookingInfo, roomNumber) {
                         // alert('Bill already settled');
                         // return;
                     } else {
+                        console.log(bill.status);
                         console.log('BLOCK ELSE')
                         const paymentBtn = document.createElement('button');
                         paymentBtn.classList.add('payment-btn');
                         paymentBtn.id = 'payment-btn';
                         paymentBtn.innerHTML = 'Make Payment';
-                        // paymentBtn.onclick = () => {
-                        //     console.log('Payment made for bill:', bill);
-                        //     openPaymentModal(bill);
-                        // };
-                        // orderDetails.appendChild(paymentBtn);
-                        modalContent += paymentBtn.outerHTML;
-                        // console.log(modalContent);
+
+                        document.querySelector('.modal-body').appendChild(paymentBtn);
+
 
                     }
 
                 }
-
-
-
 
                 function openPaymentModal(bill) {
                     console.log('Opening payment modal for bill:', bill);
@@ -887,7 +873,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
             }
 
         }
-
+        // here
 
         const modal = document.getElementById('bookingModal');
         const modalBody = modal.querySelector('.modal-body');
@@ -903,7 +889,8 @@ function loadBookingModal(bookingInfo, roomNumber) {
     const noBillBtn = document.getElementById('no-bill-btn');
     const paymentBtn = document.getElementById('payment-btn');
     if (viewBillBtn) {
-        viewBillBtn.onclick = () => openBill(bill[0]);
+        console.log('viewBillBtn clicked');
+        document.getElementById('view-bill-btn').onclick = () => openBill(bill[0]);
     }
     if (noBillBtn) {
         noBillBtn.onclick = () => alert('Bill not generated yet for this order');
@@ -918,7 +905,8 @@ function loadBookingModal(bookingInfo, roomNumber) {
     const servicesBtn = document.getElementById('btn-services');
     const checkoutBtn = document.getElementById('btn-checkout');
     const orderBtn = document.getElementById('btn-order');
-    const billBtn = document.getElementById('btn-bill');
+
+    const viewbillBtn = document.getElementById('view-bill-btn');
 
     if (checkInBtn) {
         document.getElementById('btn-checkin').onclick = () => checkInBooking(bookingInfo, roomNumber);
@@ -932,9 +920,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
     if (orderBtn) {
         document.getElementById('btn-order').onclick = () => orderBooking(bookingInfo, roomNumber);
     }
-    if (billBtn) {
-        document.getElementById('btn-bill').onclick = () => generateHotelBill(bookingInfo, roomNumber);
-    }
+
 
     const serveBtn = document.querySelectorAll('.serve-btn');
     // for each serveBtn add event listener
@@ -977,6 +963,104 @@ function loadBookingModal(bookingInfo, roomNumber) {
 }
 
 
+function openBill(bill) {
+    console.log('openBill called');
+    console.log(bill);
+}
+
+// Onclick action for Generate Bill from Booking details modal
+function generateHotelBill(bookingInfo, roomNumber) {
+    console.log("generateHotelBill called");
+    console.log(bookingInfo);
+    console.log(roomNumber);
+
+    openPaymentModal(bookingInfo);
+
+    function openPaymentModal(bookingInfo) {
+
+        const settleModal = document.getElementById('settleModal');
+        const settleModalContainer = document.querySelector('.modal-container-6');
+        const modalBodySettle = settleModal.querySelector('.modal-body');
+
+        // Change display to flex for centering
+        settleModalContainer.style.display = 'flex';
+        settleModal.style.display = 'block';
+        setTimeout(() => settleModal.classList.add('show'), 10);
+
+
+        const bookingId = document.getElementById('booking-id');
+        bookingId.value = bookingInfo.bookingId;
+
+        const roomDiscount = document.getElementById('room-discount');
+        const orderDiscount = document.getElementById('order-discount');
+        const customerGst = document.getElementById('customer_gst');
+
+        // Add event listeners to update genBillData when values change
+        [roomDiscount, orderDiscount, customerGst].forEach(input => {
+            input.addEventListener('input', updateGenBillData);
+        });
+
+        function updateGenBillData() {
+            genBillData = {
+                'booking_id': bookingInfo.bookingId,
+                'room_discount': roomDiscount.value || null,
+                'order_discount': orderDiscount.value || null,
+                'customer_gst': customerGst.value || null,
+                'bill_type': 'HOT',
+                'day_calculation_method': "hotel_standard"
+            };
+            console.log('Updated genBillData:', genBillData);
+        }
+        
+        // Initial setup
+        updateGenBillData();
+
+        
+        // if any of the values are null, remove that key from the object
+        if (genBillData.room_discount == null) {
+            delete genBillData.room_discount;
+        }
+        if (genBillData.order_discount == null) {
+            delete genBillData.order_discount;
+        }
+        if (genBillData.customer_gst == null) {
+            delete genBillData.customer_gst;
+        }
+
+        console.table(genBillData);
+        document.getElementById('print-bill-btn').onclick = () => genBillPOST(genBillData);
+    }
+
+}
+
+function genBillPOST(genBillData) {
+
+    console.log("printBill called");
+    console.log(genBillData);
+
+    const url = `${baseURL}billing/bills/`;
+
+    const option = {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(genBillData)
+    }
+
+    refreshAccessToken2(url, option)
+        .then(data => {
+            console.log(data);
+            alert('Bill Generated Successfully', 'success');
+            getAllBookings();
+        })
+        .catch(error => {
+            console.log('Error in genBillPOST:', error);
+            alert('Error in generating bill', 'error');
+        })
+}
+
 
 // Close the service booking modal
 document.querySelector('.close4').onclick = function () {
@@ -984,6 +1068,19 @@ document.querySelector('.close4').onclick = function () {
     newBookingModal.classList.remove('show');
     setTimeout(() => newBookingModal.style.display = 'none', 300);
 }
+
+// Close the settle modal
+document.querySelector('.close-settle').onclick = function () {
+    const settleModal = document.getElementById('settleModal');
+    const modalContainer = document.querySelector('.modal-container');
+
+    settleModal.classList.remove('show');
+    setTimeout(() => {
+        modalContainer.style.display = 'none';
+        settleModal.style.display = 'none';
+    }, 300);
+}
+
 
 // Close the checkOut modal
 document.querySelector('.close5').onclick = function () {
@@ -1150,12 +1247,7 @@ function checkOutBooking(bookingInfo, roomNumber) {
     modal.style.display = 'block';
 }
 
-// Onclick action for Generate Bill from Booking details modal
-function generateHotelBill(bookingInfo, roomNumber) {
-    console.log("generateHotelBill called");
-    console.log(bookingInfo);
-    console.log(roomNumber);
-}
+
 
 // Onclick action for Order from Booking details modal
 function orderBooking(bookingInfo, roomNumber) {
@@ -1641,12 +1733,20 @@ function postCheckInData(checkInData) {
     };
     const url = `${baseURL}hotel/checkin/`;
     refreshAccessToken2(url, options)
-        .then(data => {
+        .then(async data => {
             console.log("Check-In Data posted:", data);
+            alert("Check-In Guest Successfully", 'success');
+            await Promise.all([getAllBookings()]);
+
+            document.querySelector('.close3').click();
+            document.querySelector('.close').click();
+            document.querySelector('.dash-nav-category #booking').click();
+
             return data;
         })
         .catch(error => {
             console.error("Error posting check-in data:", error);
+            alert("Error posting check-in data", 'error');
         });
 }
 
@@ -1666,13 +1766,19 @@ function postServiceData(serviceData) {
     const url = `${baseURL}hotel/service-usages/`;
 
     refreshAccessToken2(url, options)
-        .then(data => {
+        .then(async data => {
             console.log("Service Booked for Room:", data);
-            alert("Service Booked for Room");
+            alert("Service Booked for Room", 'success');
+
+            await Promise.all([getAllBookings()]);
+            document.querySelector('.close4').click();
+            document.querySelector('.close').click();
+            document.querySelector('.dash-nav-category #booking').click();
             return data;
         })
         .catch(error => {
             console.error("Error posting check-in data:", error);
+            alert("Error booking service", 'error');
         });
 
 }
@@ -1693,13 +1799,21 @@ function postCheckOutData(checkOutData) {
     const url = `${baseURL}hotel/checkout/`;
 
     refreshAccessToken2(url, options)
-        .then(data => {
+        .then(async data => {
             console.log("Check Out for Room:", data);
-            alert("Checked Out for Room");
+            alert("Checked Out for Room", 'success');
+
+            await Promise.all([getAllBookings()]);
+            document.querySelector('.close4').click();
+            document.querySelector('.close').click();
+            document.querySelector('.dash-nav-category #booking').click();
+
+            // loadContent('BOOKINGS');
             return data;
         })
         .catch(error => {
             console.error("Error posting check-out data:", error);
+            alert("Error posting check-out data", 'error');
         });
 
 }
@@ -1968,6 +2082,7 @@ function checkRoomAvailability(room, startDate, endDate) {
 // Export the initialization function
 window.initializeBooking = initializeBooking;
 
+// New Booking Button Onclick Action POST API Call
 document.getElementById('new-booking-btn').addEventListener('click', function (e) {
     e.preventDefault();
     console.log("Book btn clicked")
@@ -2118,13 +2233,16 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
         console.log("Booking data from submitBooking:", booking);
         refreshAccessToken2(url, options)
             // .then(response => response.json())
-            .then(data => {
+            .then(async data => {
                 console.log('Booked Data:', data);
                 console.table(data);
                 // console.log(response.status);
                 alert("Booked Successfully");
-                // window.location.href = '/hotel/hotel.html';
-                window.location.reload();
+                await Promise.all([getAllBookings()]);
+                document.querySelector('.close2').click();
+                document.querySelector('.dash-nav-category #booking').click();
+
+                // window.location.reload();
             })
             .catch(error => {
                 console.log('Error fetching booked data:', error);

@@ -1,4 +1,5 @@
-baseURL = 'https://dineops.onrender.com/api/';
+// baseURL = 'https://dineops.onrender.com/api/';
+baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 
 // Function to create categories
 async function createCategories() {
@@ -25,14 +26,14 @@ async function createCategories() {
 // Function to create food items
 async function createFoodItems() {
     const foodItems = [
-        { name: 'Chicken Wings', price: 9.99, category: 5, status: 'enabled' },
-        { name: 'Caesar Salad', price: 7.99, category: 5 , status: 'enabled' },
-        { name: 'Grilled Salmon', price: 18.99, category: 6, status: 'enabled' },
-        { name: 'Beef Steak', price: 22.99, category: 6, status: 'enabled' },
-        { name: 'Chocolate Cake', price: 6.99, category: 7, status: 'enabled' },
-        { name: 'Ice Cream', price: 4.99, category: 7, status: 'enabled' },
-        { name: 'Soda', price: 2.99, category: 8, status: 'enabled' },
-        { name: 'Coffee', price: 3.99, category: 8, status: 'enabled' }
+        { name: 'Chicken Wings', price: 9.99, category: 1, status: 'enabled' },
+        { name: 'Caesar Salad', price: 7.99, category: 1 , status: 'enabled' },
+        { name: 'Grilled Salmon', price: 18.99, category: 1, status: 'enabled' },
+        { name: 'Beef Steak', price: 22.99, category: 1, status: 'enabled' },
+        { name: 'Chocolate Cake', price: 6.99, category: 1, status: 'enabled' },
+        { name: 'Ice Cream', price: 4.99, category: 1, status: 'enabled' },
+        { name: 'Soda', price: 2.99, category: 1, status: 'enabled' },
+        { name: 'Coffee', price: 3.99, category: 1, status: 'enabled' }
     ];
 
     for (const item of foodItems) {

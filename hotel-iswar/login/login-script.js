@@ -1,5 +1,5 @@
-baseURL = 'https://dineops.onrender.com/api/';
-// baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+// baseURL = 'https://dineops.onrender.com/api/';
+baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 
 
 // Helper function to set a cookie
@@ -9,6 +9,15 @@ function setCookie(name, value, minutes) {
     const expires = "expires=" + d.toUTCString();
     document.cookie = name + "=" + value + ";" + expires + ";path=/";
 }
+
+
+// Helper function to get a cookie value
+function getCookie(name) {
+    let value = "; " + document.cookie;
+    let parts = value.split("; " + name + "=");
+    if (parts.length === 2) return parts.pop().split(";").shift();
+}
+
 
 // Handle the form submission
 document.getElementById('loginForm').addEventListener('submit', function (event) {
@@ -34,7 +43,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
             }
             return response.json();
         })
-        .then(data => {
+        .then(async data => {
             if (data.access && data.refresh) {
                 // Store the access token in cookies
                 setCookie('access_token', data.access, 5); // Store for 5 minutes
@@ -44,12 +53,14 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
                 accessToken = data.access;
                 refreshToken = data.refresh;
 
+                await callAllAPI();
                 console.log('Login successful, access token stored in cookies.');
                 console.log('Access Token:', accessToken);
                 console.log('Refresh Token:', refreshToken);
 
                 // Redirect to a new URL after successful login
                 window.location.href = './../dashboard/dashboard.html'; // Change to your desired URL
+
             } else {
                 console.error('Login failed:', data);
                 alert('Invalid username or password');
@@ -130,3 +141,20 @@ function customAlert(message, type = 'info') {
 
 // Override default alert
 // alert = customAlert;
+
+async function callAllAPI() {
+    try {
+        await Promise.all([
+            getCategoryList(),
+            getFooditems(),
+            getTablesData(),
+            getRoomsData(),
+            getServiceCategoryList(),
+            getServiceList(),
+            getAllBookings()
+        ]);
+        console.log('All API calls completed');
+    } catch (error) {
+        console.error('Error in API calls:', error);
+    }
+}
