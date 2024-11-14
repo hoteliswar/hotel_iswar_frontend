@@ -807,8 +807,8 @@ if (document.getElementById('logout')) {
         clearLocalStorage();
         // window.location.href = './login/login.html';
         const rootPath = window.location.origin;
-        window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
-        // window.location.href = `${rootPath}/hotel_iswar_frontend/hotel-iswar/login/login.html`;
+        // window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
+        window.location.href = `${rootPath}/hotel_iswar_frontend/hotel-iswar/login/login.html`;
     }
 
 }
