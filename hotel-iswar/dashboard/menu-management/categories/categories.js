@@ -1,5 +1,4 @@
 
-
 function addCatgeoryToList(name, description, status, imageSrc, id) {
     const itemsContainer = document.querySelector('.all-list-table-items');
 
@@ -269,13 +268,13 @@ function createCategory(catgData) {
 
     refreshAccessToken(url, option)
         // .then(response => response.json())
-        .then(data => {
+        .then(async data => {
             console.log('Category:', data);
             console.table(data);
-            getCategoryList();
+            await Promise.all([getCategoryList()]);
             // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status);
             alert("Category Created Successfully", 'success');
-            coldReload();
+            // coldReload();
         })
         .catch(error => {
             console.log('Error fetching data:', error);
@@ -331,12 +330,12 @@ document.getElementById('update-category').addEventListener('click', function (e
 
         refreshAccessToken(url, option)
             // .then(response => response.json())
-            .then(data => {
+            .then(async data => {
                 console.log("Category Updated Successfully")
-                getCategoryList();
+                await Promise.all([getCategoryList()]);
                 console.log('Category updated successfully:', data);
                 alert('Category updated successfully', 'success');
-                coldReload();
+                // coldReload();
                 // Optionally, update the UI or show a success message
             })
             .catch(error => {

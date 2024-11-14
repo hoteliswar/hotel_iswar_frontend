@@ -736,14 +736,14 @@ function loadBookingModal(bookingInfo, roomNumber) {
                         const billBtn = document.createElement('button');
                         billBtn.classList.add('bill-btn');
                         billBtn.id = 'view-bill-btn';
-                        billBtn.innerHTML = 'View Bill';
+                        billBtn.innerHTML = 'Print Bill';
 
                         document.querySelector('.modal-body').appendChild(billBtn);
 
                         document.getElementById('view-bill-btn').onclick = () => openBill(bills[0]);
                         console.log('Latest bill found for order:', bills[0]);
 
-                        makepayment(bills[0]);
+                        // makepayment(bills[0]);
 
                     } else if (bills.length == 0) {
 
@@ -974,9 +974,9 @@ function generateHotelBill(bookingInfo, roomNumber) {
     console.log(bookingInfo);
     console.log(roomNumber);
 
-    openPaymentModal(bookingInfo);
+    openGenBillModal(bookingInfo);
 
-    function openPaymentModal(bookingInfo) {
+    function openGenBillModal(bookingInfo) {
 
         const settleModal = document.getElementById('settleModal');
         const settleModalContainer = document.querySelector('.modal-container-6');
@@ -1028,7 +1028,7 @@ function generateHotelBill(bookingInfo, roomNumber) {
         }
 
         console.table(genBillData);
-        document.getElementById('print-bill-btn').onclick = () => genBillPOST(genBillData);
+        document.getElementById('gen-billBtn').onclick = () => genBillPOST(genBillData);
     }
 
 }
@@ -1050,10 +1050,18 @@ function genBillPOST(genBillData) {
     }
 
     refreshAccessToken2(url, option)
-        .then(data => {
+        .then(async data => {
             console.log(data);
             alert('Bill Generated Successfully', 'success');
-            getAllBookings();
+            await Promise.all([
+                getAllBookings(),
+                getAllBilling()
+            ]);
+        
+
+            document.querySelector('.close-settle').click();
+            document.querySelector('.dash-nav-category #booking').click();
+
         })
         .catch(error => {
             console.log('Error in genBillPOST:', error);
@@ -1072,7 +1080,7 @@ document.querySelector('.close4').onclick = function () {
 // Close the settle modal
 document.querySelector('.close-settle').onclick = function () {
     const settleModal = document.getElementById('settleModal');
-    const modalContainer = document.querySelector('.modal-container');
+    const modalContainer = document.querySelector('.modal-container-6');
 
     settleModal.classList.remove('show');
     setTimeout(() => {
@@ -1246,8 +1254,6 @@ function checkOutBooking(bookingInfo, roomNumber) {
 
     modal.style.display = 'block';
 }
-
-
 
 // Onclick action for Order from Booking details modal
 function orderBooking(bookingInfo, roomNumber) {
@@ -1772,8 +1778,8 @@ function postServiceData(serviceData) {
 
             await Promise.all([getAllBookings()]);
             document.querySelector('.close4').click();
-            document.querySelector('.close').click();
-            document.querySelector('.dash-nav-category #booking').click();
+            // document.querySelector('.close').click();
+            // document.querySelector('.dash-nav-category #booking').click();
             return data;
         })
         .catch(error => {

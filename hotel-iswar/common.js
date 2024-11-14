@@ -662,6 +662,53 @@ function getAllBookingsFromStorage() {
 
 }
 
+// getAllBilling();
+
+// API Call GET All Billings - Read
+async function getAllBilling() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const url = `${baseURL}billing/bills/`;
+
+    refreshAccessToken2(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('All Billing Data:', data);
+            // Save the data to local storage
+            localStorage.setItem('billingList', JSON.stringify(data));
+            getAllBillingFromStorage();
+            resolve(data);
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+
+};
+
+
+function getAllBillingFromStorage() {
+    const storedData = localStorage.getItem('billingList');
+    if (storedData) {
+        if (storedData === 'undefined') {
+            console.log('No billing list found in local storage');
+            getAllBilling();
+        }
+        const categoryList = JSON.parse(storedData);
+        console.log('Billing list from local storage:', categoryList);
+        return categoryList;
+    } else {
+        console.log('No Billing list found in local storage');
+        getAllBilling();
+    }
+
+}
+
 
 // Disable all console statements
 // console.log = function() {};

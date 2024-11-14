@@ -151,7 +151,8 @@ async function callAllAPI() {
             getRoomsData(),
             getServiceCategoryList(),
             getServiceList(),
-            getAllBookings()
+            getAllBookings(),
+            getAllBilling()
         ]);
         console.log('All API calls completed');
     } catch (error) {

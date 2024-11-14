@@ -1,9 +1,5 @@
-// baseURL = 'https://dineops.onrender.com/api/';
-
 
 getAllOrders();
-
-
 
 function getAllOrders() {
     url = `${baseURL}orders/order/`;

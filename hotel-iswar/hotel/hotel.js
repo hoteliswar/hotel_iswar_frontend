@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const navItems = document.querySelectorAll('.dash-nav-item');
     const insertAllModal = document.querySelector('.insert-all-modal');
 
-    loadContent('HOME');   // Load the default content
+    loadContent('BILLING');   // Load the default content
 
     navItems.forEach(item => {
         item.addEventListener('click', function () {
@@ -87,6 +87,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
             case 'BOOKING':
                 fileName = './booking-app/booking';
+                break;
+            case 'BILLING':
+                fileName = './billing-app/billing';
                 break;
             case 'GUEST':
                 fileName = './guest-app/guest';
