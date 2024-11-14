@@ -1,5 +1,6 @@
 // baseURL = 'https://dineops.onrender.com/api/';
 baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+console.log(baseURL);
 
 
 // Helper function to set a cookie

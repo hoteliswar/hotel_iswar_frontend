@@ -1,5 +1,6 @@
 // baseURL = 'https://dineops.onrender.com/api/';
 baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+console.log(baseURL);
 
 
 // Add this at the beginning of your file, after baseURL declaration
