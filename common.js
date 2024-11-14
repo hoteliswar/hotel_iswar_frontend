@@ -805,12 +805,9 @@ if (document.getElementById('logout')) {
 
     document.getElementById('logout').onclick = function () {
         clearCookies();
-        clearLocalStorage();
-        // window.location.href = './login/login.html';
+        // clearLocalStorage();
         const rootPath = window.location.origin;
         window.location.href = `${rootPath}/login/login.html`;
-        // window.location.href = `${rootPath}/login/login.html`;
-        // window.location.href = `${rootPath}/hotel_iswar_frontend/hotel-iswar/login/login.html`;
     }
 
 }
@@ -843,7 +840,7 @@ function clearLocalStorage() {
 
 function logout() {
     clearCookies();
-    clearLocalStorage();
+    // clearLocalStorage();
     // window.location.href = './login/login.html';
     const rootPath = window.location.origin;
     // window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
