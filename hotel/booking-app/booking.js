@@ -1430,7 +1430,7 @@ function getBookingById(bookingId) {
             'Content-Type': 'application/json'
         }
     }
-    url = `${baseURL}hotel/bookings/${bookingId}`;
+    url = `${baseURL}hotel/bookings/${bookingId}/`;
     return refreshAccessToken2(url, option)
         .then(data => {
             console.log('Bookings Data by ID:', data);

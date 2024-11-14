@@ -726,8 +726,8 @@ a{
     }
 
     .bill-container {
-        min-height: 57vh;
-        max-height: 57vh;
+        min-height: 54vh;
+        max-height: 54vh;
     }
 
     .bill-watermark{
@@ -806,10 +806,10 @@ a{
     .bill-info{
         height: 91vh;
     }
-    /* .bill-container {
-        min-height: 42vh;
-        max-height: 42vh;
-    } */
+    .bill-container {
+        min-height: 46vh;
+        max-height: 46vh;
+    }
 }
 
 /* ----- */

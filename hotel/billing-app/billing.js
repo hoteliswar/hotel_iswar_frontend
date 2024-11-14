@@ -753,6 +753,7 @@ function paymentPOST(bill) {
         const options = {
             method: 'POST',
             headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(paymentData)
@@ -762,6 +763,11 @@ function paymentPOST(bill) {
             .then(data => {
                 console.log(data);
                 alert('Payment Successful', 'success');
+
+                // document.getElementById('paymentModal').classList.remove('show');
+                // document.querySelector('.modal-container2').style.display = 'none';
+                document.querySelector('.close-payment').click();
+
                 // window.location.reload();
             })
             .catch(error => {
