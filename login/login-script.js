@@ -21,8 +21,159 @@ function getCookie(name) {
 
 
 // Handle the form submission
+// document.getElementById('loginForm').addEventListener('submit', function (event) {
+//     event.preventDefault(); // Prevent the form from submitting the traditional way
+
+//     const username = document.getElementById('username').value;
+//     const password = document.getElementById('password').value;
+
+//     fetch(`${baseURL}accounts/token/`, {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//             username: username,
+//             password: password
+//         })
+//     })
+//         // .then(response => response.json())
+//         .then(response => {
+//             if (!response.ok) {
+//                 throw new Error('Invalid credentials');
+//             }
+//             return response.json();
+//         })
+//         .then(async data => {
+//             if (data.access && data.refresh) {
+//                 // Store the access token in cookies
+//                 setCookie('access_token', data.access, 5); // Store for 5 minutes
+//                 setCookie('refresh_token', data.refresh, 10000); // Store refresh token
+
+//                 // Store the tokens in variables
+//                 accessToken = data.access;
+//                 refreshToken = data.refresh;
+
+//                 await Promise.all([callAllAPI()]);
+//                 console.log('Login successful, access token stored in cookies.');
+//                 console.log('Access Token:', accessToken);
+//                 console.log('Refresh Token:', refreshToken);
+
+//                 // Redirect to a new URL after successful login
+//                 window.location.href = './../dashboard/dashboard.html'; // Change to your desired URL
+
+//             } else {
+//                 console.error('Login failed:', data);
+//                 alert('Invalid username or password');
+//             }
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//             // alert('Invalid username or password');
+//             customAlert('Invalid Username or Password', type = 'error');
+
+//             // Optional: Clear the password field
+//             document.getElementById('password').value = '';
+//         });
+// });
+
+
 document.getElementById('loginForm').addEventListener('submit', function (event) {
-    event.preventDefault(); // Prevent the form from submitting the traditional way
+    event.preventDefault();
+
+    // Add overlay to block clicks
+    const overlay = document.createElement('div');
+    overlay.className = 'click-blocker';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.1);
+        z-index: 9998;
+        cursor: not-allowed;
+    `;
+
+    // Create preloader
+    const preloader = document.createElement('div');
+    preloader.className = 'pl';
+    preloader.innerHTML = `
+        <div class="pl__bar"></div>
+        <div class="pl__bar"></div>
+        <div class="pl__bar"></div>
+    `;
+    preloader.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+    `;
+
+    // Add styles if not already present
+    if (!document.querySelector('#preloader-style')) {
+        const style = document.createElement('style');
+        style.id = 'preloader-style';
+        style.textContent = `
+            .pl {
+                --dur: 5s;
+                --size: 8em;
+                --bar-width: calc(var(--size) * 0.25);
+                aspect-ratio: 1 / 1;
+                display: flex;
+                justify-content: space-between;
+                width: var(--size);
+            }
+            .pl__bar {
+                background-color: #ffaf02;
+                position: relative;
+                width: var(--bar-width);
+                height: 100%;
+                transform-style: preserve-3d;
+                animation: bar-spin var(--dur) cubic-bezier(0.65,0,0.35,1) infinite;
+            }
+            .pl__bar:before,
+            .pl__bar:after {
+                background-color: hsl(223,90%,10%);
+                content: "";
+                display: block;
+                position: absolute;
+                top: 50%;
+                left: 0;
+                width: var(--bar-width);
+                height: var(--bar-width);
+            }
+            .pl__bar:before {
+                transform: translateY(-50%) rotateX(90deg) translateZ(calc(var(--size) / 2 + 1px));
+            }
+            .pl__bar:after {
+                border-radius: 50%;
+                transform: translateY(-50%) rotateX(-90deg) translateZ(calc(var(--size) / 2 + 1px));
+            }
+            .pl__bar:nth-child(2) {
+                animation-delay: -0.2s;
+            }
+            .pl__bar:nth-child(3) {
+                animation-delay: -0.4s;
+            }
+            @keyframes bar-spin {
+                from { transform: rotateX(0); }
+                to { transform: rotateX(-1turn); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Add overlay and preloader to body
+    document.body.appendChild(overlay);
+    document.body.appendChild(preloader);
+
+    // Function to remove loading state
+    const removeLoadingState = () => {
+        if (document.body.contains(preloader)) document.body.removeChild(preloader);
+        if (document.body.contains(overlay)) document.body.removeChild(overlay);
+    };
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -37,7 +188,6 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
             password: password
         })
     })
-        // .then(response => response.json())
         .then(response => {
             if (!response.ok) {
                 throw new Error('Invalid credentials');
@@ -46,37 +196,26 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
         })
         .then(async data => {
             if (data.access && data.refresh) {
-                // Store the access token in cookies
-                setCookie('access_token', data.access, 5); // Store for 5 minutes
-                setCookie('refresh_token', data.refresh, 10000); // Store refresh token
-
-                // Store the tokens in variables
+                // Keep loading state for successful login since we're redirecting
+                setCookie('access_token', data.access, 5);
+                setCookie('refresh_token', data.refresh, 10000);
                 accessToken = data.access;
                 refreshToken = data.refresh;
-
                 await Promise.all([callAllAPI()]);
-                console.log('Login successful, access token stored in cookies.');
-                console.log('Access Token:', accessToken);
-                console.log('Refresh Token:', refreshToken);
-
-                // Redirect to a new URL after successful login
-                window.location.href = './../dashboard/dashboard.html'; // Change to your desired URL
-
+                window.location.href = './../dashboard/dashboard.html';
             } else {
+                removeLoadingState();
                 console.error('Login failed:', data);
-                alert('Invalid username or password');
+                customAlert('Invalid username or password', 'error');
             }
         })
         .catch(error => {
+            removeLoadingState();
             console.error('Error:', error);
-            // alert('Invalid username or password');
-            customAlert('Invalid Username or Password', type = 'error');
-
-            // Optional: Clear the password field
+            customAlert('Invalid Username or Password', 'error');
             document.getElementById('password').value = '';
         });
 });
-
 
 // Custom alert function
 function customAlert(message, type = 'info') {
@@ -196,3 +335,51 @@ async function callAllAPI() {
         throw error;
     }
 }
+
+// Add this at the beginning of your file, after your existing initialization code
+function addPasswordToggle() {
+    const passwordInput = document.getElementById('password');
+    
+    // Add padding to password input
+    passwordInput.style.paddingRight = '40px';
+    
+    const toggleButton = document.createElement('button');
+    toggleButton.type = 'button';
+    toggleButton.className = 'password-toggle';
+    toggleButton.innerHTML = '<i class="fas fa-eye"></i>';
+    toggleButton.style.cssText = `
+        position: absolute;
+        right: 2px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2em;
+        padding: 5px;
+        color: #666;
+        transition: color 0.3s ease;
+        height: calc(100% - 4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        margin-right: 5px;
+        z-index: 100001;
+    `;
+
+    toggleButton.onmouseover = () => toggleButton.style.color = '#000';
+    toggleButton.onmouseout = () => toggleButton.style.color = '#666';
+
+    toggleButton.onclick = () => {
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+        toggleButton.innerHTML = `<i class="fas ${type === 'password' ? 'fa-eye' : 'fa-eye-slash'}"></i>`;
+    };
+
+    const passwordField = passwordInput.parentElement;
+    passwordField.style.position = 'relative';
+    passwordField.appendChild(toggleButton);
+}
+
+// document.addEventListener('DOMContentLoaded', addPasswordToggle);
