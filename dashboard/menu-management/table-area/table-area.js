@@ -115,3 +115,26 @@ async function coldReload() {
 }
 
 
+function refreshCategoryList() {
+    const button = document.querySelector('#refresh-btn');
+    button.classList.add('spinning');
+    console.log('Refreshing Category List');
+    
+    // Call your existing category fetch function here
+    getTablesData()
+        .then(() => {
+            console.log('Category List Refreshed');
+            // Remove spinning class after refresh
+            setTimeout(() => {
+                button.classList.remove('spinning');
+            }, 1000);
+        })
+        .catch(error => {
+            console.error('Error refreshing categories:', error);
+            button.classList.remove('spinning');
+        });
+    
+
+}
+
+document.getElementById('refresh-btn').addEventListener('click', refreshCategoryList);

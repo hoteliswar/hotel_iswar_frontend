@@ -2,6 +2,16 @@
 baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 console.log(baseURL);
 
+// Add keyboard shortcut listener
+document.addEventListener('keydown', function(event) {
+    console.log(`Ctrl + Shift + R pressed`);
+    // Check for Shift + Ctrl + R
+    if (event.shiftKey && event.ctrlKey && event.key === 'R') {
+        event.preventDefault(); // Prevent default refresh behavior
+    }
+});
+
+
 
 // Helper function to set a cookie
 function setCookie(name, value, minutes) {

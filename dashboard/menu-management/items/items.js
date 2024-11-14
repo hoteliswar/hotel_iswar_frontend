@@ -244,7 +244,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
 
         // Send a PATCH request to update the item
 
-        refreshAccessToken(url, option)
+        refreshAccessToken2(url, option)
             // .then(response => response.json())
             .then(async data => {
                 console.log('Item updated successfully:', data);
@@ -440,3 +440,27 @@ function coldReload() {
         page.click();
     }
 }
+
+function refreshCategoryList() {
+    const button = document.querySelector('#refresh-btn');
+    button.classList.add('spinning');
+    console.log('Refreshing Category List');
+    
+    // Call your existing category fetch function here
+    getFooditems()
+        .then(() => {
+            console.log('Category List Refreshed');
+            // Remove spinning class after refresh
+            setTimeout(() => {
+                button.classList.remove('spinning');
+            }, 1000);
+        })
+        .catch(error => {
+            console.error('Error refreshing categories:', error);
+            button.classList.remove('spinning');
+        });
+    
+
+}
+
+document.getElementById('refresh-btn').addEventListener('click', refreshCategoryList);
