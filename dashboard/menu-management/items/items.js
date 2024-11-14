@@ -87,11 +87,11 @@ function deleteFood(id) {
     const url = `${baseURL}foods/fooditems/${id}/`;
     refreshAccessToken2(url, option)
         // .then(response => response.json())
-        .then(data => {
+        .then(async data => {
             console.log('Data Deleted:', data);
-            getFooditems();
+            await Promise.all([getFooditems()]);
             alert('Item Deleted Successfully', 'success');
-            coldReload();
+            // coldReload();
         })
         .catch(error => {
             console.log('Error fetching data:', error);
@@ -246,9 +246,9 @@ document.getElementById('update-item').addEventListener('click', function (e) {
 
         refreshAccessToken(url, option)
             // .then(response => response.json())
-            .then(data => {
+            .then(async data => {
                 console.log('Item updated successfully:', data);
-                getFooditems();
+                await Promise.all([getFooditems()]);
                 alert("Food Item Created Successfully", 'success');
                 document.querySelector('.close').click();
                 coldReload();
@@ -393,13 +393,12 @@ function createFood(itemData) {
 
     refreshAccessToken2(url, option)
         // .then(response => response.json())
-        .then(data => {
+        .then(async data => {
             console.log('Data:', data);
             console.table(data);
-            getFooditems();
+            await Promise.all([getFooditems()]);
             // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status, data.veg);
             alert("Food Item Created Successfully", 'success');
-            // window.location.reload();
             coldReload();
         })
 

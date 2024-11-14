@@ -58,8 +58,7 @@ async function addTable(tableData) {
                 console.log('Data:', data);
                 alert(`Table ${data.table_number} added successfully`, 'success');
 
-                getTablesData();
-
+                await Promise.all([getTablesData()]);
             })
             .catch(error => {
                 console.log('Error fetching data:', error);
