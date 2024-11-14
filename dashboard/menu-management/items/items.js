@@ -324,6 +324,8 @@ function passToFoodList(data) {
 document.getElementById('add-item').addEventListener('click', function (e) {
     e.preventDefault();
 
+    // document.getElementById('add-item').click();
+
     const itemName = document.querySelector('#new-item-name').value;
     const itemPrice = document.querySelector('#new-item-price').value;
     const itemCategory = document.querySelector('#new-item-catg').value;
@@ -373,6 +375,14 @@ function updateVegNon(checkbox) {
 // API Call POST Food Items - Create
 function createFood(itemData) {
     console.log(itemData);
+
+    console.log(itemData.name.trim());
+    console.log(itemData.description.trim());
+    console.log(parseInt(itemData.price));
+    console.log(itemData.category);
+    console.log(itemData.status);
+    console.log(itemData.veg);
+
     const option = {
         method: 'POST',
         headers: {
@@ -381,8 +391,8 @@ function createFood(itemData) {
         },
         body: JSON.stringify({
             name: itemData.name,
-            description: itemData.description,
-            price: itemData.price,
+            description: String(itemData.description) || '',
+            price: parseFloat(itemData.price),
             category: itemData.category,
             status: itemData.status,
             veg: itemData.veg
@@ -399,7 +409,7 @@ function createFood(itemData) {
             await Promise.all([getFooditems()]);
             // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status, data.veg);
             alert("Food Item Created Successfully", 'success');
-            coldReload();
+            // coldReload();
         })
 
         .catch(error => {

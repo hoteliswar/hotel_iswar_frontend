@@ -1450,6 +1450,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Data:', data);
                     console.table(data);
                     alert("Success: Order Billed Successfully", 'success');
+                    document.querySelector('.close-settle').click();
+                    document.querySelector('.settle-btn').disabled = true;
                     return generatePrintableBill(data);
                 })
                 .catch(error => {

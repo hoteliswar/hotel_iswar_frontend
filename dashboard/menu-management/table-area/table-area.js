@@ -1,3 +1,5 @@
+
+
 document.querySelector('.load-table-blocks').textContent = 'Loading...';
 
 // Retrieve tableList from localStorage
@@ -12,6 +14,12 @@ console.log('Table List:', getTableListFromLocalStorage());
 // Function to render the table list in HTML
 async function renderTableList() {
     const tableList = await getTableListFromLocalStorage();
+
+    if (tableList.length === 0) {
+        await Promise.all([getTablesData()]);
+        tableList = await getTableListFromLocalStorage();
+    }
+
     const tableContainer = document.querySelector('.load-table-blocks');
 
     tableContainer.innerHTML = '';

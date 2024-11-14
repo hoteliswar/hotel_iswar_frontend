@@ -54,7 +54,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
                 accessToken = data.access;
                 refreshToken = data.refresh;
 
-                await callAllAPI();
+                await Promise.all([callAllAPI()]);
                 console.log('Login successful, access token stored in cookies.');
                 console.log('Access Token:', accessToken);
                 console.log('Refresh Token:', refreshToken);
@@ -145,7 +145,8 @@ function customAlert(message, type = 'info') {
 
 async function callAllAPI() {
     try {
-        await Promise.all([
+        // First, wait for all API calls to complete
+        const results = await Promise.all([
             getCategoryList(),
             getFooditems(),
             getTablesData(),
@@ -155,8 +156,43 @@ async function callAllAPI() {
             getAllBookings(),
             getAllBilling()
         ]);
-        console.log('All API calls completed');
+
+        // Verify all data is in localStorage
+        const requiredData = [
+            'categoryList',
+            'allFoodList',
+            'tablesList',
+            'roomsList',
+            'serviceCategoryList',
+            'serviceList',
+            'bookingsList',
+            'billingList'
+        ];
+
+        const missingData = requiredData.filter(key => !localStorage.getItem(key));
+        
+        if (missingData.length > 0) {
+            console.warn('Missing data in localStorage:', missingData);
+            // Retry missing data fetches
+            const retryPromises = missingData.map(key => {
+                switch(key) {
+                    case 'categoryList': return getCategoryList();
+                    case 'allFoodList': return getFooditems();
+                    case 'tablesList': return getTablesData();
+                    case 'roomsList': return getRoomsData();
+                    case 'serviceCategoryList': return getServiceCategoryList();
+                    case 'serviceList': return getServiceList();
+                    case 'bookingsList': return getAllBookings();
+                    case 'billingList': return getAllBilling();
+                }
+            });
+            await Promise.all(retryPromises);
+        }
+
+        console.log('All API calls completed successfully');
+        return true;
     } catch (error) {
         console.error('Error in API calls:', error);
+        throw error;
     }
 }
