@@ -1,6 +1,6 @@
 
 
-document.querySelector('.load-table-blocks').textContent = 'Loading...';
+document.querySelector('.load-table-blocks').textContent = 'No Table Found';
 
 // Retrieve tableList from localStorage
 async function getTableListFromLocalStorage() {
