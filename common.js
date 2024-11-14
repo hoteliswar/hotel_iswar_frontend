@@ -781,8 +781,8 @@ function customAlert(message, type = 'info') {
 // Override default alert
 alert = customAlert;
 
+// Disable all console statements
 // terminateConsole();
-
 function terminateConsole() {
     console.log = function () { }
     console.table = function () { }
