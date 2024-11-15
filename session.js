@@ -37,7 +37,7 @@ function checkSession() {
 }
 
 // Run session check when page loads
-document.addEventListener('DOMContentLoaded', checkSession);
+// document.addEventListener('DOMContentLoaded', checkSession);
 
 // Optional: Periodically check session
 setInterval(checkSession, 60000); // Check every minute

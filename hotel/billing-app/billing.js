@@ -2,13 +2,19 @@
 
 getAllBilling();
 
-function billingDisplay() {
+async function billingDisplay() {
 
-    const billingData = localStorage.getItem('billingList');
-    const bookingData = localStorage.getItem('bookingsList');
+    const billingData = await getAllBillingFromStorage();
+    const bookingData = await getAllBookingsFromStorage();
 
-    const billingList = JSON.parse(billingData);
-    const bookingList = JSON.parse(bookingData);
+    // const billingList = JSON.parse(billingData);
+    // const bookingList = JSON.parse(bookingData);
+
+    const billingList = billingData;
+    const bookingList = bookingData;
+
+    console.log('Billing Data:', billingList);
+    console.log('Booking Data:', bookingData);
 
     console.log('Billing List:', billingList);
     console.log('Booking List:', bookingList);
@@ -26,13 +32,15 @@ function billingDisplay() {
     return combinedData;
 }
 
-function billingDisplayUI() {
+async function billingDisplayUI() {
 
     const displayArea = document.querySelector('.append-all-room');
 
     displayArea.innerHTML = '';
 
-    const combinedData = billingDisplay();
+    const allBilling = localStorage.getItem('billingList');
+
+    const combinedData = await billingDisplay();
 
     combinedData.forEach(item => {
         console.log(item);
@@ -166,18 +174,7 @@ document.querySelector('.close').onclick = function () {
 async function viewBillModal(item) {
     console.log('view bill modal');
     console.log(item);
-    // generatePrintableBill(item);
-
-    try {
-        const billData = await getBillById(item.id);
-        console.log('Bill Data:', billData);
-        generatePrintableBill(billData);
-        // generatePrintableBill(item);
-    } catch (error) {
-        console.log('Error getting bill:', error);
-    }
-
-
+    generatePrintableBill(item);
 
 }
 
@@ -206,474 +203,6 @@ async function getBillById(billId) {
     return data;
 
 }
-
-
-// new 
-
-async function generatePrintableBill2(billData) {
-    try {
-        console.log('Bill Data:', billData);
-        const orderData = await getOrderById(billData.order_id);
-
-        if (!orderData) {
-            throw new Error('Failed to get order data');
-        }
-
-        console.log('Order Data:', orderData);
-
-        // Create new window
-        const billWindow = window.open('', '_blank');
-        const doc = billWindow.document;
-
-        // Add CSS
-        const cssLink = doc.createElement('link');
-        cssLink.rel = 'stylesheet';
-        cssLink.href = './../../order_bill/order_bill.css';
-        doc.head.appendChild(cssLink);
-
-        // Add print-specific styles
-        const style = doc.createElement('style');
-        // style.textContent = `
-        //     @media print {
-        //         .page-break {
-        //             page-break-before: always;
-        //         }
-        //         .bill-wrapper {
-        //             page-break-after: avoid;
-        //         }
-        //         .page-number {
-        //             text-align: center;
-        //             margin-top: 10px;
-        //             font-size: 12px;
-        //             color: #666;
-        //         }
-        //         .bill-container {
-        //             display: flex;
-        //             flex-direction: column;
-        //             min-height: 100vh;
-        //         }
-        //         .bill-items {
-        //             flex: 1;
-        //         }
-        //         .bill-footer {
-        //             margin-top: auto;
-        //         }
-        //         .page-subtotal td {
-        //             padding-top: 10px;
-        //             font-weight: bold;
-        //             border-top: 1px solid #ddd;
-        //         }
-        //     }
-        // `;
-        doc.head.appendChild(style);
-
-        // Transform food items data
-        const allFoodList = JSON.parse(localStorage.getItem('allFoodList'));
-        const orderBillItems = orderData.food_items.map((foodId, index) => {
-            const foodItem = allFoodList.find(item => item.id === foodId);
-            return {
-                foodId: foodId,
-                itemName: foodItem.name,
-                quantity: orderData.quantity[index],
-                rate: parseFloat(foodItem.price),
-                total: parseFloat(foodItem.price) * orderData.quantity[index]
-            };
-        });
-
-        const ITEMS_PER_PAGE = 10;
-        const totalPages = Math.ceil(orderBillItems.length / ITEMS_PER_PAGE);
-
-        // Generate content for all pages
-        let pagesHTML = '';
-        for (let page = 1; page <= totalPages; page++) {
-            pagesHTML += `
-                ${page > 1 ? '<div class="page-break"></div>' : ''}
-                <div class="bill-wrapper">
-                    <div class="bill-container">
-                        ${generateBillHeader()}
-                        ${generateInvoiceSection()}
-                        ${generateItemsSection(page, totalPages)}
-                        ${generateFooter()}
-                    </div>
-                </div>
-            `;
-        }
-
-        // Set the HTML content
-        doc.body.innerHTML = pagesHTML;
-
-        // Add number-to-words script
-        const script = doc.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/number-to-words';
-        script.onload = function () {
-            populateBillData(billWindow, billData, orderData, orderBillItems);
-        };
-        doc.head.appendChild(script);
-
-    } catch (error) {
-        console.error('Error in generatePrintableBill:', error);
-    }
-}
-
-function generateBillHeader() {
-    return `
-        <header class="bill-header">
-            <div class="header-content">
-                <div class="logo">
-                    <img src="./../../order_bill/logo.png" alt="Restaurant Logo" class="restaurant-logo">
-                </div>
-                <div class="restaurant-details">
-                    <h2>Hotel Iswar & Family Restaurant</h2>
-                    <p>Address: Central Road, Silchar, Assam, 788001</p>
-                    <p>Contact: +91 38423 19540 / +91 6003704064</p>
-                    <p>Website: www.hoteliswar.in</p>
-                    <p>GST No: 18BDXPS2451N1ZK</p>
-                </div>
-            </div>
-        </header>
-    `;
-}
-
-function generateInvoiceSection() {
-    return `
-        <section class="invoice-customer-info">
-            <div class="invoice-info">
-                <h3>Invoice</h3>
-                <div>Bill No: <span id="bill-number"> </span></div>
-                <div>GST Bill No: <span id="gst-bill-number"> </span></div>
-                <div>Table: <span id="table-number"> </span></div>
-                <div>Order Type: <span id="order-type"> </span></div>
-            </div>
-
-            <div class="bill-details">
-                <h3>Customer Details</h3>
-                <div>Name: <span id="customer-name">  </span></div>
-                <div>Email: <span id="customer-email">  </span></div>
-                <div>Phone: <span id="customer-phone">  </span></div>
-                <div>GST No.: <span id="customer-gstno">  </span></div>
-            </div>
-        </section>
-    `;
-}
-
-function generateItemsSection(pageNumber, totalPages) {
-    return `
-        <section class="bill-items">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item Name</th>
-                        <th>Quantity</th>
-                        <th>Rate</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="bill-items-body-${pageNumber}">
-                    <!-- Items will be added here -->
-                </tbody>
-            </table>
-            <div class="page-number">Page ${pageNumber} of ${totalPages}</div>
-        </section>
-    `;
-}
-
-function generateFooter() {
-    return `
-        <footer class="bill-footer">
-            <div class="kot-section">
-                <div class="kot-head">Kot Nos #</div>
-                <div class="kot-nos"></div>
-            </div>
-
-            <div class="cashier-info">
-                <div class="cashier-name">Cashier: </div>
-                <div class="name"></div>
-                <div class="cashier-date"></div>
-            </div>
-
-            <div class="license-nos">
-                <div class="fssai">FSSAI LICENSE NO: 10324025000094</div>
-            </div>
-
-            <div class="bill-footer-text">
-                * * * Thank you for Dining with us! * * *
-            </div>
-        </footer>
-    `;
-}
-
-function populateBillData(billWindow, billData, orderData, orderBillItems) {
-    const doc = billWindow.document;
-
-    // Basic Info
-    doc.getElementById('bill-number').textContent = billData.bill_no;
-    doc.getElementById('table-number').textContent = orderData.tables?.[0] || '-';
-    doc.getElementById('order-type').textContent = orderData.order_type;
-    doc.getElementById('gst-bill-number').textContent = billData.gst_bill_no;
-
-    // Customer Details
-    doc.getElementById('customer-name').textContent = `${orderData.customer?.first_name || 'NA'} ${orderData.customer?.last_name || ''}`;
-    doc.getElementById('customer-email').textContent = orderData.customer?.email || 'NA';
-    doc.getElementById('customer-phone').textContent = orderData.customer?.phone || 'NA';
-    doc.getElementById('customer-gstno').textContent = billData?.customer_gst || 'NA';
-
-    // Split items into pages
-    const ITEMS_PER_PAGE = 10;
-    const totalPages = Math.ceil(orderBillItems.length / ITEMS_PER_PAGE);
-
-    for (let page = 1; page <= totalPages; page++) {
-        const startIndex = (page - 1) * ITEMS_PER_PAGE;
-        const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, orderBillItems.length);
-        const pageItems = orderBillItems.slice(startIndex, endIndex);
-
-        const billItemsBody = doc.getElementById(`bill-items-body-${page}`);
-
-        // Add items for this page
-        pageItems.forEach(item => {
-            const row = doc.createElement('tr');
-            row.innerHTML = `
-                <td>${item.itemName}</td>
-                <td>${item.quantity}</td>
-                <td>${item.rate.toFixed(2)}</td>
-                <td>${item.total.toFixed(2)}</td>
-            `;
-            billItemsBody.appendChild(row);
-        });
-
-        // Add totals only to the last page
-        if (page === totalPages) {
-            const totalsHTML = `
-                <tr><td colspan="4">&nbsp;</td></tr>
-                <tr class="bill-total total">
-                    <td colspan="2"></td>
-                    <td>Total</td>
-                    <td>${billData.total}</td>
-                </tr>
-                <tr class="bill-total discount">
-                    <td colspan="2"></td>
-                    <td>Discount</td>
-                    <td>${billData.discount}</td>
-                </tr>
-                <tr class="bill-total gst">
-                    <td colspan="2"></td>
-                    <td>CGST (2.50%)</td>
-                    <td>${billData.cgst_amount}</td>
-                </tr>
-                <tr class="bill-total gst">
-                    <td colspan="2"></td>
-                    <td>SGST (2.50%)</td>
-                    <td>${billData.sgst_amount}</td>
-                </tr>
-                <tr class="bill-total net-amount">
-                    <td colspan="2"></td>
-                    <td>Net Amount</td>
-                    <td>₹${billData.net_amount}</td>
-                </tr>
-                <tr class="bill-total amount-in-words">
-                    <td colspan="4">Amount in Words: 
-                        <i>${capitalizeFirstLetter(billWindow.numberToWords.toWords(Math.floor(billData.net_amount)).replace(/-/g, ' '))} Rupees Only</i>
-                    </td>
-                </tr>
-            `;
-            billItemsBody.insertAdjacentHTML('beforeend', totalsHTML);
-        }
-    }
-
-    // Footer info
-    doc.querySelector('.kot-nos').textContent = orderData.kot_count || '0';
-    doc.querySelector('.name').textContent = billData.cashier_by || '';
-    doc.querySelector('.cashier-date').textContent = new Date(billData.created_at).toLocaleString();
-
-    // Trigger print after a short delay
-    setTimeout(() => {
-        billWindow.print();
-    }, 500);
-}
-
-// Helper function to capitalize first letter
-function capitalizeFirstLetter2(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-// new bill
-
-async function generatePrintableBill(billData) {
-    try {
-        console.log('Bill Data:', billData);
-        const roomsData = JSON.parse(localStorage.getItem('roomsList'));
-
-        // Create new window
-        const billWindow = window.open('', '_blank');
-        const doc = billWindow.document;
-
-        // Add CSS
-        const cssLink = doc.createElement('link');
-        cssLink.rel = 'stylesheet';
-        cssLink.href = './../../order_bill/order_bill.css';
-        doc.head.appendChild(cssLink);
-
-        // Generate content for hotel bill page
-        let pagesHTML = `
-            <div class="bill-wrapper">
-                <div class="bill-container">
-                    ${generateBillHeader()}
-                    ${generateHotelInvoiceSection(billData)}
-                    ${generateHotelItemsSection(billData, roomsData)}
-                    ${generateHotelFooter(billData)}
-                </div>
-            </div>
-        `;
-
-        // If there are orders, add a page break and order details
-        if (billData.order_details && billData.order_details.length > 0) {
-            pagesHTML += `
-                <div class="page-break"></div>
-                <div class="bill-wrapper">
-                    <div class="bill-container">
-                        ${generateBillHeader()}
-                        ${generateOrderItemsSection(billData)}
-                        ${generateOrderFooter(billData)}
-                    </div>
-                </div>
-            `;
-        }
-
-        // Set the HTML content
-        doc.body.innerHTML = pagesHTML;
-
-        // Add number-to-words script
-        const script = doc.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/number-to-words';
-        script.onload = function() {
-            populateHotelBillData(billWindow, billData, roomsData);
-        };
-        doc.head.appendChild(script);
-
-    } catch (error) {
-        console.error('Error in generatePrintableBill:', error);
-    }
-}
-
-function generateHotelInvoiceSection(billData) {
-    return `
-        <section class="invoice-customer-info">
-            <div class="invoice-info">
-                <h3>Hotel Bill</h3>
-                <div>Bill No: <span id="bill-number">${billData.bill_no}</span></div>
-                <div>GST Bill No: <span id="gst-bill-number">${billData.gst_bill_no}</span></div>
-                <div>Date: <span id="bill-date">${new Date(billData.created_at).toLocaleDateString()}</span></div>
-            </div>
-            <div class="bill-details">
-                <h3>Customer Details</h3>
-                <div>Booking ID: <span id="booking-id">${billData.booking_id}</span></div>
-                <div>GST No.: <span id="customer-gstno">${billData.customer_gst || 'N/A'}</span></div>
-            </div>
-        </section>
-    `;
-}
-
-function generateHotelItemsSection(billData, roomsData) {
-    return `
-        <section class="bill-items">
-            <h4>Room Details</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Room No</th>
-                        <th>Days Stayed</th>
-                        <th>Rate/Day</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="room-items-body">
-                    ${billData.room_details.map(room => {
-                        const roomInfo = roomsData.find(r => r.id === room.room_id);
-                        return `
-                            <tr>
-                                <td>${roomInfo ? roomInfo.room_number : 'N/A'}</td>
-                                <td>${room.days_stayed}</td>
-                                <td>₹${room.room_price.toFixed(2)}</td>
-                                <td>₹${room.total.toFixed(2)}</td>
-                            </tr>
-                        `;
-                    }).join('')}
-                </tbody>
-            </table>
-
-            ${billData.service_details.length > 0 ? `
-                <h4>Service Details</h4>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Service</th>
-                            <th>Room No</th>
-                            <th>Price</th>
-                        </tr>
-                    </thead>
-                    <tbody id="service-items-body">
-                        ${billData.service_details.map(service => {
-                            const roomInfo = roomsData.find(r => r.id === service.room_id);
-                            return `
-                                <tr>
-                                    <td>${service.service_name}</td>
-                                    <td>${roomInfo ? roomInfo.room_number : 'N/A'}</td>
-                                    <td>₹${service.price.toFixed(2)}</td>
-                                </tr>
-                            `;
-                        }).join('')}
-                    </tbody>
-                </table>
-            ` : ''}
-        </section>
-    `;
-}
-
-function generateHotelFooter(billData) {
-    return `
-        <footer class="bill-footer">
-            <table class="total-table">
-                <tr>
-                    <td>Total Amount:</td>
-                    <td>₹${billData.total}</td>
-                </tr>
-                <tr>
-                    <td>CGST (2.50%):</td>
-                    <td>₹${billData.cgst_amount}</td>
-                </tr>
-                <tr>
-                    <td>SGST (2.50%):</td>
-                    <td>₹${billData.sgst_amount}</td>
-                </tr>
-                <tr class="net-amount">
-                    <td>Net Amount:</td>
-                    <td>₹${billData.net_amount}</td>
-                </tr>
-            </table>
-            <div class="amount-in-words">
-                Amount in Words: <span id="amount-words"></span>
-            </div>
-            <div class="bill-footer-text">
-                * * * Thank you for staying with us! * * *
-            </div>
-        </footer>
-    `;
-}
-
-function populateHotelBillData(billWindow, billData, roomsData) {
-    const doc = billWindow.document;
-    
-    // Set amount in words
-    const amountWords = billWindow.numberToWords.toWords(Math.floor(billData.net_amount))
-        .replace(/-/g, ' ');
-    doc.getElementById('amount-words').textContent = 
-        `${capitalizeFirstLetter(amountWords)} Rupees Only`;
-
-    // Trigger print after a short delay
-    setTimeout(() => {
-        billWindow.print();
-    }, 500);
-}
-
 
 
 function payBillModal(item) {
@@ -765,7 +294,7 @@ function paymentPOST(bill) {
                 alert('Payment Successful', 'success');
 
                 // document.getElementById('paymentModal').classList.remove('show');
-                // document.querySelector('.modal-container2').style.display = 'none';
+                // document.querySelector('.modal-container2').style.display = 'none';gi
                 document.querySelector('.close-payment').click();
 
                 // window.location.reload();
@@ -792,5 +321,649 @@ document.querySelector('.close-payment').onclick = function () {
         settleModal.style.display = 'none';
     }, 300);
 }
+
+
+
+// 
+
+async function generatePrintableBill(item) {
+    // Get required data from localStorage
+    const foodItems = getCategoryListFromStorage();
+    const orders = getAllOrdersFromStorage();
+
+    // Create bill container
+    const billContainer = document.createElement('div');
+    billContainer.className = 'bill-container';
+
+    // Page 1: Room and Service Details
+    const page1 = createRoomServiceBillPage(item);
+    billContainer.appendChild(page1);
+
+    // Page 2+: Order Details (multiple pages if needed)
+    const orderPages = createOrderBillPages(item, orders, foodItems);
+    orderPages.forEach(page => billContainer.appendChild(page));
+
+    // Page Last: Add summary page at the end
+    const summaryPage = createSummaryPage(item);
+    billContainer.appendChild(summaryPage);
+
+    // Create print window
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Hotel Bill - ${item.gst_bill_no}</title>
+                <style>
+                    ${getBillStyles()}
+                </style>
+            </head>
+            <body>
+                ${billContainer.outerHTML}
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+function createRoomServiceBillPage(item) {
+    const page = document.createElement('div');
+    page.className = 'bill-page';
+
+    // Add header
+    page.appendChild(createBillHeader(item));
+
+    // Room Details Section
+    const roomSection = document.createElement('div');
+    roomSection.className = 'bill-section';
+    roomSection.innerHTML = `
+        <h3>Room Details</h3>
+        <table class="bill-table">
+            <thead>
+                <tr>
+                    <th>Room No</th>
+                    <th>Price/Day</th>
+                    <th>Days</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${item.room_details.map(room => `
+                    <tr>
+                        <td>${room.room_id}</td>
+                        <td>${room.room_price.toFixed(2)}</td>
+                        <td>${room.days_stayed}</td>
+                        <td>${room.total.toFixed(2)}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+
+    // Service Details Section
+    const serviceSection = document.createElement('div');
+    serviceSection.className = 'bill-section';
+    serviceSection.innerHTML = `
+        <h3>Service Details</h3>
+        <table class="bill-table">
+            <thead>
+                <tr>
+                    <th>Room No</th>
+                    <th>Service</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${item.service_details.map(service => `
+                    <tr>
+                        <td>${service.room_id}</td>
+                        <td>${service.service_name}</td>
+                        <td>${service.price.toFixed(2)}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+
+    page.appendChild(roomSection);
+    page.appendChild(serviceSection);
+    
+    // Add footer
+    page.appendChild(createBillFooter(item));
+
+    return page;
+}
+
+function createOrderBillPages(item, orders, foodItems) {
+    const pages = [];
+    const itemsPerPage = 10;
+    
+    // Process each order
+    item.order_details.forEach((order, orderIndex) => {
+        const orderData = orders.find(o => o.id === order.order_id);
+        if (!orderData) return;
+
+        const orderItems = orderData.food_items.map((foodId, index) => {
+            const foodItem = foodItems.find(f => f.id === foodId);
+            return {
+                name: foodItem ? foodItem.name : 'Unknown Item',
+                quantity: orderData.quantity[index],
+                price: foodItem ? foodItem.price : 0
+            };
+        });
+
+        // Split items into chunks for pagination
+        for (let i = 0; i < orderItems.length; i += itemsPerPage) {
+            const chunk = orderItems.slice(i, i + itemsPerPage);
+            
+            const page = document.createElement('div');
+            page.className = 'bill-page';
+
+            // Add header
+            page.appendChild(createBillHeader(item));
+
+            // Order Details Section
+            const orderSection = document.createElement('div');
+            orderSection.className = 'bill-section';
+            orderSection.innerHTML = `
+                <h3>Order Details - #${order.order_id}</h3>
+                <table class="bill-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${chunk.map(item => `
+                            <tr>
+                                <td>${item.name}</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.price}</td>
+                                <td>${(item.quantity * item.price)}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            page.appendChild(orderSection);
+            
+            // Add footer
+            page.appendChild(createBillFooter(item));
+
+            pages.push(page);
+        }
+    });
+
+    return pages;
+}
+
+function createBillHeader(item) {
+    const header = document.createElement('div');
+    header.className = 'bill-header';
+    header.innerHTML = `
+        <header class="bill-header">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="./../order_bill/logo.png" alt="Restaurant Logo" class="restaurant-logo">
+                </div>
+                <div class="restaurant-details">
+                    <h3>Hotel Iswar & Family Restaurant</h3>
+                    <p>Central Road, Silchar, Assam, 788001</p>
+                    <p>+91 38423 19540 / +91 6003704064</p>
+                    <p>www.hoteliswar.in</p>
+                    <p>GST No: 18BDXPS2451N1ZK</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="invoice-customer-info">
+            <div class="invoice-info">
+                <h3>Invoice</h3>
+                <div>Bill No: <span id="bill-number">${item.bill_no}</span></div>
+                <div>GST Bill No: <span id="gst-bill-number">${item.gst_bill_no}</span></div>
+                <div>Date: <span id="bill-date">${new Date(item.created_at).toLocaleDateString()}</span></div>
+                <div>Order Type: <span id="order-type">${item.bill_type}</span></div>
+            </div>
+
+            <div class="bill-details">
+                <h3>Customer Details</h3>
+                <div>Name: <span id="customer-name">${item.bookingData.guest_detail[0].first_name} ${item.bookingData.guest_detail[0].last_name}</span></div>
+                <div>Email: <span id="customer-email">${item.bookingData.guest_detail[0].email}</span></div>
+                <div>Phone: <span id="customer-phone">${item.bookingData.guest_detail[0].phone}</span></div>
+                <div>GST No.: <span id="customer-gstno">${item.customer_gst || 'N/A'}</span></div>
+            </div>
+        </section>
+    `;
+    return header;
+}
+
+function createBillFooter(item) {
+    const footer = document.createElement('div');
+    footer.className = '';
+    footer.innerHTML = `
+        <footer class="bill-footer">
+            <div class="kot-line">
+                <span class="kot-head">Kot Nos #</span>
+                <span class="kot-nos">-</span>
+            </div>
+
+            <div class="cashier-line">
+                <div class="cashier-left">
+                    <span class="cashier-name">Cashier: </span>
+                    <span class="name">${item.created_by}</span>
+                </div>
+                <div class="cashier-right">
+                    ${new Date(item.created_at).toLocaleString()}
+                </div>
+            </div>
+
+            <div class="license-nos">
+                <div class="fssai">FSSAI LICENSE NO: 1234567890</div>
+            </div>
+
+            <div class="bill-footer-text">
+                * * * Thank you for choosing Hotel Iswar & Family Restaurant! * * *
+            </div>
+        </footer>
+    `;
+    return footer;
+}
+
+function createSummaryPage(item) {
+    const page = document.createElement('div');
+    page.className = 'bill-page';
+
+    // Add header
+    page.appendChild(createBillHeader(item));
+
+    // Create summary content
+    const summaryContent = document.createElement('div');
+    summaryContent.className = 'summary-content';
+    
+    // Calculate totals
+    const roomTotal = item.room_details.reduce((sum, room) => sum + parseFloat(room.total), 0);
+    const roomGST = parseFloat(item.room_cgst) + parseFloat(item.room_sgst);
+    
+    const serviceTotal = item.service_details.reduce((sum, service) => sum + parseFloat(service.price), 0);
+    const serviceGST = parseFloat(item.service_cgst) + parseFloat(item.service_sgst);
+    
+    const foodTotal = item.order_details.reduce((sum, order) => sum + parseFloat(order.total), 0);
+    const foodGST = parseFloat(item.order_cgst) + parseFloat(item.order_sgst);
+
+    summaryContent.innerHTML = `
+        <h2 class="summary-title">Bill Summary</h2>
+        
+        <div class="summary-section">
+            <h4>Room Charges</h4>
+            <table class="summary-table">
+                <tr>
+                    <td>Room Total:</td>
+                    <td class="amount">₹ ${roomTotal.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>GST (CGST + SGST):</td>
+                    <td class="amount">₹ ${roomGST.toFixed(2)}</td>
+                </tr>
+                <tr class="subtotal">
+                    <td>Subtotal with GST:</td>
+                    <td class="amount">₹ ${(roomTotal + roomGST).toFixed(2)}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="summary-section">
+            <h4>Service Charges</h4>
+            <table class="summary-table">
+                <tr>
+                    <td>Service Total:</td>
+                    <td class="amount">₹ ${serviceTotal.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>GST (CGST + SGST):</td>
+                    <td class="amount">₹ ${serviceGST.toFixed(2)}</td>
+                </tr>
+                <tr class="subtotal">
+                    <td>Subtotal with GST:</td>
+                    <td class="amount">₹ ${(serviceTotal + serviceGST).toFixed(2)}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="summary-section">
+            <h4>Food Charges</h4>
+            <table class="summary-table">
+                <tr>
+                    <td>Food Total:</td>
+                    <td class="amount">₹ ${foodTotal.toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>GST (CGST + SGST):</td>
+                    <td class="amount">₹ ${foodGST.toFixed(2)}</td>
+                </tr>
+                <tr class="subtotal">
+                    <td>Subtotal with GST:</td>
+                    <td class="amount">₹ ${(foodTotal + foodGST).toFixed(2)}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="summary-section grand-total">
+            <h4>Grand Total</h4>
+            <table class="summary-table">
+                <tr>
+                    <td>Total Amount:</td>
+                    <td class="amount">₹ ${parseFloat(item.total).toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>Discount:</td>
+                    <td class="amount">₹ ${parseFloat(item.discount).toFixed(2)}</td>
+                </tr>
+                <tr>
+                    <td>Total GST:</td>
+                    <td class="amount">₹ ${(parseFloat(item.cgst_amount) + parseFloat(item.sgst_amount)).toFixed(2)}</td>
+                </tr>
+                <tr class="final-total">
+                    <td><strong>Net Amount:</strong></td>
+                    <td class="amount"><strong>₹ ${parseFloat(item.net_amount).toFixed(2)}</strong></td>
+                </tr>
+            </table>
+        </div>
+        <div class="bill-footer-text">${new Date(item.created_at).toLocaleString()}<br>
+                * * * Thank you for choosing Hotel Iswar & Family Restaurant! * * *
+        </div>
+
+    `;
+
+    page.appendChild(summaryContent);
+    // page.appendChild(createBillFooter(item));
+
+    return page;
+}
+
+function getBillStyles() {
+    return `
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        .bill-container {
+            font-family: Arial, sans-serif;
+            width: 210mm; /* A4 width */
+            margin: 0 auto;
+        }
+
+        .bill-page {
+            position: relative;
+            width: 210mm; /* A4 width */
+            height: 297mm; /* A4 height */
+            padding: 10mm; /* Standard margin */
+            page-break-after: always;
+            box-sizing: border-box;
+            background: white;
+        }
+
+        .bill-content {
+            position: relative;
+            min-height: calc(297mm - 40mm - 80mm); /* Full height minus margins minus footer */
+            padding-bottom: 80mm; /* Space for footer */
+        }
+
+        .bill-header {
+            text-align: center;
+            margin-bottom: 0px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: flex-start;  /* Changed from center to flex-start */
+            justify-content: space-between;  /* Changed from center to space-between */
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            flex: 0 0 auto;  /* Prevents logo from growing or shrinking */
+        }
+
+        .restaurant-logo {
+            width: 100px;
+            height: auto;
+        }
+
+        .restaurant-details {
+            text-align: right;  /* Changed from center to right */
+            flex: 1;  /* Allows details to take remaining space */
+            margin-left: 20px;  /* Space between logo and details */
+        }
+
+        .restaurant-details h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.5em;
+            text-align: right;  /* Ensure heading is also right-aligned */
+        }
+
+        .restaurant-details p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            text-align: right;  /* Ensure paragraphs are right-aligned */
+        }
+
+        .invoice-customer-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            gap: 20px;  /* Add space between the two sections */
+        }
+
+        .invoice-info, .bill-details {
+            flex: 1;
+            text-align: left;  /* Ensure left alignment */
+        }
+
+        .invoice-info h3, .bill-details h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        .invoice-info div, .bill-details div {
+            margin: 5px 0;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        .invoice-info span, .bill-details span {
+            display: inline-block;
+            margin-left: 5px;
+            font-weight: 500;
+        }
+
+        .bill-section {
+            margin: 20px 0;
+        }
+
+        .bill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .bill-table th, .bill-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .bill-table th {
+            background-color: #f5f5f5;
+        }
+
+        .bill-summary {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .bill-summary table {
+            margin-left: auto;
+            width: 300px;
+        }
+
+        .bill-summary td {
+            padding: 5px;
+        }
+
+        .bill-footer {
+            position: absolute;
+            bottom: 10mm;
+            left: 10mm;
+            right: 10mm;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .kot-line {
+            text-align: left;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        .kot-head {
+            font-weight: 500;
+            margin-right: 5px;
+        }
+
+        .cashier-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0 0 0;
+            padding: 0;
+        }
+
+        .cashier-left {
+            text-align: left;
+        }
+
+        .cashier-right {
+            text-align: right;
+        }
+
+        .license-nos {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .bill-footer-text {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+
+            .bill-page {
+                margin: 0;
+                border: none;
+                width: 210mm;
+                height: 297mm;
+                page-break-after: always;
+            }
+
+            .restaurant-logo {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+
+        .summary-content {
+            padding: 0 0;
+        }
+
+        .summary-content h4{
+            margin: 0;
+        }
+
+        .summary-title {
+            text-align: center;
+            font-size: 1.5em;
+            color: #333;
+            margin: 0;
+        }
+
+        .summary-section {
+            margin-bottom: 15px;
+        }
+
+        .summary-section h4 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .summary-table td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .summary-table .amount {
+            text-align: right;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+
+        .subtotal {
+            background-color: #f8f8f8;
+            font-weight: 500;
+        }
+
+        .grand-total {
+            margin-top: 10px;
+        }
+
+        .grand-total h3 {
+            color: #333;
+            border-bottom-color: #333;
+        }
+
+        .final-total {
+            font-size: 1.2em;
+            background-color: #f0f0f0;
+            border-top: 2px solid #333;
+        }
+
+        .final-total td {
+            padding: 12px 8px;
+        }
+
+            
+
+    `;
+}
+
+
 
 
