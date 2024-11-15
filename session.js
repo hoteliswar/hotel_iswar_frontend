@@ -40,4 +40,4 @@ function checkSession() {
 // document.addEventListener('DOMContentLoaded', checkSession);
 
 // Optional: Periodically check session
-setInterval(checkSession, 60000); // Check every minute
+// setInterval(checkSession, 60000); // Check every minute
