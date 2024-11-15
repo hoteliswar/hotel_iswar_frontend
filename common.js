@@ -692,10 +692,11 @@ async function getAllBilling() {
 
 };
 
+
 function getAllBillingFromStorage() {
     const storedData = localStorage.getItem('billingList');
     if (storedData) {
-        if (storedData == 'undefined') {
+        if (storedData === 'undefined') {
             console.log('No billing list found in local storage');
             getAllBilling();
         }
@@ -705,53 +706,6 @@ function getAllBillingFromStorage() {
     } else {
         console.log('No Billing list found in local storage');
         getAllBilling();
-    }
-
-}
-
-
-// getAllOrders();
-
-// API Call GET All Billings - Read
-async function getAllOrders() {
-    const option = {
-        method: 'GET',
-        headers: {
-            'Authorization': 'Bearer ' + getCookie('access_token'),
-            'Content-Type': 'application/json'
-        }
-    }
-
-    const url = `${baseURL}orders/order/`;
-
-    refreshAccessToken2(url, option)
-        // .then(response => response.json())
-        .then(data => {
-            console.log('All Orders Data:', data);
-            // Save the data to local storage
-            localStorage.setItem('ordersList', JSON.stringify(data));
-            getAllOrdersFromStorage();
-            resolve(data);
-        })
-        .catch(error => {
-            console.log('Error fetching data:', error);
-        });
-
-};
-
-function getAllOrdersFromStorage() {
-    const storedData = localStorage.getItem('ordersList');
-    if (storedData) {
-        if (storedData === 'undefined') {
-            console.log('No orders list found in local storage');
-            getAllOrders();
-        }
-        const ordersList = JSON.parse(storedData);
-        console.log('Orders list from local storage:', ordersList);
-        return ordersList;
-    } else {
-        console.log('No Orders list found in local storage');
-        getAllOrders();
     }
 
 }
