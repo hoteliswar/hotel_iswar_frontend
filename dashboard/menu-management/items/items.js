@@ -448,7 +448,7 @@ function refreshCategoryList() {
     
     // Call your existing category fetch function here
     getFooditems()
-        .then(() => {
+        .then(data => {
             console.log('Category List Refreshed');
             // Remove spinning class after refresh
             setTimeout(() => {

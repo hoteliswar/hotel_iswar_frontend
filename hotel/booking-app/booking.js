@@ -929,7 +929,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
         serveBtn.forEach(btn => {
             const serveBtnId = btn.dataset.orderId;
             const serveBtnStatus = btn.dataset.status;
-            if (serveBtnStatus === 'serve') {
+            if (serveBtnStatus === 'served') {
                 // btn.style.display = 'none';
                 btn.textContent = 'Served';
                 btn.style.backgroundColor = '#5e5e5e';
@@ -1110,7 +1110,7 @@ function serveOrder(orderId) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                status: 'serve'
+                status: 'served'
             })
         }
 

@@ -1,5 +1,5 @@
-// baseURL = 'https://dineops.onrender.com/api/';
-baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+baseURL = 'https://dineops.onrender.com/api/';
+// baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 console.log(baseURL);
 
 
@@ -710,6 +710,53 @@ function getAllBillingFromStorage() {
 
 }
 
+
+// getALlOrders();
+
+// API Call GET All Orders - Read
+async function getALlOrders() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const url = `${baseURL}orders/order/`;
+
+    refreshAccessToken2(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('All Orders Data:', data);
+            // Save the data to local storage
+            localStorage.setItem('ordersList', JSON.stringify(data));
+            getAllOrdersFromStorage();
+            resolve(data);
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+
+};
+
+
+function getAllOrdersFromStorage() {
+    const storedData = localStorage.getItem('ordersList');
+    if (storedData) {
+        if (storedData === 'undefined') {
+            console.log('No orders list found in local storage');
+            getALlOrders();
+        }
+        const ordersList = JSON.parse(storedData);
+        console.log('Orders list from local storage:', ordersList);
+        return ordersList;
+    } else {
+        console.log('No Orders list found in local storage');
+        getALlOrders();
+    }
+
+}
 
 // Disable all console statements
 // console.log = function() {};
