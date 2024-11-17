@@ -30,7 +30,12 @@ function populateListView() {
 // JSON formating for List View
 async function convertToRequiredFormat_ListView() {
     try {
-        const apiDataString = await getAllBookings();
+        // const apiDataString = await getAllBookings();
+
+        const bookingData = getAllBookingsFromStorage();
+        const apiDataString = JSON.stringify(bookingData); 
+        console.log(`apiDataString: ${apiDataString}`);
+
         // console.log(`apiDataString: ${JSON.stringify(apiDataString)}`);
         if (!apiDataString || apiDataString.length === 0) {
             console.log('No data found');
@@ -95,6 +100,16 @@ async function convertToRequiredFormat_ListView() {
                     status = 'checkin';
                 } else if (booking.status === 'confirmed') {
                     status = 'confirmed'
+                } else if (booking.status === 'partial_checked_in') {
+                    if (room.check_in_details && !room.check_out_date) {
+                        status = 'checkin';
+                    } else if (room.check_in_details && room.check_out_date) {
+                        status = 'checkout';
+                    } else if (room.start_date > currentDate.toISOString()) {
+                        status = 'pending';
+                    } else if (room.start_date < currentDate.toISOString()) {
+                        status = 'noshow';
+                    }
                 }
 
                 allBookings[roomNumber].push({
@@ -260,6 +275,16 @@ function convertToRequiredFormat() {
                 status = 'checkin';
             } else if (booking.status === 'confirmed') {
                 status = 'confirmed'
+            }  else if (booking.status === 'partial_checked_in') {
+                if (room.check_in_details && !room.check_out_date) {
+                    status = 'checkin';
+                } else if (room.check_in_details && room.check_out_date) {
+                    status = 'checkout';
+                } else if (room.start_date > currentDate.toISOString()) {
+                    status = 'pending';
+                } else if (room.start_date < currentDate.toISOString()) {
+                    status = 'noshow';
+                }
             }
 
             roomBookings[roomNumber].push({
@@ -556,8 +581,8 @@ function loadBookingModal(bookingInfo, roomNumber) {
                 <!--<p><strong>Age:</strong> ${bookingInfo.age}</p>-->
                 <p><div class="booking-data-head">Email:</div> ${bookingInfo.email}</p>
                 <p><div class="booking-data-head">Phone:</div> ${bookingInfo.phoneNumber}</p>
-                <p><div class="booking-data-head">Start-Date & Time:</div> ${formatDate(bookingInfo.checkIn)}</p>
-                <p><div class="booking-data-head">End-Date & Time:</div> ${formatDate(bookingInfo.checkOut)}</p>
+                <p><div class="booking-data-head">From:</div> ${formatDate(bookingInfo.checkIn)}</p>
+                <p><div class="booking-data-head">To:</div> ${formatDate(bookingInfo.checkOut)}</p>
                 <p><div class="booking-data-head">Status:</div> ${bookingInfo.status}</p>
             </div>
         `;
@@ -2025,7 +2050,7 @@ function initializeBooking() {
 }
 
 // Put Rooms as options in the select element
-function populateRoomOptions(select, startDate, endDate) {
+function populateRoomOptions2(select, startDate, endDate) {
     const roomList = localStorage.getItem('roomsList');
     if (!roomList) {
         console.error('No roomsList found in localStorage');
@@ -2056,6 +2081,94 @@ function populateRoomOptions(select, startDate, endDate) {
     });
 
     // Add change event listener to the select
+    select.addEventListener('change', function () {
+        const selectedRoom = this.value;
+        const selectedPrice = this.options[this.selectedIndex].dataset.price;
+        console.log(`Selected room: ${selectedRoom}, Price: ${selectedPrice}`);
+        updateTotalBookingAmount();
+    });
+}
+
+function populateRoomOptions(select, startDate, endDate) {
+    const roomList = localStorage.getItem('roomsList');
+    const bookingsList = localStorage.getItem('bookingsList');
+    
+    if (!roomList || !bookingsList) {
+        console.error('Required data not found in localStorage');
+        return;
+    }
+
+    let roomListObj, bookingsListObj;
+    try {
+        roomListObj = JSON.parse(roomList);
+        bookingsListObj = JSON.parse(bookingsList);
+        console.log('Checking availability for:', { startDate, endDate });
+    } catch (error) {
+        console.error('Error parsing data:', error);
+        return;
+    }
+
+    // Clear existing options
+    select.innerHTML = '<option selected disabled>Select Room</option>';
+    
+    // Create a map of room bookings from bookingsList
+    const roomBookings = {};
+    bookingsListObj.forEach(booking => {
+        booking.rooms.forEach(roomBooking => {
+            if (!roomBookings[roomBooking.room]) {
+                roomBookings[roomBooking.room] = [];
+            }
+            
+            // Include all bookings, regardless of status
+            roomBookings[roomBooking.room].push({
+                startDate: new Date(roomBooking.start_date),
+                endDate: new Date(roomBooking.end_date),
+                checkInDetails: roomBooking.check_in_details,
+                checkOutDate: roomBooking.check_out_date ? new Date(roomBooking.check_out_date) : null,
+                status: booking.status,
+                bookingId: booking.id
+            });
+        });
+    });
+
+    console.log('Room Bookings Map:', roomBookings);
+
+    // Create options for each room
+    roomListObj.forEach(room => {
+        const bookings = roomBookings[room.id] || [];
+        console.log(`Checking room ${room.room_number}:`, bookings);
+
+        const isAvailable = !bookings.some(booking => {
+            // Convert dates to compare
+            const bookingStart = booking.startDate;
+            const bookingEnd = booking.endDate;
+            const requestStart = new Date(startDate);
+            const requestEnd = new Date(endDate);
+
+            // Check for date overlap, regardless of check-out status
+            const hasOverlap = requestStart < bookingEnd && requestEnd > bookingStart;
+            
+            if (hasOverlap) {
+                console.log(`Room ${room.room_number} - Date overlap with booking ${booking.bookingId}`);
+                console.log(`Booking period: ${bookingStart} to ${bookingEnd}`);
+                console.log(`Requested period: ${requestStart} to ${requestEnd}`);
+            }
+            
+            return hasOverlap;
+        });
+
+        console.log(`Room ${room.room_number} final availability:`, isAvailable);
+        
+        const option = document.createElement('option');
+        option.value = room.id;
+        option.textContent = `Room ${room.room_number} - ${room.room_type} ${isAvailable ? '' : '(Occupied)'}`;
+        option.disabled = !isAvailable;
+        option.dataset.price = room.price;
+        select.appendChild(option);
+    });
+
+    // Add change event listener to the select
+    select.removeEventListener('change', updateTotalBookingAmount);
     select.addEventListener('change', function () {
         const selectedRoom = this.value;
         const selectedPrice = this.options[this.selectedIndex].dataset.price;

@@ -168,5 +168,95 @@
         "status": "enabled",
         "created_at": "2024-11-14T16:32:18.130543Z",
         "modified_at": []
+    },
+    {
+        "id": 18,
+        "tenant": 1,
+        "name": "HOT BEVERAGES",
+        "description": "",
+        "image": "",
+        "status": "enabled",
+        "created_at": "2024-11-15T05:21:47.117784Z",
+        "modified_at": []
+    },
+    {
+        "id": 19,
+        "tenant": 1,
+        "name": "STARTER",
+        "description": "",
+        "image": "",
+        "status": "enabled",
+        "created_at": "2024-11-15T05:23:09.551847Z",
+        "modified_at": []
+    },
+    {
+        "id": 20,
+        "tenant": 1,
+        "name": "BIRIYANI",
+        "description": "",
+        "image": "",
+        "status": "enabled",
+        "created_at": "2024-11-15T05:24:28.944011Z",
+        "modified_at": []
+    },
+    {
+        "id": 21,
+        "tenant": 1,
+        "name": "INDIAN BREAD",
+        "description": "",
+        "image": "",
+        "status": "enabled",
+        "created_at": "2024-11-15T05:35:15.733433Z",
+        "modified_at": []
+    },
+    {
+        "id": 22,
+        "tenant": 1,
+        "name": "DAL",
+        "description": "",
+        "image": "",
+        "status": "enabled",
+        "created_at": "2024-11-15T05:36:06.085587Z",
+        "modified_at": []
+    },
+    {
+        "id": 23,
+        "tenant": 1,
+        "name": "PAPAD",
+        "description": "",
+        "image": "",
+        "status": "enabled",
+        "created_at": "2024-11-15T05:36:19.627702Z",
+        "modified_at": []
+    },
+    {
+        "id": 24,
+        "tenant": 1,
+        "name": "SALAD",
+        "description": "",
+        "image": "",
+        "status": "enabled",
+        "created_at": "2024-11-15T05:36:37.322491Z",
+        "modified_at": []
+    },
+    {
+        "id": 25,
+        "tenant": 1,
+        "name": "DESERT",
+        "description": "",
+        "image": "",
+        "status": "enabled",
+        "created_at": "2024-11-15T05:37:54.401287Z",
+        "modified_at": []
+    },
+    {
+        "id": 26,
+        "tenant": 1,
+        "name": "PACKAGED DRINKING WATER",
+        "description": "",
+        "image": "",
+        "status": "enabled",
+        "created_at": "2024-11-15T05:38:06.913120Z",
+        "modified_at": []
     }
 ]

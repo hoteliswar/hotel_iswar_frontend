@@ -26,12 +26,22 @@ function checkTokensAndRedirect() {
 
 
 // Helper function to save a cookie value
-function setCookie(name, value, minutes) {
+function setCookie2(name, value, minutes) {
     const d = new Date();
     d.setTime(d.getTime() + (minutes * 60 * 1000));
     const expires = "expires=" + d.toUTCString();
     document.cookie = name + "=" + value + ";" + expires + ";path=/";
 }
+
+function setCookie(name, value, minutes) {
+    const d = new Date();
+    d.setTime(d.getTime() + (minutes * 60 * 1000));
+    const offsetIST = 5.5 * 60 * 60 * 1000; // Offset in milliseconds
+    d.setTime(d.getTime() + offsetIST);
+    const expires = "expires=" + d.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+}
+
 
 // Helper function to get a cookie value
 function getCookie(name) {
@@ -281,10 +291,58 @@ async function refreshAccessToken3(url, option) {
 
 
 
-// Local Storage
+// Refresh Category List
+function getCategoryListRefresh() {
+    return new Promise((resolve, reject) => {
+        const url = `${baseURL}foods/categories/`;
+        const option = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            }
+        };
+
+        refreshAccessToken2(url, option)
+            .then(data => {
+                console.log('Categories Data:', data);
+                localStorage.setItem('categoryList', JSON.stringify(data));
+                getCategoryListFromStorage();
+                resolve(data);
+            })
+            .catch(error => {
+                console.error('Error in getCategoryList:', error);
+                reject(error);
+            });
+    });
+}
+
+function getFoodListRefresh() {
+    return new Promise((resolve, reject) => {
+        const url = `${baseURL}foods/fooditems/`;
+        const option = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            }
+        };
+
+        refreshAccessToken2(url, option)
+            .then(data => {
+                console.log('Categories Data:', data);
+                localStorage.setItem('allFoodList', JSON.stringify(data));
+                getAllFoodListFromStorage();
+                resolve(data);
+            })
+            .catch(error => {
+                console.error('Error in getCategoryList:', error);
+                reject(error);
+            });
+    });
+}
 
 
-// getCategoryList();
 
 // API Call GET Category List - Read
 function getCategoryList() {
@@ -317,7 +375,6 @@ function getCategoryList() {
     // }
 };
 
-
 function getCategoryListFromStorage() {
     const storedData = localStorage.getItem('categoryList');
     if (storedData) {
@@ -338,7 +395,6 @@ function getCategoryListFromStorage() {
 
 }
 
-// getFooditems();
 
 // API Call GET Food Items
 function getFooditems() {
@@ -394,8 +450,6 @@ function getAllFoodListFromStorage() {
 }
 
 
-// getTablesData();
-
 // API Call to GET Tables data
 function getTablesData() {
     const option = {
@@ -440,8 +494,6 @@ function getTablesListFromStorage() {
 
 }
 
-
-// getRoomsData();
 
 // API Call to GET Rooms data
 function getRoomsData2() {
@@ -506,8 +558,6 @@ function getRoomsListFromStorage() {
 }
 
 
-// getServiceCategoryList();
-
 // API Call GET Category List - Read
 function getServiceCategoryList() {
     const option = {
@@ -559,9 +609,6 @@ function getServiceCategoryListFromStorage() {
 
 }
 
-
-
-// getServiceList();
 
 // API Call GET Category List - Read
 function getServiceList() {
@@ -616,8 +663,6 @@ function getServiceListFromStorage() {
 }
 
 
-// getAllBookings();
-
 // API Call GET All Bookings - Read
 async function getAllBookings() {
     const option = {
@@ -663,7 +708,6 @@ function getAllBookingsFromStorage() {
 
 }
 
-// getAllBilling();
 
 // API Call GET All Billings - Read
 async function getAllBilling() {
@@ -692,7 +736,6 @@ async function getAllBilling() {
 
 };
 
-
 function getAllBillingFromStorage() {
     const storedData = localStorage.getItem('billingList');
     if (storedData) {
@@ -710,8 +753,6 @@ function getAllBillingFromStorage() {
 
 }
 
-
-// getALlOrders();
 
 // API Call GET All Orders - Read
 async function getALlOrders() {
@@ -739,7 +780,6 @@ async function getALlOrders() {
         });
 
 };
-
 
 function getAllOrdersFromStorage() {
     const storedData = localStorage.getItem('ordersList');
@@ -852,7 +892,7 @@ if (document.getElementById('logout')) {
 
     document.getElementById('logout').onclick = function () {
         clearCookies();
-        // clearLocalStorage();
+        clearLocalStorage();
         const rootPath = window.location.origin;
         window.location.href = `${rootPath}/login/login.html`;
     }
@@ -891,4 +931,81 @@ function logout() {
     // window.location.href = './login/login.html';
     const rootPath = window.location.origin;
     // window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
+}
+
+
+// Global variable to track loading state
+let globalLoadingOverlay = null;
+
+function showLoading() {
+    // If loading is already shown, don't create another one
+    if (globalLoadingOverlay) return;
+
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'loading-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    overlay.style.zIndex = '100000';
+    overlay.style.cursor = 'wait';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+
+    // Create spinner container
+    const spinnerContainer = document.createElement('div');
+    spinnerContainer.className = 'spinner-container';
+    spinnerContainer.style.position = 'relative';
+    spinnerContainer.style.width = '50px';
+    spinnerContainer.style.height = '50px';
+
+    // Create spinner
+    const spinner = document.createElement('div');
+    spinner.className = 'spinner';
+    spinner.style.position = 'absolute';
+    spinner.style.width = '100%';
+    spinner.style.height = '100%';
+    spinner.style.border = '5px solid #f3f3f3';
+    spinner.style.borderTop = '5px solid #3498db';
+    spinner.style.borderRadius = '50%';
+    spinner.style.animation = 'spin 1s linear infinite';
+
+    // Add spinner animation styles if not already added
+    if (!document.getElementById('spinner-style')) {
+        const style = document.createElement('style');
+        style.id = 'spinner-style';
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Assemble the elements
+    spinnerContainer.appendChild(spinner);
+    overlay.appendChild(spinnerContainer);
+    document.body.appendChild(overlay);
+
+    // Disable all clicks
+    document.body.style.pointerEvents = 'none';
+    overlay.style.pointerEvents = 'all';
+
+    // Store reference globally
+    globalLoadingOverlay = overlay;
+}
+
+function hideLoading() {
+    if (globalLoadingOverlay) {
+        document.body.style.pointerEvents = 'all';
+        if (document.body.contains(globalLoadingOverlay)) {
+            document.body.removeChild(globalLoadingOverlay);
+        }
+        globalLoadingOverlay = null;
+    }
 }

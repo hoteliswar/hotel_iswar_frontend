@@ -41,6 +41,7 @@ function addCatgeoryToList(name, description, status, imageSrc, id) {
 
 // API Call to delete category - DELETE
 function deleteCategory(id) {
+    showLoading();
     const option = {
         method: 'DELETE',
         headers: {
@@ -57,12 +58,14 @@ function deleteCategory(id) {
         .then(async data => {
             console.log('Data:', data);
             await Promise.all([getCategoryList()]);
+            hideLoading();
             alert("Category Deleted Successfully", 'success');
 
         })
         .catch(error => {
             console.log('Error fetching data:', error);
             alert("Category not deleted", 'error');
+            hideLoading();
         });
 
 }
@@ -249,6 +252,8 @@ document.getElementById('add-category').addEventListener('click', function (e) {
 // API Call POST Food Items - Create
 
 function createCategory(catgData) {
+    
+    showLoading();
     console.log(catgData);
     const option = {
         method: 'POST',
@@ -274,11 +279,13 @@ function createCategory(catgData) {
             await Promise.all([getCategoryList()]);
             // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status);
             alert("Category Created Successfully", 'success');
+            hideLoading();
             coldReload();
         })
         .catch(error => {
             console.log('Error fetching data:', error);
             alert('Category not created ', 'error');
+            hideLoading();
         });
 }
 
@@ -306,6 +313,7 @@ document.getElementById('update-category').addEventListener('click', function (e
     updatedCatg(updatedCatgData);
 
     function updatedCatg(updatedCatgData) {
+        showLoading();
         option = {
             method: 'PATCH',
             headers: {
@@ -337,11 +345,13 @@ document.getElementById('update-category').addEventListener('click', function (e
                 alert('Category updated successfully', 'success');
                 // coldReload();
                 // Optionally, update the UI or show a success message
+                hideLoading();
             })
             .catch(error => {
                 console.error('Error updating item:', error);
                 alert('Category not updated', 'error');
                 // Handle the error, show an error message to the user
+                hideLoading();
             });
     }
 
@@ -362,23 +372,25 @@ function coldReload() {
 function refreshCategoryList() {
     const button = document.querySelector('#refresh-btn');
     button.classList.add('spinning');
+    showLoading();
     console.log('Refreshing Category List');
     
     // Call your existing category fetch function here
-    getCategoryList()
+    getCategoryListRefresh()
         .then(() => {
             console.log('Category List Refreshed');
             // Remove spinning class after refresh
             setTimeout(() => {
                 button.classList.remove('spinning');
+                hideLoading();
             }, 1000);
         })
         .catch(error => {
             console.error('Error refreshing categories:', error);
             button.classList.remove('spinning');
+            hideLoading();
         });
-    
-
 }
 
-document.getElementById('refresh-btn').addEventListener('click', refreshCategoryList);
+// Add event listener
+document.querySelector('#refresh-btn')?.addEventListener('click', refreshCategoryList);

@@ -433,3 +433,40 @@ background-color: #adadad;
         font-weight: 500;
     }
 }
+
+/* spinnner */
+.all-room-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.refresh-btn {
+    background: none;
+    border: none;
+    color: #000000;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+    background-color: rgba(255, 175, 2, 0.1);
+    transform: rotate(180deg);
+}
+
+.refresh-btn i {
+    font-size: 1.2em;
+}
+
+/* Animation for refresh action */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.refresh-btn.spinning i {
+    animation: spin 1s linear;
+}

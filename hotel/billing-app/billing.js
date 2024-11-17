@@ -382,8 +382,8 @@ function createRoomServiceBillPage(item) {
         if (!dateString) return '-';
         const date = new Date(dateString);
         return `
-            <div class="date-line">${date.toLocaleDateString()}</div>
-            <div class="time-line">${date.toLocaleTimeString()}</div>
+            <div class="date-line">${date.toISOString().split('T')[0]}</div>
+            <div class="time-line">${date.toISOString().split('T')[1].split('.')[0]}</div>
         `;
     };
 
@@ -634,7 +634,7 @@ function createBillFooter(item) {
             <div class="cashier-line">
                 <div class="cashier-left">
                     <span class="cashier-name">Cashier: </span>
-                    <span class="name">${item.created_by}</span>
+                    <!--<span class="name">${item.created_by}</span>-->
                 </div>
                 <div class="cashier-right">
                     ${new Date(item.created_at).toLocaleString()}
@@ -642,7 +642,7 @@ function createBillFooter(item) {
             </div>
 
             <div class="license-nos">
-                <div class="fssai">FSSAI LICENSE NO: 1234567890</div>
+                <div class="fssai">FSSAI LICENSE NO: 10324025000094</div>
             </div>
 
             <div class="bill-footer-text">
@@ -688,7 +688,7 @@ function createSummaryPage(item) {
                     <td class="amount">₹ ${roomTotal.toFixed(2)}</td>
                 </tr>
                 <tr>
-                    <td>GST (CGST + SGST):</td>
+                    <td>GST 12% (CGST + SGST):</td>
                     <td class="amount">₹ ${roomGST.toFixed(2)}</td>
                 </tr>
                 <tr class="subtotal">
@@ -705,14 +705,6 @@ function createSummaryPage(item) {
                     <td>Service Total:</td>
                     <td class="amount">₹ ${serviceTotal.toFixed(2)}</td>
                 </tr>
-                <tr>
-                    <td>GST (CGST + SGST):</td>
-                    <td class="amount">₹ ${serviceGST.toFixed(2)}</td>
-                </tr>
-                <tr class="subtotal">
-                    <td>Subtotal with GST:</td>
-                    <td class="amount">₹ ${(serviceTotal + serviceGST).toFixed(2)}</td>
-                </tr>
             </table>
         </div>
 
@@ -724,7 +716,7 @@ function createSummaryPage(item) {
                     <td class="amount">₹ ${foodTotal.toFixed(2)}</td>
                 </tr>
                 <tr>
-                    <td>GST (CGST + SGST):</td>
+                    <td>GST 5% (CGST + SGST):</td>
                     <td class="amount">₹ ${foodGST.toFixed(2)}</td>
                 </tr>
                 <tr class="subtotal">
@@ -921,9 +913,9 @@ function getBillStyles() {
 
         .bill-footer {
             position: absolute;
-            bottom: 10mm;
-            left: 10mm;
-            right: 10mm;
+            bottom: 4mm;
+            left: 5mm;
+            right: 5mm;
             padding-top: 20px;
             border-top: 1px solid #ddd;
         }
@@ -960,7 +952,8 @@ function getBillStyles() {
             text-align: center;
             margin: 15px 0;
             font-size: 0.9em;
-            color: #666;
+            font-weight: 500;
+            color: #333;
         }
 
         .bill-footer-text {

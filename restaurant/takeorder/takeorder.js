@@ -912,6 +912,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function saveOrderPOST(orderData) {
+            showLoading();
             console.table(orderData);
             const option = {
                 method: 'POST',
@@ -931,6 +932,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.table(data);
                     takeDataToKOT = data;
                     alert("Success: Saved Order Successfully", 'success');
+                    getALlOrders();
                     getTablesData();
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
@@ -951,17 +953,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     createOrderId.name = 'order-id';
                     createOrderId.id = 'hidden-order-id';
                     document.body.appendChild(createOrderId);
+                    hideLoading();
 
                 })
                 .catch(error => {
                     console.log('Error Saving Order:', error);
                     alert('Error: Order not saved', 'error');
+                    hideLoading();
                 });
 
         }
 
 
         function saveOrderPATCH(orderData, orderId) {
+            showLoading();
             console.table(`PATCH: Order Data:`, orderData);
             const option = {
                 method: 'PATCH',
@@ -982,6 +987,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     takeDataToKOT = data;
                     console.table(data);
                     alert("Success: Order Updated Successfully", 'success');
+                    
                     getTablesData();
                     
                     document.querySelector('.cancelled-btn').disabled = false;
@@ -1000,10 +1006,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     createOrderId.name = 'order-id';
                     createOrderId.id = 'hidden-order-id';
                     document.body.appendChild(createOrderId);
+                    hideLoading();
                 })
                 .catch(error => {
                     console.log('Error Saving Order:', error);
                     alert('Error: Order not updated', 'error');
+                    hideLoading();
                 })
         }
 
@@ -1056,6 +1064,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function holdOrder(orderId) {
+            showLoading();
             const option = {
                 method: 'PATCH',
                 headers: {
@@ -1076,10 +1085,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Data:', data);
                     console.table(data);
                     alert("Order on Hold", 'success');
+                    hideLoading();
                 })
                 .catch(error => {
                     console.log('Error Holding Order:', error);
                     alert('Error: Order not on hold', 'error');
+                    hideLoading();
                 })
         }
     });
@@ -1129,6 +1140,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         function kotOrder(orderId) {
+            showLoading();
             const option = {
                 method: 'PATCH',
                 headers: {
@@ -1150,6 +1162,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.table(data);
                     alert("Order KOT Successfully", 'success');
                     // alert("PATCH: Order KOT Successfully");
+                    hideLoading();
 
                     // Print KOT
                     printKOT(data);
@@ -1157,6 +1170,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .catch(error => {
                     console.log('Error KOT Order:', error);
                     alert('Error: Order KOT not done', 'error');
+                    hideLoading();
                 })
         }
 
@@ -1255,6 +1269,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // API Call for Order Cancel
         function cancOrder(orderId) {
+            showLoading();
             const option = {
                 method: 'PATCH',
                 headers: {
@@ -1276,10 +1291,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.table(data);
                     alert("Order Cancelled Successfully", 'success');
                     window.location.href = './../table-info/neworder.html';
+                    hideLoading();
                 })
                 .catch(error => {
                     console.log('Error Cancelling Order:', error);
                     alert('Error: Order not cancelled', 'error');
+                    hideLoading();
                 })
         }
 
@@ -1435,6 +1452,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
         function billOrder(settlePayLoad) {
+            showLoading();
             const option = {
                 method: 'POST',
                 headers: {
@@ -1453,12 +1471,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     alert("Success: Order Billed Successfully", 'success');
                     document.querySelector('.close-settle').click();
                     document.querySelector('.settle-btn').disabled = true;
+                    hideLoading();
                     
                     generatePrintableBill(data);
                 })
                 .catch(error => {
                     console.log('Error Billing Order:', error);
                     alert('Error: Order not billed', 'error');
+                    hideLoading();
                 })
         }
 

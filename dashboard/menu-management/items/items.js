@@ -441,26 +441,28 @@ function coldReload() {
     }
 }
 
-function refreshCategoryList() {
+function refreshFoodList() {
     const button = document.querySelector('#refresh-btn');
     button.classList.add('spinning');
-    console.log('Refreshing Category List');
+    showLoading();
+    console.log('Refreshing Food List');
     
     // Call your existing category fetch function here
-    getFooditems()
-        .then(data => {
+    getFoodListRefresh()
+        .then(() => {
             console.log('Category List Refreshed');
             // Remove spinning class after refresh
             setTimeout(() => {
                 button.classList.remove('spinning');
+                hideLoading();
             }, 1000);
         })
         .catch(error => {
             console.error('Error refreshing categories:', error);
             button.classList.remove('spinning');
+            hideLoading();
         });
-    
-
 }
 
-document.getElementById('refresh-btn').addEventListener('click', refreshCategoryList);
+// Add event listener
+document.querySelector('#refresh-btn')?.addEventListener('click', refreshFoodList);
