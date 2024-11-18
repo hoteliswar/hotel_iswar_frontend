@@ -33,7 +33,7 @@ async function convertToRequiredFormat_ListView() {
         // const apiDataString = await getAllBookings();
 
         const bookingData = getAllBookingsFromStorage();
-        const apiDataString = JSON.stringify(bookingData); 
+        const apiDataString = JSON.stringify(bookingData);
         console.log(`apiDataString: ${apiDataString}`);
 
         // console.log(`apiDataString: ${JSON.stringify(apiDataString)}`);
@@ -242,26 +242,31 @@ function convertToRequiredFormat() {
             const guestDetail = booking.guest_detail[0]; // Assuming there's always at least one guest
             let checkInDate = new Date(room.start_date.replace('Z', ''));
             let checkOutDate = new Date(room.end_date.replace('Z', ''));
+            console.log(`OUTSIDE LOOP: ${booking.id} ${room.room} ${checkInDate} , ${checkOutDate}`);
+            
 
             let status;
 
             console.log(room.start_date);
             console.log(room.start_date);
-            console.log(currentDate);
-
+            // console.log(currentDate);
             console.log(room.check_in_details);
+
+            // Thu Nov 21 2024 12:00:00 GMT+0530
+
             if (room.check_in_details) {
+                console.log('IF BLOCK ONE');
                 console.log("Check-in date:", room.check_in_details.check_in_date);
                 checkInDate = new Date(room.check_in_details.check_in_date.replace('Z', ''));
+                console.log(`ONE ${booking.id} ${room.room} ${checkInDate}`);
             }
             console.log(room.check_out_date);
             if (room.check_out_date) {
+                console.log('IF BLOCK TWO');
                 console.log("Check-out date:", room.check_out_date);
                 checkOutDate = new Date(room.check_out_date.replace('Z', ''));
+                console.log(`TWO ${booking.id} ${room.room} ${checkOutDate}`);
             }
-
-
-
 
             if (booking.status === 'pending') {
                 if (room.start_date > currentDate.toISOString()) {
@@ -275,7 +280,7 @@ function convertToRequiredFormat() {
                 status = 'checkin';
             } else if (booking.status === 'confirmed') {
                 status = 'confirmed'
-            }  else if (booking.status === 'partial_checked_in') {
+            } else if (booking.status === 'partial_checked_in') {
                 if (room.check_in_details && !room.check_out_date) {
                     status = 'checkin';
                 } else if (room.check_in_details && room.check_out_date) {
@@ -286,6 +291,8 @@ function convertToRequiredFormat() {
                     status = 'noshow';
                 }
             }
+            console.log(checkInDate);
+            console.log(checkOutDate);
 
             roomBookings[roomNumber].push({
                 guestName: `${guestDetail.first_name} ${guestDetail.last_name}`,
@@ -298,6 +305,7 @@ function convertToRequiredFormat() {
                 bookingDate: new Date(booking.booking_date),
                 bookingId: booking.id
             });
+            console.log(roomBookings)
         });
     });
 
@@ -306,7 +314,8 @@ function convertToRequiredFormat() {
         roomBookings[roomNumber].sort((a, b) => a.checkIn - b.checkIn);
     }
 
-    console.log('roomBookings:', roomBookings);
+    console.log('roomBookings:', JSON.stringify(roomBookings));
+    localStorage.setItem('calenderData', JSON.stringify(roomBookings));
     return roomBookings;
 }
 
@@ -874,6 +883,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
                     paymentPOSTcall(paymentData);
 
                     function paymentPOSTcall(paymentData) {
+                        showLoading();
                         console.log('Payment POST call');
                         const url = `${baseURL}billing/bill-payments/`;
                         const option = {
@@ -888,10 +898,12 @@ function loadBookingModal(bookingInfo, roomNumber) {
                         refreshAccessToken2(url, option)
                             .then(data => {
                                 console.log(data);
+                                hideLoading();
                                 window.location.reload();
                             })
                             .catch(error => {
                                 console.log('Error in payment POST call:', error);
+                                hideLoading();
                             });
                     }
                 }
@@ -1036,11 +1048,11 @@ function generateHotelBill(bookingInfo, roomNumber) {
             };
             console.log('Updated genBillData:', genBillData);
         }
-        
+
         // Initial setup
         updateGenBillData();
 
-        
+
         // if any of the values are null, remove that key from the object
         if (genBillData.room_discount == null) {
             delete genBillData.room_discount;
@@ -1059,7 +1071,7 @@ function generateHotelBill(bookingInfo, roomNumber) {
 }
 
 function genBillPOST(genBillData) {
-
+    showLoading();
     console.log("printBill called");
     console.log(genBillData);
 
@@ -1082,15 +1094,17 @@ function genBillPOST(genBillData) {
                 getAllBookings(),
                 getAllBilling()
             ]);
-        
+
 
             document.querySelector('.close-settle').click();
             document.querySelector('.dash-nav-category #booking').click();
+            hideLoading();
 
         })
         .catch(error => {
             console.log('Error in genBillPOST:', error);
             alert('Error in generating bill', 'error');
+            hideLoading();
         })
 }
 
@@ -1751,6 +1765,7 @@ function checkOutSubmit() {
 
 //  POST API Call for checkin   
 function postCheckInData(checkInData) {
+    showLoading();
     console.log(`postCheckInData: ${checkInData}`);
     console.log("Check-In Data:", JSON.stringify(checkInData, null, 2));
 
@@ -1772,17 +1787,19 @@ function postCheckInData(checkInData) {
             document.querySelector('.close3').click();
             document.querySelector('.close').click();
             document.querySelector('.dash-nav-category #booking').click();
-
+            hideLoading();
             return data;
         })
         .catch(error => {
             console.error("Error posting check-in data:", error);
             alert("Error posting check-in data", 'error');
+            hideLoading();
         });
 }
 
 // POST API Call for service
 function postServiceData(serviceData) {
+    showLoading();
     console.log(`postServiceData: ${serviceData}`);
     console.log("Service Data:", JSON.stringify(serviceData, null, 2));
 
@@ -1805,17 +1822,20 @@ function postServiceData(serviceData) {
             document.querySelector('.close4').click();
             // document.querySelector('.close').click();
             // document.querySelector('.dash-nav-category #booking').click();
+            hideLoading();
             return data;
         })
         .catch(error => {
             console.error("Error posting check-in data:", error);
             alert("Error booking service", 'error');
+            hideLoading();
         });
 
 }
 
 // POST API Call for Check Out
 function postCheckOutData(checkOutData) {
+    showLoading();
     console.log(`postCheckoutData: ${checkOutData}`);
     console.log("Check Out Data:", JSON.stringify(checkOutData, null, 2));
 
@@ -1838,13 +1858,14 @@ function postCheckOutData(checkOutData) {
             document.querySelector('.close4').click();
             document.querySelector('.close').click();
             document.querySelector('.dash-nav-category #booking').click();
-
+            hideLoading();
             // loadContent('BOOKINGS');
             return data;
         })
         .catch(error => {
             console.error("Error posting check-out data:", error);
             alert("Error posting check-out data", 'error');
+            hideLoading();
         });
 
 }
@@ -2015,10 +2036,12 @@ function initializeFirstRow() {
     // inputElementAddRoom.appendChild(row);
 }
 
-function checkDatesAndPopulateRooms(id) {
+function checkDatesAndPopulateRooms2(id) {
     const startDate = document.getElementById(`startDate-${id}`).value;
     const endDate = document.getElementById(`endDate-${id}`).value;
     const roomSelect = document.getElementById(`roomSelect-${id}`);
+
+    
 
     if (startDate && endDate) {
         roomSelect.disabled = false;
@@ -2029,6 +2052,51 @@ function checkDatesAndPopulateRooms(id) {
     }
 }
 
+function checkDatesAndPopulateRooms(id) {
+    const startDateInput = document.getElementById(`startDate-${id}`).value;
+    const endDateInput = document.getElementById(`endDate-${id}`).value;
+    const roomSelect = document.getElementById(`roomSelect-${id}`);
+
+    if (!startDateInput || !endDateInput || !roomSelect) {
+        console.error('Required elements not found');
+        return;
+    }
+
+    // Set dates to 12:00 PM IST
+    const startDate = new Date(startDateInput);
+    startDate.setHours(12, 1, 0, );  // Set to 12:00:00.000
+    
+    const endDate = new Date(endDateInput);
+    endDate.setHours(12, 0, 0, 0);    // Set to 12:00:00.000
+
+    console.log('Dates with 12:00 PM IST:', {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+    });
+
+    // Validate dates
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        console.log('Please select both dates');
+        return;
+    }
+
+    if (startDate >= endDate) {
+        alert('Check-out date must be after check-in date');
+        document.getElementById(`endDate-${id}`).value = '';
+        return;
+    }
+
+    if (startDate && endDate) {
+        roomSelect.disabled = false;
+        populateRoomOptions(roomSelect, startDate, endDate);
+    } else {
+        roomSelect.disabled = true;
+        roomSelect.innerHTML = '<option selected disabled>Select Room</option>';
+    }
+
+    // Populate room options with the 12:00 PM IST dates
+    // populateRoomOptions(roomSelect, startDate, endDate);
+}
 
 // Function to initialize the booking functionality
 function initializeBooking() {
@@ -2089,10 +2157,12 @@ function populateRoomOptions2(select, startDate, endDate) {
     });
 }
 
-function populateRoomOptions(select, startDate, endDate) {
+function populateRoomOptions3(select, startDate, endDate) {
     const roomList = localStorage.getItem('roomsList');
     const bookingsList = localStorage.getItem('bookingsList');
-    
+
+    console.log(startDate, endDate);
+
     if (!roomList || !bookingsList) {
         console.error('Required data not found in localStorage');
         return;
@@ -2102,6 +2172,7 @@ function populateRoomOptions(select, startDate, endDate) {
     try {
         roomListObj = JSON.parse(roomList);
         bookingsListObj = JSON.parse(bookingsList);
+        console.log(bookingsListObj);
         console.log('Checking availability for:', { startDate, endDate });
     } catch (error) {
         console.error('Error parsing data:', error);
@@ -2110,7 +2181,7 @@ function populateRoomOptions(select, startDate, endDate) {
 
     // Clear existing options
     select.innerHTML = '<option selected disabled>Select Room</option>';
-    
+
     // Create a map of room bookings from bookingsList
     const roomBookings = {};
     bookingsListObj.forEach(booking => {
@@ -2118,11 +2189,29 @@ function populateRoomOptions(select, startDate, endDate) {
             if (!roomBookings[roomBooking.room]) {
                 roomBookings[roomBooking.room] = [];
             }
-            
+
+            // Get the actual start date with proper fallback
+            const actualStartDate = roomBooking.check_in_details?.check_in_date
+                ? new Date(roomBooking.check_in_details.check_in_date)
+                : new Date(roomBooking.start_date);
+
+            // Get the actual end date with proper fallback
+            const actualEndDate = roomBooking.check_out_date
+                ? new Date(roomBooking.check_out_date)
+                : new Date(roomBooking.end_date);
+
+            console.log(`Room ${roomBooking.room} booking dates:`, {
+                checkInDetails: roomBooking.check_in_details,
+                startDate: actualStartDate,
+                endDate: actualEndDate,
+                originalStart: new Date(roomBooking.start_date),
+                originalEnd: new Date(roomBooking.end_date)
+            });
+
             // Include all bookings, regardless of status
             roomBookings[roomBooking.room].push({
-                startDate: new Date(roomBooking.start_date),
-                endDate: new Date(roomBooking.end_date),
+                startDate: actualStartDate,
+                endDate: actualEndDate,
                 checkInDetails: roomBooking.check_in_details,
                 checkOutDate: roomBooking.check_out_date ? new Date(roomBooking.check_out_date) : null,
                 status: booking.status,
@@ -2133,32 +2222,39 @@ function populateRoomOptions(select, startDate, endDate) {
 
     console.log('Room Bookings Map:', roomBookings);
 
+    console.log(roomListObj);
     // Create options for each room
     roomListObj.forEach(room => {
+
+        console.log(`Room Bookings ${JSON.stringify(roomBookings)}`);
+        console.log(`Room List Object ${JSON.stringify(roomListObj)}`);
+        console.log(`Room ${JSON.stringify(room)}`);
+
+
         const bookings = roomBookings[room.id] || [];
         console.log(`Checking room ${room.room_number}:`, bookings);
 
         const isAvailable = !bookings.some(booking => {
             // Convert dates to compare
-            const bookingStart = booking.startDate;
-            const bookingEnd = booking.endDate;
+            const bookingStart = booking.check_in_details?.check_in_date || booking.startDate;
+            const bookingEnd = booking.check_out_date || booking.endDate;
             const requestStart = new Date(startDate);
             const requestEnd = new Date(endDate);
 
             // Check for date overlap, regardless of check-out status
             const hasOverlap = requestStart < bookingEnd && requestEnd > bookingStart;
-            
+
             if (hasOverlap) {
                 console.log(`Room ${room.room_number} - Date overlap with booking ${booking.bookingId}`);
                 console.log(`Booking period: ${bookingStart} to ${bookingEnd}`);
                 console.log(`Requested period: ${requestStart} to ${requestEnd}`);
             }
-            
+
             return hasOverlap;
         });
 
         console.log(`Room ${room.room_number} final availability:`, isAvailable);
-        
+
         const option = document.createElement('option');
         option.value = room.id;
         option.textContent = `Room ${room.room_number} - ${room.room_type} ${isAvailable ? '' : '(Occupied)'}`;
@@ -2176,6 +2272,121 @@ function populateRoomOptions(select, startDate, endDate) {
         updateTotalBookingAmount();
     });
 }
+
+function populateRoomOptions(select, startDate, endDate) {
+    const roomList = localStorage.getItem('roomsList');
+    const bookingsList = localStorage.getItem('bookingsList');
+
+    if (!roomList || !bookingsList) {
+        console.error('Required data not found in localStorage');
+        return;
+    }
+
+    let roomListObj, bookingsListObj;
+    try {
+        roomListObj = JSON.parse(roomList);
+        bookingsListObj = JSON.parse(bookingsList);
+        console.log('Checking availability for:', { startDate, endDate });
+    } catch (error) {
+        console.error('Error parsing data:', error);
+        return;
+    }
+
+    // Clear existing options
+    select.innerHTML = '<option selected disabled>Select Room</option>';
+
+    // Create a map of ALL room bookings (historical + current + future)
+    const roomBookings = {};
+    bookingsListObj.forEach(booking => {
+        booking.rooms.forEach(roomBooking => {
+            if (!roomBookings[roomBooking.room]) {
+                roomBookings[roomBooking.room] = [];
+            }
+
+            // Get dates in UTC format
+            const bookingStartDate = new Date(roomBooking.start_date);
+            const bookingEndDate = new Date(roomBooking.end_date);
+            
+            // Force UTC times to 12:00
+            const startUTC = new Date(Date.UTC(
+                bookingStartDate.getUTCFullYear(),
+                bookingStartDate.getUTCMonth(),
+                bookingStartDate.getUTCDate(),
+                12, 0, 0, 0
+            ));
+            
+            const endUTC = new Date(Date.UTC(
+                bookingEndDate.getUTCFullYear(),
+                bookingEndDate.getUTCMonth(),
+                bookingEndDate.getUTCDate(),
+                12, 0, 0, 0
+            ));
+
+            roomBookings[roomBooking.room].push({
+                startDate: startUTC,
+                endDate: endUTC,
+                bookingId: booking.id,
+                status: booking.status
+            });
+        });
+    });
+
+    // Convert request dates to UTC 12:00
+    const requestStart = new Date(Date.UTC(
+        startDate.getUTCFullYear(),
+        startDate.getUTCMonth(),
+        startDate.getUTCDate(),
+        12, 0, 0, 0
+    ));
+    
+    const requestEnd = new Date(Date.UTC(
+        endDate.getUTCFullYear(),
+        endDate.getUTCMonth(),
+        endDate.getUTCDate(),
+        12, 0, 0, 0
+    ));
+
+    // Check each room's availability
+    roomListObj.forEach(room => {
+        const bookings = roomBookings[room.id] || [];
+        console.log(`Checking room ${room.room_number} bookings:`, bookings);
+
+        const isAvailable = !bookings.some(booking => {
+            // Check for ANY overlap with existing bookings
+            const hasOverlap = requestStart < booking.endDate && requestEnd > booking.startDate;
+            
+            if (hasOverlap) {
+                console.log(`Room ${room.room_number} - Overlap found:`, {
+                    bookingId: booking.bookingId,
+                    bookingStart: booking.startDate.toISOString(),
+                    bookingEnd: booking.endDate.toISOString(),
+                    requestStart: requestStart.toISOString(),
+                    requestEnd: requestEnd.toISOString()
+                });
+            }
+            
+            return hasOverlap;
+        });
+
+        // Create room option
+        const option = document.createElement('option');
+        option.value = room.id;
+        option.textContent = `Room ${room.room_number} - ${room.room_type} ${isAvailable ? '' : '(Occupied)'}`;
+        option.disabled = !isAvailable;
+        option.dataset.price = room.price;
+        select.appendChild(option);
+    });
+
+    // Add change event listener
+    select.removeEventListener('change', updateTotalBookingAmount);
+    select.addEventListener('change', function() {
+        const selectedRoom = this.value;
+        const selectedPrice = this.options[this.selectedIndex].dataset.price;
+        updateTotalBookingAmount();
+    });
+}
+
+
 
 
 function checkRoomAvailability2(room, startDate, endDate) {
@@ -2307,7 +2518,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
         'address_line_1': bookingAddress,
         'address_line_2': customerState + " , " + customerNationality,
         // 'id': customerId,
-        'advance_amount': advanceBookingAmount,
+        'advance': advanceBookingAmount,
         // 'total_amount': totalBookingAmount,
         'rooms': bookingData,
         'status': 'pending'
@@ -2322,7 +2533,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
     bookingFormData.append('last_name', bookingLname);
     bookingFormData.append('address_line_1', bookingAddress);
     bookingFormData.append('address_line_2', customerState + " , " + customerNationality);
-    bookingFormData.append('advance_amount', advanceBookingAmount);
+    bookingFormData.append('advance', advanceBookingAmount);
     bookingFormData.append('status', 'pending');
     bookingFormData.append('rooms', JSON.stringify(bookingData));
 
@@ -2336,7 +2547,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
 
     // POST call to API for booking
     function submitBooking(booking) {
-
+        showLoading();
         console.log("Booking data from submitBooking:", booking);
 
         const options = {
@@ -2360,11 +2571,12 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
                 await Promise.all([getAllBookings()]);
                 document.querySelector('.close2').click();
                 document.querySelector('.dash-nav-category #booking').click();
-
+                hideLoading();
                 // window.location.reload();
             })
             .catch(error => {
                 console.log('Error fetching booked data:', error);
+                hideLoading();
             });
 
     }

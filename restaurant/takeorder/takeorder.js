@@ -89,6 +89,60 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    document.getElementById('search-input').addEventListener('input', searchItems);
+
+    function searchItems() {
+        // Add search functionality
+        const searchInput = document.getElementById('search-input');
+
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase().trim();
+
+            if (searchTerm === '') {
+                // If search is empty and a category is selected, show that category's items
+                const selectedCategory = document.querySelector('.menu-category-item.selected');
+                if (selectedCategory) {
+                    const categoryName = selectedCategory.querySelector('.category-name').textContent.trim();
+                    loadMenuItems(categoryName);
+                }
+                return;
+            }
+
+            // Clear current menu items
+            menuItemsContainer.innerHTML = '';
+
+            // Search through all items in categorizedItems
+            Object.values(menuItems).flat().forEach(item => {
+                if (item.name.toLowerCase().includes(searchTerm)) {
+                    const itemElement = document.createElement('div');
+                    itemElement.classList.add('menu-item');
+
+                    const itemNameDiv = document.createElement('div');
+                    itemNameDiv.classList.add('item-name');
+                    itemNameDiv.textContent = item.name;
+                    itemNameDiv.dataset.id = item.id;
+                    itemNameDiv.dataset.price = item.price;
+                    itemNameDiv.addEventListener('click', () => disableButtons());
+
+                    const itemPriceDiv = document.createElement('div');
+                    itemPriceDiv.classList.add('item-price');
+                    itemPriceDiv.textContent = `₹${item.price}`;
+
+                    itemElement.appendChild(itemNameDiv);
+                    // itemElement.appendChild(itemPriceDiv);
+                    menuItemsContainer.appendChild(itemElement);
+
+                    itemElement.addEventListener('click', function () {
+                        addItemToBill(item.id, item.name, item.price);
+                    });
+                }
+            });
+
+            // Remove selected state from categories when searching
+            menuCategories.forEach(cat => cat.classList.remove('selected'));
+        });
+    }
+
     // Load Food Items on click at Category Div
     function loadMenuItems(category) {
         const items = menuItems[category] || [];
@@ -943,7 +997,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else {
                         document.querySelector('.settle-btn').disabled = false;
                     }
-                    
+
                     passOrderId = data.id;
                     passOrderKotCount = data.kot_count;
 
@@ -987,9 +1041,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     takeDataToKOT = data;
                     console.table(data);
                     alert("Success: Order Updated Successfully", 'success');
-                    
+
                     getTablesData();
-                    
+
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
@@ -1441,14 +1495,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // console.log('settlePayLoad:', settlePayLoad);
 
         const printBillBtn = document.getElementById('print-bill-btn');
-        printBillBtn.addEventListener('click', function (e) {
-            e.preventDefault();
+        printBillBtn.addEventListener('click', function () {
+            // e.preventDefault();
             console.log('printBillBtn clicked');
             console.log('settlePayLoad:', settlePayLoad);
             billOrder(settlePayLoad);
         });
-
-
 
 
         function billOrder(settlePayLoad) {
@@ -1472,7 +1524,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.querySelector('.close-settle').click();
                     document.querySelector('.settle-btn').disabled = true;
                     hideLoading();
-                    
+
                     generatePrintableBill(data);
                 })
                 .catch(error => {
@@ -1756,7 +1808,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 throw error;
             }
         }
-        
+
         // Usage in generatePrintableBill
         async function generatePrintableBill3(billData) {
 
@@ -2013,23 +2065,23 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 console.log('Bill Data:', billData);
                 const orderData = await getOrderById(billData.order_id);
-        
+
                 if (!orderData) {
                     throw new Error('Failed to get order data');
                 }
-        
+
                 console.log('Order Data:', orderData);
-        
+
                 // Create new window
                 const billWindow = window.open('', '_blank');
                 const doc = billWindow.document;
-        
+
                 // Add CSS
                 const cssLink = doc.createElement('link');
                 cssLink.rel = 'stylesheet';
                 cssLink.href = './../../order_bill/order_bill.css';
                 doc.head.appendChild(cssLink);
-        
+
                 // Add print-specific styles
                 const style = doc.createElement('style');
                 // style.textContent = `
@@ -2065,7 +2117,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 //     }
                 // `;
                 doc.head.appendChild(style);
-        
+
                 // Transform food items data
                 const allFoodList = JSON.parse(localStorage.getItem('allFoodList'));
                 const orderBillItems = orderData.food_items.map((foodId, index) => {
@@ -2078,10 +2130,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         total: parseFloat(foodItem.price) * orderData.quantity[index]
                     };
                 });
-        
+
                 const ITEMS_PER_PAGE = 10;
                 const totalPages = Math.ceil(orderBillItems.length / ITEMS_PER_PAGE);
-        
+
                 // Generate content for all pages
                 let pagesHTML = '';
                 for (let page = 1; page <= totalPages; page++) {
@@ -2097,10 +2149,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                     `;
                 }
-        
+
                 // Set the HTML content
                 doc.body.innerHTML = pagesHTML;
-        
+
                 // Add number-to-words script
                 const script = doc.createElement('script');
                 script.src = 'https://cdn.jsdelivr.net/npm/number-to-words';
@@ -2108,12 +2160,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     populateBillData(billWindow, billData, orderData, orderBillItems);
                 };
                 doc.head.appendChild(script);
-        
+
             } catch (error) {
                 console.error('Error in generatePrintableBill:', error);
             }
         }
-        
+
         function generateBillHeader() {
             return `
                 <header class="bill-header">
@@ -2132,7 +2184,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </header>
             `;
         }
-        
+
         function generateInvoiceSection() {
             return `
                 <section class="invoice-customer-info">
@@ -2154,7 +2206,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </section>
             `;
         }
-        
+
         function generateItemsSection(pageNumber, totalPages) {
             return `
                 <section class="bill-items">
@@ -2175,7 +2227,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </section>
             `;
         }
-        
+
         function generateFooter() {
             return `
                 <footer class="bill-footer">
@@ -2200,33 +2252,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 </footer>
             `;
         }
-        
+
         function populateBillData(billWindow, billData, orderData, orderBillItems) {
             const doc = billWindow.document;
-        
+
             // Basic Info
             doc.getElementById('bill-number').textContent = billData.bill_no;
             doc.getElementById('table-number').textContent = orderData.tables?.[0] || '-';
             doc.getElementById('order-type').textContent = orderData.order_type;
             doc.getElementById('gst-bill-number').textContent = billData.gst_bill_no;
-        
+
             // Customer Details
             doc.getElementById('customer-name').textContent = `${orderData.customer?.first_name || 'NA'} ${orderData.customer?.last_name || ''}`;
             doc.getElementById('customer-email').textContent = orderData.customer?.email || 'NA';
             doc.getElementById('customer-phone').textContent = orderData.customer?.phone || 'NA';
             doc.getElementById('customer-gstno').textContent = billData?.customer_gst || 'NA';
-        
+
             // Split items into pages
             const ITEMS_PER_PAGE = 10;
             const totalPages = Math.ceil(orderBillItems.length / ITEMS_PER_PAGE);
-        
+
             for (let page = 1; page <= totalPages; page++) {
                 const startIndex = (page - 1) * ITEMS_PER_PAGE;
                 const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, orderBillItems.length);
                 const pageItems = orderBillItems.slice(startIndex, endIndex);
-        
+
                 const billItemsBody = doc.getElementById(`bill-items-body-${page}`);
-        
+
                 // Add items for this page
                 pageItems.forEach(item => {
                     const row = doc.createElement('tr');
@@ -2238,7 +2290,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     `;
                     billItemsBody.appendChild(row);
                 });
-        
+
                 // Add totals only to the last page
                 if (page === totalPages) {
                     const totalsHTML = `
@@ -2277,24 +2329,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     billItemsBody.insertAdjacentHTML('beforeend', totalsHTML);
                 }
             }
-        
+
             // Footer info
             doc.querySelector('.kot-nos').textContent = orderData.kot_count || '0';
             doc.querySelector('.name').textContent = billData.cashier_by || '';
             doc.querySelector('.cashier-date').textContent = new Date(billData.created_at).toLocaleString();
-        
+
             // Trigger print after a short delay
             setTimeout(() => {
                 billWindow.print();
             }, 500);
         }
-        
+
         // Helper function to capitalize first letter
         function capitalizeFirstLetter2(string) {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
-        
+
 
 
 
