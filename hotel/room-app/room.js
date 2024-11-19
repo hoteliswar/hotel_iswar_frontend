@@ -118,7 +118,7 @@ function renderRoomData() {
             roomTypeValue = 'Deluxe AC';
         } else if (room.room_type == 'suite') {
             roomTypeValue = 'Suite AC';
-        } else if (room.room_type == 'standard') {
+        } else if (room.room_type == 'standard' || room.room_type == 'Standard') {
             roomTypeValue = 'Standard AC';
         } else if (room.room_type == 'super-deluxe') {
             roomTypeValue = 'Super Deluxe AC';

@@ -735,6 +735,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
             const bookingId = bookingInfo.bookingId;
             console.log(bookingId);
 
+            
             checkBillStatus(bookingId);
 
             function checkBillStatus(bookingId) {
@@ -983,7 +984,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
     if (eyeOrder) {
         eyeOrder.forEach(btn => {
             const eyeOrderStatus = btn.dataset.status;
-            if (eyeOrderStatus === 'serve') {
+            if (eyeOrderStatus === 'served') {
                 btn.style.display = 'none';
                 btn.style.cursor = 'not-allowed';
             }
@@ -995,6 +996,16 @@ function loadBookingModal(bookingInfo, roomNumber) {
         servicesDel.forEach(btn => {
             btn.onclick = () => deleteService(btn.dataset.serviceId);
         });
+    }
+
+    if (bookingInfo.status === 'checkout') {
+        if (document.querySelectorAll('.services-del')) {
+            // disable all delete buttons
+            document.querySelectorAll('.services-del').forEach(btn => {
+                btn.disabled = true;
+                btn.style.cursor = 'not-allowed';
+            });
+        }
     }
 
 }
