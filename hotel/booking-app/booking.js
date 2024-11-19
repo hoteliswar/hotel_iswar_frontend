@@ -772,7 +772,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
                         billBtn.id = 'view-bill-btn';
                         billBtn.innerHTML = 'Print Bill';
 
-                        document.querySelector('.modal-body').appendChild(billBtn);
+                        // document.querySelector('.modal-body').appendChild(billBtn);
 
                         document.getElementById('view-bill-btn').onclick = () => openBill(bills[0]);
                         console.log('Latest bill found for order:', bills[0]);
@@ -2437,8 +2437,14 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
 
         if (roomSelect.value && startDate.value && endDate.value) {
             // Convert dates to the required format
-            const formattedStartDate = new Date(startDate.value + 'T12:00:00Z').toISOString();
-            const formattedEndDate = new Date(endDate.value + 'T12:00:00Z').toISOString();
+            // const formattedStartDate = new Date(startDate.value + 'T12:00:00Z').toISOString();
+            // const formattedEndDate = new Date(endDate.value + 'T12:00:00Z').toISOString();
+
+            const formattedStartDate = startDate.value + ':00Z';
+            const formattedEndDate = endDate.value + ':00Z';
+
+            console.log(startDate.value, endDate.value);
+            console.log(formattedStartDate, formattedEndDate);
 
             bookingData.push({
                 room: parseInt(roomSelect.value),

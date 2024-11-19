@@ -139,5 +139,17 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    document.getElementById('hotel-bill').addEventListener('click', function (e) {
+        e.preventDefault();
+        try {
+            showLoading();
+            getAllBilling();
+            hideLoading();
+        } catch (error) {
+            console.log('Error in getAllBilling:', error);
+        }
+    });
 
 });
+
+

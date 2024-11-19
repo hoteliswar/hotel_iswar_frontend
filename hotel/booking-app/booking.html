@@ -125,31 +125,37 @@
                                     </div>
                                     <div class="input-element ele-room">
                                         <label for="startDate-1">Start Date</label>
-                                        <input type="date" id="startDate-1" id="startDate-1" name="startDate" required>
+                                        <!-- <input type="date" id="startDate-1" name="startDate" required> -->
+
+                                        <input type="datetime-local" id="startDate-1" name="startDate">
+
                                         <label for="endDate-1">End Date</label>
-                                        <input type="date" id="endDate-1" id="endDate-1" name="endDate" required>
+                                        <!-- <input type="date" id="endDate-1" name="endDate" required> -->
+
+                                        <input type="datetime-local" id="endDate-1" name="endDate">
+
                                         <i class="fa-solid fa-circle-plus fa-2x" id="add-more-btn"></i>
                                     </div>
                                 </div>
                             </div>
                             <div class="input-element">
                                 <label for="bookingPhone">Phone</label>
-                                <input type="text" id="bookingPhone" name="bookingPhone" required value="1234567890"
+                                <input type="text" id="bookingPhone" name="bookingPhone" required 
                                     placeholder="+91 12345 67890">
                             </div>
                             <div class="input-element">
                                 <label for="bookingEmail">Email</label>
-                                <input type="email" id="bookingEmail" name="bookingEmail" value="test@gmail.com"
+                                <input type="email" id="bookingEmail" name="bookingEmail" 
                                     placeholder="name@example.com">
                             </div>
                             <div class="input-element">
                                 <label for="bookingFname">First Name</label>
-                                <input type="text" id="bookingFname" name="bookingFname" required value="test"
+                                <input type="text" id="bookingFname" name="bookingFname" required 
                                     placeholder="First Name">
                             </div>
                             <div class="input-element">
                                 <label for="bookingLname">Last Name</label>
-                                <input type="text" id="bookingLname" name="bookingLname" required value="test"
+                                <input type="text" id="bookingLname" name="bookingLname" required 
                                     placeholder="Last Name">
                             </div>
                             <div class="input-element">
@@ -213,7 +219,7 @@
 
                             <div class="input-element address">
                                 <label for="bookingAddress">Address</label>
-                                <input type="text" id="bookingAddress" name="bookingAddress" required value="test"
+                                <input type="text" id="bookingAddress" name="bookingAddress" required 
                                     placeholder="Address">
                             </div>
 

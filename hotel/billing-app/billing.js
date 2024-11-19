@@ -2,6 +2,8 @@
 
 getAllBilling();
 
+
+
 async function billingDisplay() {
 
     const billingData = await getAllBillingFromStorage();
@@ -677,6 +679,10 @@ function createSummaryPage(item) {
     const foodTotal = item.order_details.reduce((sum, order) => sum + parseFloat(order.total), 0);
     const foodGST = parseFloat(item.order_cgst) + parseFloat(item.order_sgst);
 
+    const advance = parseFloat(item.bookingData.advance) || 0.00;
+
+    const payable_amount = parseFloat(item.net_amount) - advance;
+
     summaryContent.innerHTML = `
         <h2 class="summary-title">Bill Summary</h2>
         
@@ -744,6 +750,14 @@ function createSummaryPage(item) {
                 <tr class="final-total">
                     <td><strong>Net Amount:</strong></td>
                     <td class="amount"><strong>₹ ${parseFloat(item.net_amount).toFixed(2)}</strong></td>
+                </tr>
+                <tr class="advance-paid">
+                    <td>Advance Paid:</td>
+                    <td class="amount"><strong>₹ ${advance}</strong></td>
+                </tr>
+                <tr class="payable-amount">
+                    <td><strong>Payable Amount:</strong></td>
+                    <td class="amount"><strong>₹ ${payable_amount}</strong></td>
                 </tr>
             </table>
         </div>
@@ -1015,7 +1029,7 @@ function getBillStyles() {
         }
 
         .summary-table td {
-            padding: 8px;
+            padding: 5px;
             border-bottom: 1px solid #ddd;
         }
 
@@ -1040,9 +1054,17 @@ function getBillStyles() {
         }
 
         .final-total {
-            font-size: 1.2em;
+            font-size: 0.9em;
             background-color: #f0f0f0;
             border-top: 2px solid #333;
+        }
+        
+        .advance-paid {
+            font-size: 0.8em;
+        }
+
+        .payable-amount {
+            font-size: 1em;
         }
 
         .final-total td {
