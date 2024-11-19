@@ -673,7 +673,7 @@ async function generatePrintableBill(billData) {
                     </div>
 
                     <div class="license-nos">
-                        <div class="fssai">FSSAI LICENSE NO: 1234567890</div>
+                        <div class="fssai">FSSAI LICENSE NO: 10324025000094</div>
                     </div>
 
                     <div class="bill-footer-text">
