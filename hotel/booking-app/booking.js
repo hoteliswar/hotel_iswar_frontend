@@ -159,7 +159,7 @@ function getAllBookings() {
 }
 
 // Rendering List View
-function renderListView(allBookings) {
+function renderListView2(allBookings) {
     const listviewWrapper = document.querySelector('.booking-list-body');
     listviewWrapper.innerHTML = ''; // Clear existing content
 
@@ -193,6 +193,51 @@ function renderListView(allBookings) {
         });
 
     }
+}
+
+function renderListView(allBookings) {
+    const listviewWrapper = document.querySelector('.booking-list-body');
+    listviewWrapper.innerHTML = ''; // Clear existing content
+
+    // Convert allBookings object into a flat array with room numbers
+    const flatBookings = [];
+    for (const roomNumber in allBookings) {
+        allBookings[roomNumber].forEach(booking => {
+            flatBookings.push({
+                ...booking,
+                roomNumber: roomNumber
+            });
+        });
+    }
+
+    // Sort by bookingId
+    flatBookings.sort((a, b) => b.bookingId - a.bookingId); // Descending order
+    // Use (a.bookingId - b.bookingId) for ascending order
+
+    console.log('Sorted bookings:', flatBookings);
+
+    // Render sorted bookings
+    flatBookings.forEach(booking => {
+        const roomDiv = document.createElement('div');
+        roomDiv.classList.add('row');
+        roomDiv.innerHTML = `
+            <div class="col-1">${booking.bookingId}</div>
+            <div class="col-1">${booking.roomNumber}</div>
+            <div class="col-2">${booking.bookingDate.toLocaleString()}</div>
+            <div class="col-2">${booking.guestName}</div>
+            <div class="col-2">${booking.checkIn.toLocaleString()}</div>
+            <div class="col-2">${booking.checkOut.toLocaleString()}</div>
+            <div class="col-1 status-${booking.status}">${booking.status}</div>
+            <div class="col-1 "> <i class="fa-solid fa-eye eye" id="eye-${booking.bookingId}"></i> </div>
+        `;
+        listviewWrapper.appendChild(roomDiv);
+
+        // Add onclick event to the eye icon
+        const eyeIcon = roomDiv.querySelector(`#eye-${booking.bookingId}`);
+        eyeIcon.addEventListener('click', function () {
+            showBookingModalListView(booking.roomNumber, booking.bookingId);
+        });
+    });
 }
 
 var currentDate = new Date();
