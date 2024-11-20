@@ -288,7 +288,7 @@ function convertToRequiredFormat() {
             let checkInDate = new Date(room.start_date.replace('Z', ''));
             let checkOutDate = new Date(room.end_date.replace('Z', ''));
             console.log(`OUTSIDE LOOP: ${booking.id} ${room.room} ${checkInDate} , ${checkOutDate}`);
-            
+
 
             let status;
 
@@ -780,10 +780,48 @@ function loadBookingModal(bookingInfo, roomNumber) {
             const bookingId = bookingInfo.bookingId;
             console.log(bookingId);
 
-            
+
             checkBillStatus(bookingId);
 
+            function showBillStatus() {
+                console.warn('showBillStatus called');
+                // First remove any existing loading text
+
+                // Get the modal body
+                const modalBody = document.querySelector('#bookingModal .modal-body');
+                console.log('Modal body element:', modalBody);
+
+                const existingLoadText = document.querySelector('.load-text');
+                if (existingLoadText) {
+                    existingLoadText.remove();
+                }
+
+                // Create and add the new loading text
+                const loadText = document.createElement('div');
+                loadText.classList.add('load-text');
+                loadText.textContent = 'Loading Bill Status...';
+                loadText.style.textAlign = 'center';
+                loadText.style.padding = '10px';
+                loadText.style.margin = '10px 0';
+
+                console.warn(loadText);
+
+                // Find the modal body and insert the loading text
+                // const modalBody = document.querySelector('.modal-body');
+                if (modalBody) {
+                    document.querySelector('.modal-body').appendChild(loadText);
+                    console.warn(modalBody);
+                } else {
+                    console.error('Modal body not found');
+                }
+
+            }
+
             function checkBillStatus(bookingId) {
+
+                showBillStatus();
+                // showLoading();
+
                 const url = `${baseURL}billing/bills/`;
                 const option = {
                     method: 'GET',
@@ -799,6 +837,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
                         const bills = data.filter(bill => bill.booking_id == bookingId);
                         console.log('Bills found:', bills);
                         checkBill(bills);
+                        // hideLoading();
                         // return bills;
                     })
 
@@ -816,12 +855,13 @@ function loadBookingModal(bookingInfo, roomNumber) {
                         const billBtn = document.createElement('button');
                         billBtn.classList.add('bill-btn');
                         billBtn.id = 'view-bill-btn';
-                        billBtn.innerHTML = 'Print Bill';
+                        billBtn.innerHTML = 'Bill Generated Already';
+                        // billBtn.innerHTML = 'Print Bill';
 
-                        // document.querySelector('.modal-body').appendChild(billBtn);
+                        document.querySelector('.modal-body').appendChild(billBtn);
 
-                        document.getElementById('view-bill-btn').onclick = () => openBill(bills[0]);
-                        console.log('Latest bill found for order:', bills[0]);
+                        // document.getElementById('view-bill-btn').onclick = () => openBill(bills[0]);
+                        // console.log('Latest bill found for order:', bills[0]);
 
                         // makepayment(bills[0]);
 
@@ -1012,13 +1052,21 @@ function loadBookingModal(bookingInfo, roomNumber) {
         serveBtn.forEach(btn => {
             const serveBtnId = btn.dataset.orderId;
             const serveBtnStatus = btn.dataset.status;
-            if (serveBtnStatus === 'served') {
+            if (serveBtnStatus === 'served' || serveBtnStatus === 'settled') {
                 // btn.style.display = 'none';
                 btn.textContent = 'Served';
                 btn.style.backgroundColor = '#5e5e5e';
                 btn.style.color = '#fff';
                 btn.style.cursor = 'not-allowed';
                 btn.disabled = true;
+            }
+            if (serveBtnStatus === 'cancelled') {
+                btn.textContent = 'Cancelled';
+                btn.style.backgroundColor = '#5e5e5e';
+                btn.style.color = '#fff';
+                btn.style.cursor = 'not-allowed';
+                btn.disabled = true;
+
             }
             btn.onclick = () => serveOrder(serveBtnId);
         });
@@ -1030,6 +1078,10 @@ function loadBookingModal(bookingInfo, roomNumber) {
         eyeOrder.forEach(btn => {
             const eyeOrderStatus = btn.dataset.status;
             if (eyeOrderStatus === 'served') {
+                btn.style.display = 'none';
+                btn.style.cursor = 'not-allowed';
+            }
+            if (eyeOrderStatus === 'cancelled') {
                 btn.style.display = 'none';
                 btn.style.cursor = 'not-allowed';
             }
@@ -1193,11 +1245,13 @@ document.querySelector('.close5').onclick = function () {
 }
 
 function serveOrder(orderId) {
+
     console.log("serveOrder called");
     console.log(orderId);
     serveOrderPATCH(orderId);
 
     function serveOrderPATCH(orderId) {
+        showLoading();
         const option = {
             method: 'PATCH',
             headers: {
@@ -1216,9 +1270,13 @@ function serveOrder(orderId) {
                 console.log('Served Data:', data);
                 console.table(data);
                 alert("Order SERVED Successfully");
+                document.getElementById('booking').click();
+                hideLoading();
             })
             .catch(error => {
                 console.log('Error SERVED Order:', error);
+                alert(`Error in Serving Order: ${error}`, 'error');
+                hideLoading();
             })
     }
 }
@@ -2097,7 +2155,7 @@ function checkDatesAndPopulateRooms2(id) {
     const endDate = document.getElementById(`endDate-${id}`).value;
     const roomSelect = document.getElementById(`roomSelect-${id}`);
 
-    
+
 
     if (startDate && endDate) {
         roomSelect.disabled = false;
@@ -2120,8 +2178,8 @@ function checkDatesAndPopulateRooms(id) {
 
     // Set dates to 12:00 PM IST
     const startDate = new Date(startDateInput);
-    startDate.setHours(12, 1, 0, );  // Set to 12:00:00.000
-    
+    startDate.setHours(12, 1, 0,);  // Set to 12:00:00.000
+
     const endDate = new Date(endDateInput);
     endDate.setHours(12, 0, 0, 0);    // Set to 12:00:00.000
 
@@ -2362,7 +2420,7 @@ function populateRoomOptions(select, startDate, endDate) {
             // Get dates in UTC format
             const bookingStartDate = new Date(roomBooking.start_date);
             const bookingEndDate = new Date(roomBooking.end_date);
-            
+
             // Force UTC times to 12:00
             const startUTC = new Date(Date.UTC(
                 bookingStartDate.getUTCFullYear(),
@@ -2370,7 +2428,7 @@ function populateRoomOptions(select, startDate, endDate) {
                 bookingStartDate.getUTCDate(),
                 12, 0, 0, 0
             ));
-            
+
             const endUTC = new Date(Date.UTC(
                 bookingEndDate.getUTCFullYear(),
                 bookingEndDate.getUTCMonth(),
@@ -2394,7 +2452,7 @@ function populateRoomOptions(select, startDate, endDate) {
         startDate.getUTCDate(),
         12, 0, 0, 0
     ));
-    
+
     const requestEnd = new Date(Date.UTC(
         endDate.getUTCFullYear(),
         endDate.getUTCMonth(),
@@ -2410,7 +2468,7 @@ function populateRoomOptions(select, startDate, endDate) {
         const isAvailable = !bookings.some(booking => {
             // Check for ANY overlap with existing bookings
             const hasOverlap = requestStart < booking.endDate && requestEnd > booking.startDate;
-            
+
             if (hasOverlap) {
                 console.log(`Room ${room.room_number} - Overlap found:`, {
                     bookingId: booking.bookingId,
@@ -2420,7 +2478,7 @@ function populateRoomOptions(select, startDate, endDate) {
                     requestEnd: requestEnd.toISOString()
                 });
             }
-            
+
             return hasOverlap;
         });
 
@@ -2435,7 +2493,7 @@ function populateRoomOptions(select, startDate, endDate) {
 
     // Add change event listener
     select.removeEventListener('change', updateTotalBookingAmount);
-    select.addEventListener('change', function() {
+    select.addEventListener('change', function () {
         const selectedRoom = this.value;
         const selectedPrice = this.options[this.selectedIndex].dataset.price;
         updateTotalBookingAmount();
