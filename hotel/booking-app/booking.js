@@ -627,7 +627,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
     if (bookingInfo) {
         console.log(bookingInfo);
         let modalContent = `
-            
+            <button class="btn-bookingedit" id="btn-bookingedit" onclick="editBooking(${bookingInfo.bookingId});">Edit Booking</button>
             <div class="booking-modal-data">
                 <p><div class="booking-data-head">Booking Id:</div>  ${bookingInfo.bookingId}</p>
                 <p><div class="booking-data-head">Room No:</div> ${roomNumber}</p>
@@ -824,7 +824,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
 
                 getBills(bookingId);
 
-                function getBills(bookingId) {
+                function getBills2(bookingId) {
                     const url = `${baseURL}billing/bills/`;
                     const option = {
                         method: 'GET',
@@ -849,7 +849,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
                         });
                 }
 
-                function getBills2(bookingId) {
+                function getBills(bookingId) {
                     try {
                         // Get bills from localStorage
                         const billingList = JSON.parse(localStorage.getItem('billingList') || '[]');
@@ -865,7 +865,10 @@ function loadBookingModal(bookingInfo, roomNumber) {
                         console.log('Booking ID being searched:', bookingIdNum);
                         console.log('Bills found:', bills);
 
-                        checkBill(bills);
+                        setTimeout(() => {
+                            checkBill(bills);
+                        }, 500);
+
                     } catch (error) {
                         console.error('Error processing bills from localStorage:', error);
                         checkBill([]);
@@ -897,10 +900,16 @@ function loadBookingModal(bookingInfo, roomNumber) {
 
                             try {
                                 console.log('Appending bill button to modal body');
-                                modalBody.appendChild(billBtn);
-                            } catch (error){
+                                console.log(billBtn);
+                                modalBody.innerHTML += billBtn.outerHTML;
+                                // document.querySelector('#bookingModal .modal-body').appendChild(billBtn);
+                                // document.querySelector('.modal-body').insertAdjacentElement('beforeend', billBtn);
+                                // modalBody.appendChild(billBtn);
+                                console.log(modalBody);
+                            } catch (error) {
                                 console.error('Failed to append bill button to modal body:', error);
                             }
+                            console.log('Bill button appended to modal body');
 
 
                             // document.querySelector('.modal-body').appendChild(billBtn);
@@ -1235,7 +1244,6 @@ function generateHotelBill(bookingInfo, roomNumber) {
         console.table(genBillData);
         document.getElementById('gen-billBtn').onclick = () => genBillPOST(genBillData);
     }
-
 }
 
 function genBillPOST(genBillData) {
@@ -1284,6 +1292,39 @@ function genBillPOST(genBillData) {
             alert('Error in generating bill', 'error');
             hideLoading();
         })
+}
+
+// Edit Booking
+function editBooking(bookingId) {
+    console.log("editBooking called");
+    alert('Edit Booking comming soon');
+}
+
+function editBooking2(bookingId) {
+    console.log("editBooking called");
+    console.log(bookingId);
+
+    // Get booking data from localStorage
+    const bookingList = JSON.parse(localStorage.getItem('bookingsList') || '[]');
+    const booking = bookingList.find(b => b.id === bookingId);
+
+    if (!booking) {
+        console.error('Booking not found');
+        return;
+    }
+
+    const newBookingModal = document.getElementById('newBookingModal');
+    if (newBookingModal) {
+        setTimeout(() => newBookingModal.classList.add('show'), 10);
+        newBookingModal.style.display = 'block';
+    }
+
+    const modalTitle = newBookingModal.querySelector('.modal-content-title-2');
+    modalTitle.textContent = 'Edit Booking';
+
+    const bookingIdDiv = document.getElementById('booking-id');
+    bookingIdDiv.value = booking.bookingId;
+
 }
 
 
@@ -1390,6 +1431,7 @@ function showBookingModal2(roomNumber, dateString) {
     if (bookingInfo) {
         console.log(bookingInfo);
         let modalContent = `
+            <button class="btn-bookingedit" id="btn-bookingedit" onclick="editBooking();">Edit Booking</button>
             <h2>Booking Details</h2>
             <p><strong>Room Number:</strong> ${roomNumber}</p>
             <p><strong>Guest Name:</strong> ${bookingInfo.guestName}</p>

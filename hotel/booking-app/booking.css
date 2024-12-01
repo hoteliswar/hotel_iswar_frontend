@@ -681,6 +681,7 @@ td {
     padding-right: 30px;
 }
 
+.modal-body .btn-bookingedit,
 .modal-body .btn-checkout,
 .modal-body .btn-services,
 .modal-body .btn-order,
@@ -696,6 +697,15 @@ td {
     font-weight: 600;
     margin-top: 10px;
     margin-right: 10px;
+}
+
+.modal-body .btn-bookingedit{
+    height: 30px;
+    width: 120px;
+    background-color: #018736;
+    color: #fff;
+    font-size: 0.8em;
+    float: right;
 }
 
 .order-list .modal-food{
