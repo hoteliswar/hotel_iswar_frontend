@@ -1,6 +1,6 @@
 // billingDisplay();
 
-getAllBilling();
+// getAllBilling();
 
 
 
@@ -277,6 +277,7 @@ function paymentPOST(bill) {
 
 
     function paymentPOSTcall(paymentData) {
+        showLoading();
         console.log('payment post call');
         console.log(paymentData);
 
@@ -296,11 +297,23 @@ function paymentPOST(bill) {
                 console.log(data);
                 alert('Payment Successful', 'success');
 
-                // document.getElementById('paymentModal').classList.remove('show');
-                // document.querySelector('.modal-container2').style.display = 'none';gi
-                document.querySelector('.close-payment').click();
+                // Update billing status in localStorage
+                let billingList = JSON.parse(localStorage.getItem('billingList') || '[]');
+                billingList = billingList.map(bill => {
+                    if (bill.id === paymentData.bill_id) {
+                        return { ...bill, status: 'paid' };
+                    }
+                    return bill;
+                });
+                localStorage.setItem('billingList', JSON.stringify(billingList));
 
-                // window.location.reload();
+
+                // document.getElementById('paymentModal').classList.remove('show');
+                // document.querySelector('.modal-container2').style.display = 'none';
+                document.querySelector('.close-payment').click();
+                document.querySelector('.close').click();
+                hideLoading();
+                document.querySelector('#hotel-bill').click();
             })
             .catch(error => {
                 console.log('Error in payment POST call:', error);
@@ -410,13 +423,13 @@ function createRoomServiceBillPage(item) {
             </thead>
             <tbody>
                 ${item.room_details.map(room => {
-                    // Find the room details from roomsList
-                    const roomDetails = roomsList.find(r => r.id === room.room_id);
-                    
-                    // Find the room booking details from bookingData
-                    const roomBooking = item.bookingData.rooms.find(r => r.room === room.room_id);
-                    
-                    return `
+        // Find the room details from roomsList
+        const roomDetails = roomsList.find(r => r.id === room.room_id);
+
+        // Find the room booking details from bookingData
+        const roomBooking = item.bookingData.rooms.find(r => r.room === room.room_id);
+
+        return `
                         <tr>
                             <td>${roomDetails ? roomDetails.room_number : room.room_id}</td>
                             <td class="datetime-cell">
@@ -430,7 +443,7 @@ function createRoomServiceBillPage(item) {
                             <td>${room.total.toFixed(2)}</td>
                         </tr>
                     `;
-                }).join('')}
+    }).join('')}
             </tbody>
         </table>
     `;
@@ -450,21 +463,20 @@ function createRoomServiceBillPage(item) {
             </thead>
             <tbody>
                  ${item.service_details.map(service => {
-                    // Find the room details from roomsList
-                    const roomDetails = roomsList.find(r => r.id === service.room_id);
-                    return `
+        // Find the room details from roomsList
+        const roomDetails = roomsList.find(r => r.id === service.room_id);
+        return `
                         <tr>
                             <td>${roomDetails ? roomDetails.room_number : service.room_id}</td>
                             <td>${service.service_name}</td>
                             <td class="amount-cell">₹ ${service.price.toFixed(2)}</td>
                         </tr>
                     `;
-                }).join('')}
+    }).join('')}
                 <tr class="total-row">
                     <td colspan="2" class="text-right"><strong>Total Service Charges:</strong></td>
-                    <td class="amount-cell"><strong>₹ ${
-                        item.service_details.reduce((sum, service) => sum + parseFloat(service.price), 0).toFixed(2)
-                    }</strong></td>
+                    <td class="amount-cell"><strong>₹ ${item.service_details.reduce((sum, service) => sum + parseFloat(service.price), 0).toFixed(2)
+        }</strong></td>
                 </tr>
             </tbody>
         </table>
@@ -472,7 +484,7 @@ function createRoomServiceBillPage(item) {
 
     pageContainer.appendChild(roomSection);
     pageContainer.appendChild(serviceSection);
-    
+
     // Add footer
     pageContainer.appendChild(createBillFooter(item));
 
@@ -489,7 +501,7 @@ function createOrderBillPages(item, orders, foodItems) {
 
     const pages = [];
     const itemsPerPage = 10;
-    
+
     // Process each order
     item.order_details.forEach((order, orderIndex) => {
         const orderData = orders.find(o => o.id === order.order_id);
@@ -505,7 +517,7 @@ function createOrderBillPages(item, orders, foodItems) {
         });
 
         // Calculate total for this order
-        const orderTotal = orderItems.reduce((sum, item) => 
+        const orderTotal = orderItems.reduce((sum, item) =>
             sum + (item.quantity * item.price), 0);
 
         // Split items into chunks for pagination
@@ -516,7 +528,7 @@ function createOrderBillPages(item, orders, foodItems) {
 
         chunks.forEach((chunk, chunkIndex) => {
             const isLastChunk = chunkIndex === chunks.length - 1;
-            
+
             const page = document.createElement('div');
             page.className = 'bill-page';
 
@@ -557,9 +569,8 @@ function createOrderBillPages(item, orders, foodItems) {
                             ${orderIndex === item.order_details.length - 1 ? `
                                 <tr class="grand-total-row">
                                     <td colspan="3" class="text-right"><strong>Total Food Charges:</strong></td>
-                                    <td class="amount-cell"><strong>₹ ${
-                                        item.order_details.reduce((sum, order) => sum + parseFloat(order.total), 0).toFixed(2)
-                                    }</strong></td>
+                                    <td class="amount-cell"><strong>₹ ${item.order_details.reduce((sum, order) => sum + parseFloat(order.total), 0).toFixed(2)
+                        }</strong></td>
                                 </tr>
                             ` : ''}
                         ` : ''}
@@ -569,9 +580,9 @@ function createOrderBillPages(item, orders, foodItems) {
                     <div class="page-number">Page ${chunkIndex + 1} of ${chunks.length}</div>
                 ` : ''}
             `;
-            
+
             pageContainer.appendChild(orderSection);
-            
+
             // Add footer
             pageContainer.appendChild(createBillFooter(item));
 
@@ -668,14 +679,14 @@ function createSummaryPage(item) {
     // Create summary content
     const summaryContent = document.createElement('div');
     summaryContent.className = 'summary-content';
-    
+
     // Calculate totals
     const roomTotal = item.room_details.reduce((sum, room) => sum + parseFloat(room.total), 0);
     const roomGST = parseFloat(item.room_cgst) + parseFloat(item.room_sgst);
-    
+
     const serviceTotal = item.service_details.reduce((sum, service) => sum + parseFloat(service.price), 0);
     const serviceGST = parseFloat(item.service_cgst) + parseFloat(item.service_sgst);
-    
+
     const foodTotal = item.order_details.reduce((sum, order) => sum + parseFloat(order.total), 0);
     const foodGST = parseFloat(item.order_cgst) + parseFloat(item.order_sgst);
 
