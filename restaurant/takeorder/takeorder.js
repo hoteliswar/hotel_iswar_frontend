@@ -986,8 +986,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.table(data);
                     takeDataToKOT = data;
                     alert("Success: Saved Order Successfully", 'success');
-                    getALlOrders();
-                    getTablesData();
+                    // getALlOrders();
+                    // getTablesData();
+
+                    // add data in local storage
+                    let ordersList = JSON.parse(localStorage.getItem('ordersList') || '[]');
+                    ordersList.push(data);
+                    localStorage.setItem('ordersList', JSON.stringify(ordersList));
+
+                    // update payload in local storage for tablesList where table_number is data.tables[0] and order is data.id
+                    let tablesList = JSON.parse(localStorage.getItem('tablesList') || '[]');
+                    let tableInfo = tablesList.find(t => t.table_number == data.tables[0]);
+                    tableInfo.order = data.id;
+                    tableInfo.occupied = true;
+                    localStorage.setItem('tablesList', JSON.stringify(tablesList));
+
+                    // enable buttons
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
@@ -1042,8 +1056,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.table(data);
                     alert("Success: Order Updated Successfully", 'success');
 
-                    getTablesData();
+                    // getTablesData();
 
+                    // update ordersList in local storage where id is data.id
+                    let ordersList = JSON.parse(localStorage.getItem('ordersList') || '[]');
+                    ordersList = ordersList.map(order => {
+                        if (order.id === data.id) {
+                            return data;  // Replace the matching order with new data
+                        }
+                        return order;
+                    });
+                    localStorage.setItem('ordersList', JSON.stringify(ordersList));
+
+                    // enable buttons
                     document.querySelector('.cancelled-btn').disabled = false;
                     document.querySelector('.hold-btn').disabled = false;
                     document.querySelector('.kot-btn').disabled = false;
@@ -1069,7 +1094,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
         }
 
-        function getOrderType(orderId) {
+        function getOrderType2(orderId) {
             const option = {
                 method: 'GET',
                 headers: {
@@ -1090,6 +1115,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 .catch(error => {
                     console.log('Error Getting Order Type:', error);
                 });
+        }
+
+        function getOrderType(orderId) {
+            // get order type from ordersList in local storage where id is orderId
+            let ordersList = JSON.parse(localStorage.getItem('ordersList') || '[]');
+            let orderInfo = ordersList.find(o => o.id == orderId);
+            return orderInfo.order_type;
         }
     });
 
@@ -1139,6 +1171,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Data:', data);
                     console.table(data);
                     alert("Order on Hold", 'success');
+
+                    // update data in local storage with orderId as id, status as on_hold
+                    let ordersList = JSON.parse(localStorage.getItem('ordersList') || '[]');
+                    let orderInfo = ordersList.find(o => o.id == orderId);
+                    orderInfo.status = 'on_hold';
+                    localStorage.setItem('ordersList', JSON.stringify(ordersList));
+
                     hideLoading();
                 })
                 .catch(error => {
@@ -1519,8 +1558,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     console.log('Data:', data);
                     console.table(data);
-
                     alert("Success: Order Billed Successfully", 'success');
+
+                    // update billingList in local storage with order_id as settlePayLoad.order_id
+                    let billingList = JSON.parse(localStorage.getItem('billingList') || '[]');
+                    const existingBillIndex = billingList.findIndex(bill => bill.order_id === settlePayLoad.order_id);
+
+                    if (existingBillIndex !== -1) {
+                        // Update existing bill
+                        billingList[existingBillIndex] = { ...billingList[existingBillIndex], ...data };
+                    } else {
+                        // Add new bill at the beginning of the array
+                        billingList.unshift(data);
+                    }
+
+                    localStorage.setItem('billingList', JSON.stringify(billingList));
+
+                    // close settle modal
                     document.querySelector('.close-settle').click();
                     document.querySelector('.settle-btn').disabled = true;
                     hideLoading();
@@ -2346,11 +2400,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return string.charAt(0).toUpperCase() + string.slice(1);
         }
 
-
-
-
-
-
     });
 
     function capitalizeFirstLetter(str) {
@@ -2359,7 +2408,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .join(' ');
     }
 
-    function getDataEditOrder(orderId) {
+    function getDataEditOrder2(orderId) {
 
         const option = {
             method: 'GET',
@@ -2385,6 +2434,17 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => {
                 console.log('Error fetching data:', error);
             });
+    }
+
+    function getDataEditOrder(orderId) {
+        // get order data from ordersList with orderId as id
+        let ordersList = JSON.parse(localStorage.getItem('ordersList') || '[]');
+        let orderInfo = ordersList.find(o => o.id == orderId);
+
+        populateMoreModal(orderInfo);
+        populateBillContainer(orderInfo);
+
+        // return orderInfo;
     }
 
     function populateMoreModal2(data) {

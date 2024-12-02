@@ -1,7 +1,7 @@
 
 getAllOrders();
 
-function getAllOrders() {
+function getAllOrders2() {
     url = `${baseURL}orders/order/`;
 
     const option = {
@@ -23,6 +23,12 @@ function getAllOrders() {
         .catch(error => {
             console.log('Error fetching data:', error);
         });
+}
+
+function getAllOrders() {
+    // get ordersList from local storage
+    let ordersList = JSON.parse(localStorage.getItem('ordersList') || '[]');
+    renderOrders(ordersList);
 }
 
 
@@ -143,6 +149,13 @@ function renderOrders(reversedOrders) {
 }
 
 function viewOrder(orderId) {
+    // get order details from local storage with orderId
+    const ordersList = JSON.parse(localStorage.getItem('ordersList') || '[]');
+    const order = ordersList.find(order => order.id === orderId);
+    renderDataModal(order);
+}
+
+function viewOrder3(orderId) {
     const modalContainer = document.querySelector('.modal-container');
     const modal = document.getElementById('orderModal');
     const orderDetails = document.getElementById('orderDetails');
@@ -242,7 +255,7 @@ function renderDataModal(data) {
 
 
     // Check if order_id exists in billing endpoint and display button to open bill
-    function checkBillStatus(orderId) {
+    function checkBillStatus2(orderId) {
         const url = `${baseURL}billing/bills/`;
         const option = {
             method: 'GET',
@@ -413,6 +426,219 @@ function renderDataModal(data) {
                     .then(data => {
                         console.log(data);
                         window.location.reload();
+                    })
+                    .catch(error => {
+                        console.log('Error in payment POST call:', error);
+                    });
+            }
+        }
+    }
+
+    // Check if order_id exists in billing endpoint and display button to open bill
+    function checkBillStatus(orderId) {
+
+        // get billingList from local storage and check if order_data exists with orderId
+        const billingList = JSON.parse(localStorage.getItem('billingList') || '[]');
+        const bills = billingList.filter(bill => bill.order_id == orderId);
+        console.log('Bill found:', bills);
+        checkBill(bills);
+
+        function checkBill(bills) {
+            if (bills.length > 0) {
+
+                const orderDetails = document.getElementById('orderDetails');
+                const billBtn = document.createElement('button');
+                billBtn.classList.add('bill-btn');
+                billBtn.innerHTML = 'View Bill';
+                billBtn.onclick = () => {
+                    // checkBillStatus(data.id);
+                    openBill(bills[0]);
+                };
+                orderDetails.appendChild(billBtn);
+
+
+                console.log('Latest bill found for order:', bills[0]);
+                // openBill(bills[0]);
+                makepayment(bills[0]);
+            } else if (bills.length == 0) {
+
+                const orderDetails = document.getElementById('orderDetails');
+                const billBtn = document.createElement('button');
+                billBtn.classList.add('bill-btn');
+                billBtn.innerHTML = 'Bill Not Generated Yet';
+                billBtn.onclick = () => {
+                    alert('Bill not generated yet for this order');
+                    // checkBillStatus(data.id);
+                    // openBill(bills[0]);
+                };
+                orderDetails.appendChild(billBtn);
+
+                console.log('No bill found for order:', orderId);
+                // alert('Bill not generated yet for this order');
+                // document.querySelector('.bill-btn').textContent = 'Bill Not Generated Yet';
+            }
+        }
+
+        function makepayment(bill) {
+            const orderDetails = document.getElementById('orderDetails');
+            console.log('Making payment for bill:', bill);
+
+            if (bill.status == 'paid') {
+                console.log('BLOCK IF')
+                // alert('Bill already settled');
+                return;
+            } else {
+                console.log('BLOCK ELSE')
+                const paymentBtn = document.createElement('button');
+                paymentBtn.classList.add('payment-btn');
+                paymentBtn.innerHTML = 'Make Payment';
+                paymentBtn.onclick = () => {
+                    console.log('Payment made for bill:', bill);
+                    openPaymentModal(bill);
+                };
+                orderDetails.appendChild(paymentBtn);
+
+            }
+
+            // const paymentBtn = document.createElement('button');
+            // paymentBtn.classList.add('payment-btn');
+            // paymentBtn.innerHTML = 'Make Payment';
+            // paymentBtn.onclick = () => {
+            //     console.log('Payment made for bill:', bill);
+            //     openPaymentModal(bill);
+            // };
+            // orderDetails.appendChild(paymentBtn);
+
+
+
+        }
+
+        function openPaymentModal(bill) {
+            console.log('Opening payment modal for bill:', bill);
+            const settleModal = document.getElementById('paymentModal');
+            const settleModalContainer = document.querySelector('.modal-container2');
+            const modalBodySettle = settleModal.querySelector('.modal-body');
+
+            // Change display to flex for centering
+            settleModalContainer.style.display = 'flex';
+            settleModal.style.display = 'block';
+            setTimeout(() => settleModal.classList.add('show'), 10);
+
+            // Populate the modal with bill data
+            populatePaymentModal(bill);
+
+            const paymentBtnSubmit = document.getElementById('payment-btn');
+            paymentBtnSubmit.onclick = () => {
+                console.log('Payment made for bill:', bill);
+                paymentPOST(bill);
+
+            };
+        }
+
+        function populatePaymentModal(bill) {
+            console.log('Populating payment modal with bill:', bill);
+
+            const orderId = document.getElementById('order-id');
+            orderId.value = bill.order_id;
+
+            const netAmt = document.getElementById('net-amt');
+            netAmt.value = bill.net_amount;
+        }
+
+        function paymentPOST(bill) {
+            console.log('Payment POST');
+
+            const paidAmt = document.getElementById('paid-amt').value;
+            const paymentMessage = document.getElementById('payment-message').value;
+            // const paymentMethod = document.getElementById('payment-method').value;
+            // Get selected payment method
+            function getSelectedPaymentMethod() {
+                const selectedPayment = document.querySelector('input[name="paymentMethod"]:checked');
+                return selectedPayment ? selectedPayment.value : null;
+            }
+
+            const paymentMethod = getSelectedPaymentMethod();
+
+            console.log(paidAmt, paymentMessage, paymentMethod);
+
+            const paymentDetails = {
+                'message': paymentMessage,
+            }
+
+            const paymentData = {
+                'bill_id': bill.id,
+                'paid_amount': paidAmt,
+                'payment_method': paymentMethod,
+                'payment_details': paymentDetails,
+                'status': 'paid'
+            }
+
+            console.log(paymentData);
+
+            paymentPOSTcall(paymentData);
+
+            function paymentPOSTcall(paymentData) {
+                showLoading();
+                console.log('Payment POST call');
+                const url = `${baseURL}billing/bill-payments/`;
+                const option = {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + getCookie('access_token'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(paymentData)
+                }
+
+                refreshAccessToken2(url, option)
+                    .then(data => {
+                        console.log(data);
+
+                        // Update billingList, ordersList, and tablesList in localStorage
+                        let billingList = JSON.parse(localStorage.getItem('billingList') || '[]');
+                        let ordersList = JSON.parse(localStorage.getItem('ordersList') || '[]');
+                        let tablesList = JSON.parse(localStorage.getItem('tablesList') || '[]');
+
+                        // Update bill status
+                        billingList = billingList.map(bill => {
+                            if (bill.id === data.bill_id) {
+                                // Find the corresponding order
+                                const order = ordersList.find(o => o.id === bill.order_id);
+
+                                // Update order status
+                                ordersList = ordersList.map(o => {
+                                    if (o.id === bill.order_id) {
+                                        // Update table status if it's a dine-in order
+                                        if (o.tables && o.tables[0]) {
+                                            tablesList = tablesList.map(table => {
+                                                if (table.id === o.tables[0]) {
+                                                    return { ...table, occupied: false, order: null };
+                                                }
+                                                return table;
+                                            });
+                                        }
+                                        return { ...o, status: 'settled' };
+                                    }
+                                    return o;
+                                });
+
+                                return { ...bill, status: 'paid' };
+                            }
+                            return bill;
+                        });
+
+                        // Save all updated lists
+                        localStorage.setItem('billingList', JSON.stringify(billingList));
+                        localStorage.setItem('ordersList', JSON.stringify(ordersList));
+                        localStorage.setItem('tablesList', JSON.stringify(tablesList));
+
+                        hideLoading();
+                        // window.location.reload();
+                        document.querySelector('.close-payment').click();
+                        document.querySelector('.close').click();
+                        document.getElementById('orders').click();
+
+
                     })
                     .catch(error => {
                         console.log('Error in payment POST call:', error);
@@ -813,7 +1039,7 @@ function populateBillData(billWindow, billData, orderData) {
     setTimeout(() => {
         try {
             const printSettings = {
-                pageRanges: [{from: 2, to: 2}], // Only print page 2
+                pageRanges: [{ from: 2, to: 2 }], // Only print page 2
                 silent: false,
                 printBackground: true,
                 deviceName: ''
@@ -828,7 +1054,7 @@ function populateBillData(billWindow, billData, orderData) {
     }, 500);
 
 
-    
+
 }
 
 function capitalizeFirstLetter(str) {
