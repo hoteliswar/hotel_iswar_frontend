@@ -211,7 +211,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
                 setCookie('refresh_token', data.refresh, 10000);
                 accessToken = data.access;
                 refreshToken = data.refresh;
-                // await Promise.all([callAllAPI()]);
+                await Promise.all([callAllAPI()]);
                 window.location.href = './../dashboard/dashboard.html';
             } else {
                 removeLoadingState();
