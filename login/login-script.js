@@ -211,7 +211,17 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
                 setCookie('refresh_token', data.refresh, 10000);
                 accessToken = data.access;
                 refreshToken = data.refresh;
-                await Promise.all([callAllAPI()]);
+                // await Promise.all([callAllAPI()]);
+
+                // if local storage data exists then redirect to dashboard else call all api
+                if (localStorage.getItem('categoryList') && localStorage.getItem('allFoodList') && localStorage.getItem('tablesList') && localStorage.getItem('roomsList') && localStorage.getItem('serviceCategoryList') && localStorage.getItem('serviceList') && localStorage.getItem('bookingsList') && localStorage.getItem('billingList')  && localStorage.getItem('ordersList') && localStorage.getItem('paymentsList') ) {
+                    window.location.href = './../dashboard/dashboard.html';
+                } else {
+                    await callAllAPI();
+                    window.location.href = './../dashboard/dashboard.html';
+                }
+
+
                 window.location.href = './../dashboard/dashboard.html';
             } else {
                 removeLoadingState();
