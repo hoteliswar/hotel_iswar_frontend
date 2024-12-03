@@ -303,8 +303,9 @@ async function callAllAPI() {
             getServiceCategoryList(),
             getServiceList(),
             getAllBookings(),
-            getAllBilling()
-            // getAllOrders()
+            getAllBilling(),
+            getAllOrders(),
+            getAllPayments()
         ]);
 
         // Verify all data is in localStorage

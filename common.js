@@ -1054,3 +1054,19 @@ function hideLoading() {
         globalLoadingOverlay = null;
     }
 }
+
+
+async function callAllApi() {
+    const results = await Promise.all([
+        getCategoryList(),
+        getFooditems(),
+        getTablesData(),
+        getRoomsData(),
+        getServiceCategoryList(),
+        getServiceList(),
+        getAllBookings(),
+        getAllBilling(),
+        getAllOrders(),
+        getAllPayments()
+    ]);
+}
