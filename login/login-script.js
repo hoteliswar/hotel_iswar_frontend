@@ -327,7 +327,9 @@ async function callAllAPI() {
             'serviceCategoryList',
             'serviceList',
             'bookingsList',
-            'billingList'
+            'billingList',
+            'ordersList',
+            'paymentsList'
         ];
 
         const missingData = requiredData.filter(key => !localStorage.getItem(key));
@@ -345,6 +347,8 @@ async function callAllAPI() {
                     case 'serviceList': return getServiceList();
                     case 'bookingsList': return getAllBookings();
                     case 'billingList': return getAllBilling();
+                    case 'ordersList': return getAllOrders();
+                    case 'paymentsList': return getAllPayments();
                 }
             });
             await Promise.all(retryPromises);
