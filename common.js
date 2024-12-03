@@ -656,7 +656,6 @@ function getServiceListFromStorage() {
         return categoryList;
     } else {
         console.log('No service category list found in local storage');
-        // Optionally, you can call getCategoryList() here to fetch from API if not in storage
         getServiceList();
     }
 
@@ -937,7 +936,7 @@ if (document.getElementById('logout')) {
 
     document.getElementById('logout').onclick = function () {
         clearCookies();
-        clearLocalStorage();
+        // clearLocalStorage();
         const rootPath = window.location.origin;
         window.location.href = `${rootPath}/login/login.html`;
     }
@@ -1057,7 +1056,8 @@ function hideLoading() {
 
 
 async function callAllApi() {
-    const results = await Promise.all([
+    console.log("Calling All API");
+    const apiData = await Promise.all([
         getCategoryList(),
         getFooditems(),
         getTablesData(),
@@ -1069,4 +1069,6 @@ async function callAllApi() {
         getAllOrders(),
         getAllPayments()
     ]);
+
+    console.log("Call Completed.")
 }

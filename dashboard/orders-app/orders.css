@@ -510,3 +510,30 @@ background-color: #adadad;
         font-weight: 500;
     }
 }
+
+.status-settled{
+    display: inline;
+    color: #ffffff;
+    background-color: #4CAF50;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.status-cancelled{
+    display: inline;
+    color: #ffffff;
+    background-color: #b93939;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 500;
+}
+
+.status-in_progress{
+    display: inline;
+    color: #ffffff;
+    background-color: #f8ec04;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: 500;
+}

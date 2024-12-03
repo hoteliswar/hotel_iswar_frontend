@@ -138,8 +138,10 @@ function renderOrders(reversedOrders) {
             <div class="order-item-col col-2">${new Date(order.created_at).toLocaleDateString()}</div>
             <div class="order-item-col col-2"> ${getOrderTypeDisplay(order)}</div>
             <div class="order-item-col col-2">${totalPrice}</div>
-            <div class="order-item-col col-2"> 
-                ${order.status.replace('_', ' ').charAt(0).toUpperCase() + order.status.replace('_', ' ').slice(1).toLowerCase()}
+            <div class="order-item-col col-2">
+                <div class="status-${order.status}">
+                    ${order.status.replace('_', ' ').charAt(0).toUpperCase() + order.status.replace('_', ' ').slice(1).toLowerCase()}
+                </div>
             </div>
             <div class="order-item-col col-1">
                 <!-- <i class="fas fa-eye col-4" id="view-btn" onclick="viewOrder(JSON.stringify(${JSON.stringify(order)}))"></i> -->
