@@ -315,7 +315,7 @@ async function callAllAPI() {
             getServiceList(),
             getAllBookings(),
             getAllBilling(),
-            getAllOrders(),
+            getAlllOrders(),
             getAllPayments()
         ]);
 
@@ -348,7 +348,7 @@ async function callAllAPI() {
                     case 'serviceList': return getServiceList();
                     case 'bookingsList': return getAllBookings();
                     case 'billingList': return getAllBilling();
-                    case 'ordersList': return getAllOrders();
+                    case 'ordersList': return getAlllOrders();
                     case 'paymentsList': return getAllPayments();
                 }
             });

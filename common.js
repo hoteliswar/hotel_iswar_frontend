@@ -754,7 +754,7 @@ function getAllBillingFromStorage() {
 
 
 // API Call GET All Orders - Read
-async function getAllOrders() {
+async function getAlllOrders() {
     const option = {
         method: 'GET',
         headers: {
@@ -1066,7 +1066,7 @@ async function callAllApi() {
         getServiceList(),
         getAllBookings(),
         getAllBilling(),
-        getAllOrders(),
+        getAlllOrders(),
         getAllPayments()
     ]);
 
