@@ -713,7 +713,7 @@ document.addEventListener('click', function () {
     orderTypeSelect.addEventListener('change', filterOrders);
 });
 
-function filterOrders() {
+function filterOrders2() {
     const filterType = document.getElementById('filterType').value;
     const mobileInput = document.getElementById('mobileInput').value;
     const startDate = document.getElementById('startDate').value;
@@ -754,6 +754,38 @@ function filterOrders() {
         .catch(error => {
             console.log('Error fetching data:', error);
         });
+}
+
+function filterOrders() {
+    const filterType = document.getElementById('filterType').value;
+    const mobileInput = document.getElementById('mobileInput').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const orderType = document.getElementById('orderTypeSelect').value;
+
+    // get all orders from local storage
+    // const ordersList = JSON.parse(localStorage.getItem('ordersList') || '[]');
+    const data = JSON.parse(localStorage.getItem('ordersList') || '[]');
+
+    let filteredOrders = data;
+
+    switch (filterType) {
+        case 'mobile':
+            filteredOrders = data.filter(order => order.phone && order.phone.includes(mobileInput));
+            break;
+        case 'date':
+            filteredOrders = data.filter(order => {
+                const orderDate = new Date(order.created_at);
+                return (!startDate || orderDate >= new Date(startDate)) &&
+                    (!endDate || orderDate <= new Date(endDate));
+            });
+            break;
+        case 'orderType':
+            filteredOrders = data.filter(order => order.order_type === orderType);
+            break;
+    }
+
+    renderOrders(filteredOrders);
 }
 
 

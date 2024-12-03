@@ -1,5 +1,5 @@
-baseURL = 'https://dineops.onrender.com/api/';
-// baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+// baseURL = 'https://dineops.onrender.com/api/';
+baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 console.log(baseURL);
 
 
@@ -755,7 +755,7 @@ function getAllBillingFromStorage() {
 
 
 // API Call GET All Orders - Read
-async function getALlOrders() {
+async function getAllOrders() {
     const option = {
         method: 'GET',
         headers: {
@@ -797,6 +797,51 @@ function getAllOrdersFromStorage() {
     }
 
 }
+
+// API Call GET All Orders - Read
+async function getAllPayments() {
+    const option = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    }
+
+    const url = `${baseURL}billing/bill-payments/`;
+
+    refreshAccessToken2(url, option)
+        // .then(response => response.json())
+        .then(data => {
+            console.log('All Payments Data:', data);
+            // Save the data to local storage
+            localStorage.setItem('paymentsList', JSON.stringify(data));
+            getAllPaymentsFromStorage();
+            resolve(data);
+        })
+        .catch(error => {
+            console.log('Error fetching data:', error);
+        });
+
+};
+
+function getAllPaymentsFromStorage() {
+    const storedData = localStorage.getItem('paymentsList');
+    if (storedData) {
+        if (storedData === 'undefined') {
+            console.log('No Payments list found in local storage');
+            getALlOrders();
+        }
+        const paymentsList = JSON.parse(storedData);
+        console.log('Payments list from local storage:', paymentsList);
+        return paymentsList;
+    } else {
+        console.log('No Payments list found in local storage');
+        getAllPayments();
+    }
+
+}
+
 
 // Disable all console statements
 // console.log = function() {};
