@@ -1,12 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="./reports-app/reports-content.css">
+    <link rel="stylesheet" href="reports-content.css">
     <title>Reports App</title>
 </head>
+
 <body>
-    <h3>Reports App</h3>
-    <h5>Under Development</h5>
+    <div class="body-wrapper">
+        <div class="reports-container">
+            <h2>Daily Sales Report</h2>
+
+            <div class="date-filter">
+                <input type="date" id="reportDate" class="date-input">
+                <button onclick="generateReport()" class="generate-btn">Generate Report</button>
+            </div>
+
+            <!-- Update the sales-summary div -->
+            <div class="sales-summary">
+                <div class="summary-card">
+                    <i class="fas fa-receipt"></i>
+                    <h4>Total Orders</h4>
+                    <p id="totalOrders">0</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <h4>Total Billed</h4>
+                    <p id="totalBilled">₹0</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h4>Total Received</h4>
+                    <p id="totalReceived">₹0</p>
+                </div>
+                <div class="summary-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Average Order Value</h4>
+                    <p id="avgOrderValue">₹0</p>
+                </div>
+            </div>
+
+            <div class="sales-details">
+                <h3>Sales List</h3>
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Time</th>
+                            <th>Type</th>
+                            <th>Items</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                        <!-- Orders will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
