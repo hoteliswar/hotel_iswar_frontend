@@ -129,12 +129,15 @@ function renderOrders(reversedOrders) {
         const orderElement = document.createElement('div');
         orderElement.classList.add('order-item');
 
+        // calculate total price with GST 5%
+        const totalPrice = parseFloat(order.total) + (parseFloat(order.total) * 0.05);
+
         orderElement.innerHTML = `
             <div class="order-item-col col-1">${order.id}</div>
             <div class="order-item-col col-2">${order.phone ? order.phone : 'N/A'}</div>
             <div class="order-item-col col-2">${new Date(order.created_at).toLocaleDateString()}</div>
             <div class="order-item-col col-2"> ${getOrderTypeDisplay(order)}</div>
-            <div class="order-item-col col-2">${order.total}</div>
+            <div class="order-item-col col-2">${totalPrice}</div>
             <div class="order-item-col col-2"> 
                 ${order.status.replace('_', ' ').charAt(0).toUpperCase() + order.status.replace('_', ' ').slice(1).toLowerCase()}
             </div>
@@ -227,23 +230,32 @@ function renderDataModal(data) {
             <span class="detail-value">₹${parseFloat(data.total)}</span>
         </div>
         <div class="order-detail-item">
+            <span class="detail-label">Net Total (inc. GST):</span>
+            <span class="detail-value">₹${parseFloat(data.total) + parseFloat(data.total) * 0.05}</span>
+        </div>
+        <div class="order-detail-item">
             <span class="detail-label">Order Status:</span>
             <span class="detail-value">
                 ${data.status === 'in_progress' ? 'In Progress' :
-            data.status === 'hold' ? 'Hold' :
+                data.status === 'hold' ? 'Hold' :
                 data.status === 'kot' ? 'KOT' :
-                    data.status === 'settled' ? 'Settled' :
-                        data.status}
+                data.status === 'settled' ? 'Settled' :
+                data.status === 'cancelled' ? 'Cancelled' :
+                data.status}
             </span>
         </div>
         
         <div class="order-detail-item">
             <span class="detail-label">Payment Status:</span>
-            <span class="detail-value">${data.status === 'settled' ? 'Paid' : 'Pending'}</span>
+            <span class="detail-value">${data.status === 'settled' ? 'Paid' : data.status === 'cancelled' ? 'Cancelled' : 'Pending'}</span>
         </div>
     `;
 
-    checkBillStatus(data.id);
+    if (data.status === 'cancelled') {
+        return;
+    } else {
+        checkBillStatus(data.id);
+    }
 
     // const billBtn = document.createElement('button');
     // billBtn.classList.add('bill-btn');

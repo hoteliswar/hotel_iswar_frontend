@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    function getAllOrders() {
+    function getAllOrders2() {
         const option = {
             method: 'GET',
             headers: {
@@ -258,6 +258,12 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => {
                 console.log('Error Saving Order:', error);
             });
+    }
+
+    function getAllOrders() {
+        // get ordersList from local storage
+        let ordersList = JSON.parse(localStorage.getItem('ordersList') || '[]');
+        delivery_pickup(ordersList);
     }
 
     getAllOrders();

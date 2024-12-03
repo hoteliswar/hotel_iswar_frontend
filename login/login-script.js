@@ -217,6 +217,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
                 if (localStorage.getItem('categoryList') && localStorage.getItem('allFoodList') && localStorage.getItem('tablesList') && localStorage.getItem('roomsList') && localStorage.getItem('serviceCategoryList') && localStorage.getItem('serviceList') && localStorage.getItem('bookingsList') && localStorage.getItem('billingList')  && localStorage.getItem('ordersList') && localStorage.getItem('paymentsList') ) {
                     window.location.href = './../dashboard/dashboard.html';
                 } else {
+                    alert('Please wait while we are fetching data from server...','info');
                     await callAllAPI();
                     window.location.href = './../dashboard/dashboard.html';
                 }
