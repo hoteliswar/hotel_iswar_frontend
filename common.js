@@ -1,7 +1,7 @@
+// baseURL = 'http://127.0.0.1:8000/api/';
 // baseURL = 'https://dineops.onrender.com/api/';
 baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 console.log(baseURL);
-
 
 // Add this at the beginning of your file, after baseURL declaration
 function checkTokensAndRedirect() {
