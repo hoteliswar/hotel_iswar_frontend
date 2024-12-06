@@ -87,7 +87,7 @@
     <div class="modal-container">
         <div id="bookingModal" class="calendar-modal">
             <div class="modal-content">
-                <span class="close">&times;</span> 
+                <span class="close">&times;</span>
                 <div class="model-content-title-2">Booking Details</div>
                 <div class="modal-body"></div>
             </div>
@@ -141,22 +141,22 @@
                             </div>
                             <div class="input-element">
                                 <label for="bookingPhone">Phone</label>
-                                <input type="text" id="bookingPhone" name="bookingPhone" required 
+                                <input type="text" id="bookingPhone" name="bookingPhone" required
                                     placeholder="+91 12345 67890">
                             </div>
                             <div class="input-element">
                                 <label for="bookingEmail">Email</label>
-                                <input type="email" id="bookingEmail" name="bookingEmail" 
+                                <input type="email" id="bookingEmail" name="bookingEmail"
                                     placeholder="name@example.com">
                             </div>
                             <div class="input-element">
                                 <label for="bookingFname">First Name</label>
-                                <input type="text" id="bookingFname" name="bookingFname" required 
+                                <input type="text" id="bookingFname" name="bookingFname" required
                                     placeholder="First Name">
                             </div>
                             <div class="input-element">
                                 <label for="bookingLname">Last Name</label>
-                                <input type="text" id="bookingLname" name="bookingLname" required 
+                                <input type="text" id="bookingLname" name="bookingLname" required
                                     placeholder="Last Name">
                             </div>
                             <div class="input-element">
@@ -220,13 +220,13 @@
 
                             <div class="input-element address">
                                 <label for="bookingAddress">Address</label>
-                                <input type="text" id="bookingAddress" name="bookingAddress" required 
+                                <input type="text" id="bookingAddress" name="bookingAddress" required
                                     placeholder="Address">
                             </div>
 
                             <div class="input-element">
                                 <label for="customerId">ID Card</label>
-                                <input type="file" id="customerId" name="customerId" multiple
+                                <input type="file" id="customerId" name="customerId[]" multiple
                                     file-type="image/* , pdf/*">
                             </div>
 
@@ -370,7 +370,7 @@
                             </div>
                             <div class="input-element-checkin sm">
                                 <label for="cim-idcard">ID Card</label>
-                                <input type="file" id="cim-idcard" name="idcard" required >
+                                <input type="file" id="cim-idcard" name="idcard" required>
                             </div>
 
                             <i class="fa-solid fa-circle-plus fa-2x add-more-info-btn" id="add-more-btn-checkin"></i>
@@ -388,37 +388,37 @@
     <div class="modal-container-4">
         <div id="serviceModal" class="service-modal">
             <div class="modal-content-4">
-                    <div class="modal-checkin-header">
-                        <span class="close4">&times;</span>
-                        <div class="heading">Book Services</div>
+                <div class="modal-checkin-header">
+                    <span class="close4">&times;</span>
+                    <div class="heading">Book Services</div>
+                </div>
+                <div class="modal-body-service" id="serviceModalBody">
+                    <div class="input-element-service room-number">
+                        <label for="serviceRoomNumber">Room Number</label>
+                        <input type="text" id="serviceRoomNumber" name="roomNumber" disabled required>
                     </div>
-                    <div class="modal-body-service" id="serviceModalBody">
-                        <div class="input-element-service room-number">
-                            <label for="serviceRoomNumber">Room Number</label>
-                            <input type="text" id="serviceRoomNumber" name="roomNumber" disabled required>
-                        </div>
-                        <div class="input-element-service">
-                            <label for="serviceService">Service</label>
-                            <select name="service" id="serviceService">
-                                <option value="" selected disabled>Select Service</option>
-                            </select>
-                        </div>
-                        <div class="input-element-service" style="display: none;">
-                            <label for="serviceQuantity">Quantity</label>
-                            <input type="number" id="serviceQuantity" name="quantity" required min="1" >
-                        </div>
-                        <div class="input-element-service total-price">
-                            <label for="serviceTotalPrice">Total Price</label>
-                            <input type="text" id="serviceTotalPrice" name="totalPrice" disabled>
-                        </div>
-
-                        <button class="service-btn" id="service-btn">Book Service</button>
-
-
+                    <div class="input-element-service">
+                        <label for="serviceService">Service</label>
+                        <select name="service" id="serviceService">
+                            <option value="" selected disabled>Select Service</option>
+                        </select>
                     </div>
+                    <div class="input-element-service" style="display: none;">
+                        <label for="serviceQuantity">Quantity</label>
+                        <input type="number" id="serviceQuantity" name="quantity" required min="1">
+                    </div>
+                    <div class="input-element-service total-price">
+                        <label for="serviceTotalPrice">Total Price</label>
+                        <input type="text" id="serviceTotalPrice" name="totalPrice" disabled>
+                    </div>
+
+                    <button class="service-btn" id="service-btn">Book Service</button>
+
+
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Modal: CheckOut for bookings -->
@@ -459,18 +459,18 @@
                             <label for="booking-id">Booking Id.</label>
                             <input type="text" id="booking-id" placeholder="Booking Id." disabled>
                         </div>
-                       
+
                         <div class="input-group-bill">
                             <label for="room-discount">Room Discount (₹):</label>
                             <input type="number" id="room-discount" placeholder="0.00">
                         </div>
 
-                        
+
                         <div class="input-group-bill">
                             <label for="order-discount">Order Discount (₹):</label>
                             <input type="number" id="order-discount" placeholder="0.00">
                         </div>
-                        
+
                         <div class="input-group-bill customer_gst">
                             <label for="customer_gst">Customer GST No:</label>
                             <input type="text" id="customer_gst" placeholder="11XXXXX0000XX0XX ">
@@ -483,6 +483,152 @@
                     <div class="button-groups">
                         <button class="print-bill-btn" id="gen-billBtn">GENERATE BILL</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: New Booking -->
+    <div class="modal-container-7">
+        <div id="editBookingModal" class="edit-booking">
+            <div class="modal-content-7">
+                <div class="modal-header">
+                    <span class="close7">&times;</span>
+                    <div class="model-content-title-2">Edit Booking</div>
+                </div>
+                <div class="booking-details-col">
+                    <div class="modal-body-booking">
+                        <div class="booking-form">
+
+                            <div class="input-element-add-room">
+                                <div class="row" id="room-1">
+                                    <div class="input-element">
+                                        <label for="roomSelect-1">Room (first select date)</label>
+                                        <select disabled class="rooms-btn" id="roomSelect-1">
+                                            <option selected disabled>Select Room</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-element ele-room">
+                                        <label for="startDate-1">Start Date</label>
+                                        <!-- <input type="date" id="startDate-1" name="startDate" required> -->
+
+                                        <input type="datetime-local" id="startDate-1" name="startDate">
+
+                                        <label for="endDate-1">End Date</label>
+                                        <!-- <input type="date" id="endDate-1" name="endDate" required> -->
+
+                                        <input type="datetime-local" id="endDate-1" name="endDate">
+
+                                        <i class="fa-solid fa-circle-plus fa-2x" id="add-more-btn"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-element">
+                                <label for="bookingPhone">Phone</label>
+                                <input type="text" id="bookingPhone" name="bookingPhone" required
+                                    placeholder="+91 12345 67890">
+                            </div>
+                            <div class="input-element">
+                                <label for="bookingEmail">Email</label>
+                                <input type="email" id="bookingEmail" name="bookingEmail"
+                                    placeholder="name@example.com">
+                            </div>
+                            <div class="input-element">
+                                <label for="bookingFname">First Name</label>
+                                <input type="text" id="bookingFname" name="bookingFname" required
+                                    placeholder="First Name">
+                            </div>
+                            <div class="input-element">
+                                <label for="bookingLname">Last Name</label>
+                                <input type="text" id="bookingLname" name="bookingLname" required
+                                    placeholder="Last Name">
+                            </div>
+                            <div class="input-element">
+                                <label for="customerNationality">Nationality</label>
+                                <!-- <input type="text" id="customerNationality" name="customerNationality" value="indian"  placeholder="Last Name"> -->
+                                <select name="" id="customerNationality">
+                                    <option value="" selected disabled>Select Nationality</option>
+                                    <option value="indian">Indian</option>
+                                    <option value="others">Others</option>
+                                </select>
+                            </div>
+                            <div class="input-element" id="customerState-div">
+                                <label for="customerState">State / Province</label>
+                                <div id="state-input-select">
+                                    <select name="customerState" id="customerState">
+                                        <option selected disabled>Select State</option>
+                                        <!-- States -->
+                                        <option value="andhra_pradesh">Andhra Pradesh</option>
+                                        <option value="arunachal_pradesh">Arunachal Pradesh</option>
+                                        <option value="assam">Assam</option>
+                                        <option value="bihar">Bihar</option>
+                                        <option value="chhattisgarh">Chhattisgarh</option>
+                                        <option value="goa">Goa</option>
+                                        <option value="gujarat">Gujarat</option>
+                                        <option value="haryana">Haryana</option>
+                                        <option value="himachal_pradesh">Himachal Pradesh</option>
+                                        <option value="jharkhand">Jharkhand</option>
+                                        <option value="karnataka">Karnataka</option>
+                                        <option value="kerala">Kerala</option>
+                                        <option value="madhya_pradesh">Madhya Pradesh</option>
+                                        <option value="maharashtra">Maharashtra</option>
+                                        <option value="manipur">Manipur</option>
+                                        <option value="meghalaya">Meghalaya</option>
+                                        <option value="mizoram">Mizoram</option>
+                                        <option value="nagaland">Nagaland</option>
+                                        <option value="odisha">Odisha</option>
+                                        <option value="punjab">Punjab</option>
+                                        <option value="rajasthan">Rajasthan</option>
+                                        <option value="sikkim">Sikkim</option>
+                                        <option value="tamil_nadu">Tamil Nadu</option>
+                                        <option value="telangana">Telangana</option>
+                                        <option value="tripura">Tripura</option>
+                                        <option value="uttar_pradesh">Uttar Pradesh</option>
+                                        <option value="uttarakhand">Uttarakhand</option>
+                                        <option value="west_bengal">West Bengal</option>
+
+                                        <!-- Union Territories -->
+                                        <option value="andaman_and_nicobar_islands">Andaman and Nicobar Islands</option>
+                                        <option value="chandigarh">Chandigarh</option>
+                                        <option value="dadra_and_nagar_haveli_and_daman_and_diu">Dadra and Nagar Haveli
+                                            and
+                                            Daman and Diu</option>
+                                        <option value="delhi">Delhi</option>
+                                        <option value="lakshadweep">Lakshadweep</option>
+                                        <option value="puducherry">Puducherry</option>
+                                        <option value="ladakh">Ladakh</option>
+                                        <option value="jammu_and_kashmir">Jammu and Kashmir</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="input-element address">
+                                <label for="bookingAddress">Address</label>
+                                <input type="text" id="bookingAddress" name="bookingAddress" required
+                                    placeholder="Address">
+                            </div>
+
+                            <div class="input-element">
+                                <label for="customerId">ID Card</label>
+                                <input type="file" id="customerId" name="customerId[]" multiple
+                                    file-type="image/* , pdf/*">
+                            </div>
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="booking-payment-col">
+                    <div class="total-booking-amount">Total Booking Amount</div>
+                    <div class="total-booking-amount-value">₹ 0.00</div>
+
+                    <div class="advance-booking-amount">Advance (₹)</div>
+                    <input type="text" class="advance-booking-amount-input" name="advance-booking-amount"
+                        id="advance-booking-amount" placeholder="0.00">
+
+                    <button class="new-booking-btn" id="new-booking-btn">Book</button>
                 </div>
             </div>
         </div>

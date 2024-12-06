@@ -50,7 +50,7 @@
 
 .summary-card {
     position: relative;
-    background-color: #f8f9fa;
+    background-color: #ffaf02e1;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -59,9 +59,16 @@
 
 .summary-card i {
     font-size: 24px;
-    color: #ffaf02;
+    color: #2e2c2a;
     margin-bottom: 10px;
     display: block;
+}
+
+.summary-card-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    color: #424242;
 }
 
 .summary-card h4 {
@@ -90,16 +97,21 @@
 .orders-table td {
     padding: 12px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #fff3e2;
 }
 
 .orders-table th {
-    background-color: #f5f5f5;
+    background-color: #fff3e2;
     font-weight: bold;
+    border-bottom: 2px solid #2e2e2e;
+}
+
+.orders-table tr {
+    background-color: #fff3e2;
 }
 
 .orders-table tr:hover {
-    background-color: #f9f9f9;
+    background-color: #fcab3a;
 }
 
 /* Status colors */
@@ -146,4 +158,70 @@
 
 .reports-container::-webkit-scrollbar-thumb:hover {
     background-color: #555; /* Color of the thumb on hover */
+}
+
+/* Refresh Button */
+
+.reports-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.reports-title {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+.refresh-btn {
+    position: relative;
+    cursor: pointer;
+}
+
+.refresh-btn i {
+    padding: 8px;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.refresh-btn:hover i {
+    transform: rotate(180deg);
+    background-color: rgba(255, 175, 2, 0.1);
+}
+
+/* Animation for refresh action */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.refresh-btn.spinning i {
+    animation: spin 1s linear;
+}
+
+
+/* Tooltip styles */
+[data-tooltip]:after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s;
+    z-index: 1000;
+    transform-origin: left center; /* Prevents tooltip from rotating */
+}
+
+[data-tooltip]:hover:after {
+    opacity: 1;
+    visibility: visible;
 }

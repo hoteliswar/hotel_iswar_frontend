@@ -442,6 +442,7 @@ function coldReload() {
 }
 
 function refreshFoodList() {
+    alert('Syncing Food List','info');
     const button = document.querySelector('#refresh-btn');
     button.classList.add('spinning');
     showLoading();
@@ -450,17 +451,19 @@ function refreshFoodList() {
     // Call your existing category fetch function here
     getFoodListRefresh()
         .then(() => {
-            console.log('Category List Refreshed');
+            console.log('Food List Refreshed');
             // Remove spinning class after refresh
             setTimeout(() => {
                 button.classList.remove('spinning');
                 hideLoading();
             }, 1000);
+            alert('Food List Synced','success');
         })
         .catch(error => {
-            console.error('Error refreshing categories:', error);
+            console.error('Error refreshing foods:', error);
             button.classList.remove('spinning');
             hideLoading();
+            alert('Error Syncing Food List','error');
         });
 }
 

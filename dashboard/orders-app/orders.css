@@ -537,3 +537,63 @@ background-color: #adadad;
     border-radius: 5px;
     font-weight: 500;
 }
+
+/* Refresh Button */
+
+.orders-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.refresh-btn {
+    position: relative;
+    cursor: pointer;
+}
+
+.refresh-btn i {
+    padding: 8px;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+}
+
+.refresh-btn:hover i {
+    transform: rotate(180deg);
+    background-color: rgba(255, 175, 2, 0.1);
+}
+
+/* Animation for refresh action */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.refresh-btn.spinning i {
+    animation: spin 1s linear;
+}
+
+
+/* Tooltip styles */
+[data-tooltip]:after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s;
+    z-index: 1000;
+    transform-origin: left center; /* Prevents tooltip from rotating */
+}
+
+[data-tooltip]:hover:after {
+    opacity: 1;
+    visibility: visible;
+}

@@ -348,7 +348,8 @@ function convertToRequiredFormat() {
                 checkOut: checkOutDate,
                 status: status,
                 bookingDate: new Date(booking.booking_date),
-                bookingId: booking.id
+                bookingId: booking.id,
+                id_card: booking.id_card
             });
             console.log(roomBookings)
         });
@@ -640,6 +641,59 @@ function loadBookingModal(bookingInfo, roomNumber) {
                 <p><div class="booking-data-head">Status:</div> ${bookingInfo.status}</p>
             </div>
         `;
+
+        // Show id card from local storage with bookingInfo.id_card 
+        console.log(bookingInfo.id_card);
+
+
+        if (bookingInfo.id_card) {
+            showIdCard(bookingInfo);
+        }
+
+        function showIdCard(bookingInfo) {
+            const idCard = document.createElement('div');
+            idCard.classList.add('booking-data-head');
+            idCard.textContent = 'ID Card:';
+            modalContent += idCard.outerHTML;
+
+            // Assuming bookingInfo.id_card is an array of file names or URLs
+            const idCards = bookingInfo.id_card; // Array of file names or URLs
+
+            // Create a container for ID cards
+            const idCardContainer = document.createElement('div');
+            idCardContainer.classList.add('id-card-container');
+
+            // Iterate over each ID card
+            idCards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('idcard-element');
+
+                // Check file type and create appropriate element
+                if (card.endsWith('.pdf')) {
+                    // Create a link for PDF
+                    const pdfLink = document.createElement('a');
+                    pdfLink.href = localStorage.getItem(card);
+                    pdfLink.textContent = 'View PDF';
+                    pdfLink.target = '_blank';
+                    cardElement.appendChild(pdfLink);
+                } else {
+                    // Create an image element for images
+                    const img = document.createElement('img');
+                    img.src = card;
+                    img.alt = 'ID Card';
+                    img.target = '_blank';
+                    img.rel = 'noopener noreferrer';
+                    img.classList.add('thumbnail-img');
+
+                    cardElement.appendChild(img);
+                }
+
+                idCardContainer.appendChild(cardElement);
+            });
+
+            // Append the container to modal content
+            modalContent += idCardContainer.outerHTML;
+        }
 
 
         if (bookingInfo.bookingId) {
@@ -1297,7 +1351,13 @@ function genBillPOST(genBillData) {
 // Edit Booking
 function editBooking(bookingId) {
     console.log("editBooking called");
-    alert('Edit Booking comming soon');
+
+    // Function to handle the edit booking modal
+    const editBookingModal = document.getElementById('editBookingModal');
+    if (editBookingModal) {
+        setTimeout(() => editBookingModal.classList.add('show'), 10);
+        editBookingModal.style.display = 'block';
+    }
 }
 
 function editBooking2(bookingId) {
@@ -1327,6 +1387,12 @@ function editBooking2(bookingId) {
 
 }
 
+// Close the service booking modal
+document.querySelector('.close7').onclick = function () {
+    const editBookingModal = document.getElementById('editBookingModal');
+    editBookingModal.classList.remove('show');
+    setTimeout(() => editBookingModal.style.display = 'none', 300);
+}
 
 // Close the service booking modal
 document.querySelector('.close4').onclick = function () {
@@ -2763,7 +2829,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
     const bookingAddress = document.getElementById('bookingAddress').value;
     const customerState = document.getElementById('customerState').value;
     const customerNationality = document.getElementById('customerNationality').value;
-    const customerId = document.getElementById('customerId').value;
+    const customerId = document.getElementById('customerId');
     const advanceBookingAmount = document.getElementById('advance-booking-amount').value;
 
     // If any of the above fields are empty, alert the user
@@ -2772,10 +2838,10 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
             alert("Phone number is required.");
             return;
         }
-        if (!bookingEmail) {
-            alert("Email is required.");
-            return;
-        }
+        // if (!bookingEmail) {
+        //     alert("Email is required.");
+        //     return;
+        // }
         if (!bookingFname) {
             alert("First name is required.");
             return;
@@ -2812,7 +2878,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
         'last_name': bookingLname,
         'address_line_1': bookingAddress,
         'address_line_2': customerState + " , " + customerNationality,
-        // 'id': customerId,
+        'id': customerId,
         'advance': advanceBookingAmount,
         // 'total_amount': totalBookingAmount,
         'rooms': bookingData,
@@ -2831,6 +2897,12 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
     bookingFormData.append('advance', advanceBookingAmount);
     bookingFormData.append('status', 'pending');
     bookingFormData.append('rooms', JSON.stringify(bookingData));
+    if (customerId.files.length > 0) {
+        // Loop through all selected files
+        for (let i = 0; i < customerId.files.length; i++) {
+            bookingFormData.append('id_card[]', customerId.files[i]);
+        }
+    }
 
     console.log("FormData:", JSON.stringify(bookingFormData));
 

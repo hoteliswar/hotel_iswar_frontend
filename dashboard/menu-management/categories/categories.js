@@ -370,6 +370,7 @@ function coldReload() {
 
 
 function refreshCategoryList() {
+    alert('Syncing Category List','info');
     const button = document.querySelector('#refresh-btn');
     button.classList.add('spinning');
     showLoading();
@@ -384,13 +385,16 @@ function refreshCategoryList() {
                 button.classList.remove('spinning');
                 hideLoading();
             }, 1000);
+            alert('Category List Synced','success');
         })
         .catch(error => {
             console.error('Error refreshing categories:', error);
             button.classList.remove('spinning');
             hideLoading();
+            alert('Error Syncing Category List','error');
         });
 }
 
 // Add event listener
 document.querySelector('#refresh-btn')?.addEventListener('click', refreshCategoryList);
+

@@ -1,5 +1,5 @@
-// baseURL = 'https://dineops.onrender.com/api/';
-baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+baseURL = 'https://dineops.onrender.com/api/';
+// baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 console.log(baseURL);
 
 
@@ -293,6 +293,7 @@ async function refreshAccessToken3(url, option) {
 
 // Refresh Category List
 function getCategoryListRefresh() {
+    
     return new Promise((resolve, reject) => {
         const url = `${baseURL}foods/categories/`;
         const option = {
@@ -337,6 +338,31 @@ function getFoodListRefresh() {
             })
             .catch(error => {
                 console.error('Error in getCategoryList:', error);
+                reject(error);
+            });
+    });
+}
+
+function getOrdersListRefresh() {
+    return new Promise((resolve, reject) => {
+        const url = `${baseURL}orders/order/`;
+        const option = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            }
+        };
+
+        refreshAccessToken2(url, option)
+            .then(data => {
+                console.log('Orders Data:', data);
+                localStorage.setItem('ordersList', JSON.stringify(data));
+                getAllOrdersFromStorage();
+                resolve(data);
+            })
+            .catch(error => {
+                console.error('Error in getOrdersList:', error);
                 reject(error);
             });
     });
@@ -969,13 +995,7 @@ function clearLocalStorage() {
     localStorage.clear();
 }
 
-function logout() {
-    clearCookies();
-    // clearLocalStorage();
-    // window.location.href = './login/login.html';
-    const rootPath = window.location.origin;
-    // window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
-}
+
 
 
 // Global variable to track loading state
@@ -1071,4 +1091,45 @@ async function callAllApi() {
     ]);
 
     console.log("Call Completed.")
+}
+
+async function callAllApi2() {
+    console.log("Calling All API");
+    try {
+        await getCategoryList();
+        customAlert('1/10 - Categories loaded', 'success');
+
+        await getFooditems();
+        customAlert('2/10 - Food items loaded', 'success');
+
+        await getTablesData();
+        customAlert('3/10 - Tables loaded', 'success');
+
+        await getRoomsData();
+        customAlert('4/10 - Rooms loaded', 'success');
+
+        await getServiceCategoryList();
+        customAlert('5/10 - Service categories loaded', 'success');
+
+        await getServiceList();
+        customAlert('6/10 - Services loaded', 'success');
+
+        await getAllBookings();
+        customAlert('7/10 - Bookings loaded', 'success');
+
+        await getAllBilling();
+        customAlert('8/10 - Billing loaded', 'success');
+
+        await getAlllOrders();
+        customAlert('9/10 - Orders loaded', 'success');
+
+        await getAllPayments();
+        customAlert('10/10 - Payments loaded', 'success');
+
+        customAlert('All data loaded successfully!', 'success');
+    } catch (error) {
+        console.error("Error loading data:", error);
+        customAlert('Error loading data', 'error');
+    }
+    console.log("Call Completed.");
 }

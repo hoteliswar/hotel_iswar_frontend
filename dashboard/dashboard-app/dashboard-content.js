@@ -62,3 +62,35 @@ function updateAvailabilityCounts() {
 
 // Optionally, update counts periodically
 setInterval(updateAvailabilityCounts, 60000);
+
+async function syncAllData() {
+    showLoading();
+    const syncButton = document.getElementById('syncDataBtn');
+    try {
+        // Add syncing class for visual feedback
+        syncButton.classList.add('syncing');
+        syncButton.disabled = true;
+        
+        // Call the sync function
+        await callAllApi();
+        
+        // Refresh dashboard data
+        // initializeDashboard();
+        
+        // Show success message
+        alert('All data synced successfully!', 'success');
+        hideLoading();
+        document.getElementById('dashboard').click();
+        // document.querySelector('.selected').click();
+    } catch (error) {
+        console.error('Sync failed:', error);
+        alert('Failed to sync data. Please try again.', 'error');
+        hideLoading();
+    } finally {
+        // Remove syncing class and re-enable button
+        syncButton.classList.remove('syncing');
+        syncButton.disabled = false;
+    }
+}
+
+document.getElementById('syncDataBtn').addEventListener('click', syncAllData);

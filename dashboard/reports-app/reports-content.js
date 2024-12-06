@@ -62,3 +62,57 @@ function generateReport() {
         tableBody.appendChild(row);
     });
 }
+
+
+function refreshReportsData() {
+    showLoading();
+    const button = document.querySelector('#refresh-btn-reports');
+    button.classList.add('spinning');
+    
+    // Show loading or alert
+    alert('Syncing Reports Data', 'info');
+    
+    // Fetch billing data
+    const billingUrl = `${baseURL}billing/bills/`;
+    const paymentsUrl = `${baseURL}billing/bill-payments/`;
+    
+    const options = {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token'),
+            'Content-Type': 'application/json'
+        }
+    };
+
+    // Fetch both billing and payments data
+    Promise.all([
+        refreshAccessToken2(billingUrl, options),
+        refreshAccessToken2(paymentsUrl, options)
+    ])
+    .then(([billingData, paymentsData]) => {
+        // Update localStorage
+        localStorage.setItem('billingList', JSON.stringify(billingData));
+        localStorage.setItem('paymentsList', JSON.stringify(paymentsData));
+        
+        // Regenerate report with new data
+        generateReport();
+        
+        // Remove spinning class and show success
+        setTimeout(() => {
+            button.classList.remove('spinning');
+            alert('Reports Data Synced', 'success');
+        }, 1000);
+        alert('Reports Data Synced', 'success');
+        hideLoading();
+    })
+    .catch(error => {
+        console.error('Error refreshing reports data:', error);
+        button.classList.remove('spinning');
+        alert('Error Syncing Reports Data', 'error');
+        hideLoading();
+    });
+}
+
+// Add event listener
+document.querySelector('#refresh-btn-reports')?.addEventListener('click', refreshReportsData);
+

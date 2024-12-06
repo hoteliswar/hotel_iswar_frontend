@@ -128,6 +128,14 @@ function renderRoomData() {
             roomTypeValue = 'NA';
         }
 
+        if(room.beds == 'double'){
+            bedTypeValue = 'Double Bed';
+        } else if (room.beds == 'double-separated') {
+            bedTypeValue = 'Double Bed (Separated)';
+        } else if (room.beds == 'king') {
+            bedTypeValue = 'King Size Bed (Front View)';
+        }
+
         const roomRow = document.createElement('div');
         roomRow.classList.add('room-list-table');
         roomRow.classList.add('room-row');
@@ -149,7 +157,7 @@ function renderRoomData() {
 
         const bedType = document.createElement('div');
         bedType.classList.add('col-3');
-        bedType.textContent = room.beds;
+        bedType.textContent = bedTypeValue;
 
         const actions = document.createElement('div');
         actions.classList.add('col-1');
@@ -407,6 +415,7 @@ document.getElementById('add-room-save-btn').addEventListener('click', function 
     }
     // POST CALL TO API to add new room
     function addNewRoom(roomData) {
+        showLoading();
         const url = `${baseURL}hotel/rooms/`;
         const options = {
             method: 'POST',
@@ -425,16 +434,19 @@ document.getElementById('add-room-save-btn').addEventListener('click', function 
                 console.log('Data:', data);
                 console.table(data);
                 alert("Room Created Successfully");
-                getRoomsData();
-                return getRoomsData();
-            })
-            .then(() => {
-                alert("Room Created Successfully");
-                document.querySelector('.append-all-room').innerHTML = '';
-                renderRoomData();
+                // getRoomsData();
+                // return getRoomsData();
+
+                // save the data in the local storage roomsList
+                const roomsList = JSON.parse(localStorage.getItem('roomsList')) || [];
+                roomsList.push(data);
+                localStorage.setItem('roomsList', JSON.stringify(roomsList));
+                document.getElementById('room').click();
+                hideLoading();
             })
             .catch(error => {
                 console.log('Error fetching data:', error);
+                hideLoading();
             });
     }
 

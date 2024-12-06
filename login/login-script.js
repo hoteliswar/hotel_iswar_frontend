@@ -31,63 +31,6 @@ function getCookie(name) {
 
 
 // Handle the form submission
-// document.getElementById('loginForm').addEventListener('submit', function (event) {
-//     event.preventDefault(); // Prevent the form from submitting the traditional way
-
-//     const username = document.getElementById('username').value;
-//     const password = document.getElementById('password').value;
-
-//     fetch(`${baseURL}accounts/token/`, {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         body: JSON.stringify({
-//             username: username,
-//             password: password
-//         })
-//     })
-//         // .then(response => response.json())
-//         .then(response => {
-//             if (!response.ok) {
-//                 throw new Error('Invalid credentials');
-//             }
-//             return response.json();
-//         })
-//         .then(async data => {
-//             if (data.access && data.refresh) {
-//                 // Store the access token in cookies
-//                 setCookie('access_token', data.access, 5); // Store for 5 minutes
-//                 setCookie('refresh_token', data.refresh, 10000); // Store refresh token
-
-//                 // Store the tokens in variables
-//                 accessToken = data.access;
-//                 refreshToken = data.refresh;
-
-//                 await Promise.all([callAllAPI()]);
-//                 console.log('Login successful, access token stored in cookies.');
-//                 console.log('Access Token:', accessToken);
-//                 console.log('Refresh Token:', refreshToken);
-
-//                 // Redirect to a new URL after successful login
-//                 window.location.href = './../dashboard/dashboard.html'; // Change to your desired URL
-
-//             } else {
-//                 console.error('Login failed:', data);
-//                 alert('Invalid username or password');
-//             }
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
-//             // alert('Invalid username or password');
-//             customAlert('Invalid Username or Password', type = 'error');
-
-//             // Optional: Clear the password field
-//             document.getElementById('password').value = '';
-//         });
-// });
-
-
 document.getElementById('loginForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -218,7 +161,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
                     window.location.href = './../dashboard/dashboard.html';
                 } else {
                     alert('Please wait while we are fetching data from server...','info');
-                    await callAllAPI();
+                    await getCallAllAPI();
                     window.location.href = './../dashboard/dashboard.html';
                 }
 
@@ -303,7 +246,7 @@ function customAlert(message, type = 'info') {
 // Override default alert
 // alert = customAlert;
 
-async function callAllAPI() {
+async function getCallAllAPI() {
     try {
         // First, wait for all API calls to complete
         const results = await Promise.all([

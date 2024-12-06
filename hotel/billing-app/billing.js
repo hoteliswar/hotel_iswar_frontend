@@ -176,7 +176,7 @@ document.querySelector('.close').onclick = function () {
 async function viewBillModal(item) {
     console.log('view bill modal');
     console.log(item);
-    getALlOrders();
+    getAlllOrders();
     generatePrintableBill(item);
 
 }

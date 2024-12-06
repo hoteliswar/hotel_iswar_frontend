@@ -239,11 +239,11 @@ function renderDataModal(data) {
             <span class="detail-label">Order Status:</span>
             <span class="detail-value">
                 ${data.status === 'in_progress' ? 'In Progress' :
-                data.status === 'hold' ? 'Hold' :
+            data.status === 'hold' ? 'Hold' :
                 data.status === 'kot' ? 'KOT' :
-                data.status === 'settled' ? 'Settled' :
-                data.status === 'cancelled' ? 'Cancelled' :
-                data.status}
+                    data.status === 'settled' ? 'Settled' :
+                        data.status === 'cancelled' ? 'Cancelled' :
+                            data.status}
             </span>
         </div>
         
@@ -691,7 +691,7 @@ document.querySelector('.close').onclick = function () {
 }
 
 // Filter Orders
-document.addEventListener('click', function () {
+document.getElementById('filterType').addEventListener('click', function () {
     const filterType = document.getElementById('filterType');
     const filterInputs = document.getElementById('filterInputs');
     const mobileInput = document.getElementById('mobileInput');
@@ -918,7 +918,7 @@ async function generatePrintableBill(billData) {
                                 <th>Item Name</th>
                                 <th>Quantity</th>
                                 <th>Rate</th>
-                                <th>Total</th>
+                                <th>Amount</th>
                             </tr>
                         </thead>
                         <tbody id="bill-items-body">
@@ -1108,3 +1108,36 @@ function capitalizeFirstLetter(str) {
         .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
         .join(' ');
 }
+
+
+function refreshOrdersList() {
+
+    showLoading();
+    alert('Syncing Orders List', 'info');
+    const button = document.querySelector('#refresh-btn-orders');
+    button.classList.add('spinning');
+    console.log('Refreshing Orders List');
+
+    // Call your existing category fetch function here
+    getOrdersListRefresh()
+        .then(() => {
+            console.log('Orders List Refreshed');
+            // Remove spinning class after refresh
+            setTimeout(() => {
+                button.classList.remove('spinning');
+            }, 1000);
+            document.getElementById('orders').click();
+            hideLoading();
+            alert('Orders List Synced', 'success');
+        })
+        .catch(error => {
+            console.error('Error refreshing orders:', error);
+            button.classList.remove('spinning');
+            alert('Error Syncing Orders List', 'error');
+            hideLoading();
+        });
+}
+
+// Add event listener for tooltip and refresh button
+document.querySelector('#refresh-btn-orders')?.addEventListener('click', refreshOrdersList);
+

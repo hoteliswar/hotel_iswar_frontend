@@ -5453,18 +5453,18 @@ async function createFoodItems() {
 // Function to create tables
 async function createTables() {
     const tables = [
-        { table_number: 1},
-        { table_number: 2},
-        { table_number: 3},
-        { table_number: 4},
-        { table_number: 5},
-        { table_number: 6},
-        { table_number: 7},
-        { table_number: 8},
-        { table_number: 9},
-        { table_number: 10},
-        { table_number: 11},
-        { table_number: 12}
+        { table_number: 1 },
+        { table_number: 2 },
+        { table_number: 3 },
+        { table_number: 4 },
+        { table_number: 5 },
+        { table_number: 6 },
+        { table_number: 7 },
+        { table_number: 8 },
+        { table_number: 9 },
+        { table_number: 10 },
+        { table_number: 11 },
+        { table_number: 12 }
     ];
 
     for (const table of tables) {
@@ -5480,12 +5480,230 @@ async function createTables() {
     console.log('Tables created');
 }
 
+async function createOrders() {
+    const orders = [
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        },
+        {
+            "address_line_1": "",
+            "booking_id": null,
+            "email": "",
+            "first_name": "",
+            "food_items": [14, 13, 22],
+            "last_name": "",
+            "notes": "",
+            "order_type": "take_away",
+            "phone": "1212121212",
+            "quantity": [1, 1, 1],
+            "room_id": null,
+            "status": "in_progress"
+        }
+    ]
+
+    for (const order of orders) {
+        await fetch(`${baseURL}orders/order/`, {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(order)
+        });
+        console.log(order)
+    }
+    console.log('Orders created');
+
+}
+
 // Main function to populate the database
 async function populateDatabase() {
     try {
         // await createCategories();
-        await createFoodItems();
+        // await createFoodItems();
         // await createTables();
+        await createOrders();
+        await createOrders();
+        await createOrders();
         console.log('Database populated successfully');
         document.querySelector('.message').textContent = 'Database populated successfully';
     } catch (error) {
