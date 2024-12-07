@@ -21,7 +21,7 @@ document.getElementById('viewToggle').addEventListener('click', function () {
 
 // getAllBookings();
 
-// document.getElementById('viewToggle').click();
+document.getElementById('viewToggle').click();
 
 function populateListView() {
     convertToRequiredFormat_ListView();
