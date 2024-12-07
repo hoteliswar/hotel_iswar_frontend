@@ -306,3 +306,43 @@ async function getCallAllAPI() {
     }
 }
 
+function callAllApi2() {
+    console.log("Calling All API");
+    try {
+        getCategoryList();
+        customAlert('1/10 - Categories loaded', 'success');
+
+        getFooditems();
+        customAlert('2/10 - Food items loaded', 'success');
+
+        getTablesData();
+        customAlert('3/10 - Tables loaded', 'success');
+
+        getRoomsData();
+        customAlert('4/10 - Rooms loaded', 'success');
+
+        getServiceCategoryList();
+        customAlert('5/10 - Service categories loaded', 'success');
+
+        getServiceList();
+        customAlert('6/10 - Services loaded', 'success');
+
+        getAllBookings();
+        customAlert('7/10 - Bookings loaded', 'success');
+
+        getAllBilling();
+        customAlert('8/10 - Billing loaded', 'success');
+
+        getAlllOrders();
+        customAlert('9/10 - Orders loaded', 'success');
+
+        getAllPayments();
+        customAlert('10/10 - Payments loaded', 'success');
+
+        customAlert('All data loaded successfully!', 'success');
+    } catch (error) {
+        console.error("Error loading data:", error);
+        customAlert('Error loading data', 'error');
+    }
+    console.log("Call Completed.");
+}

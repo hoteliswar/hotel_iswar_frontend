@@ -1278,22 +1278,32 @@ function generateHotelBill(bookingInfo, roomNumber) {
                 'day_calculation_method': "hotel_standard"
             };
             console.log('Updated genBillData:', genBillData);
+
+            // if any of the values are null, remove that key from the object
+            if (genBillData.room_discount === null) {
+                delete genBillData.room_discount;
+            }
+            if (genBillData.order_discount === null) {
+                delete genBillData.order_discount;
+            }
+            if (genBillData.customer_gst === null) {
+                delete genBillData.customer_gst;
+            }
         }
 
         // Initial setup
         updateGenBillData();
 
-
         // if any of the values are null, remove that key from the object
-        if (genBillData.room_discount == null) {
-            delete genBillData.room_discount;
-        }
-        if (genBillData.order_discount == null) {
-            delete genBillData.order_discount;
-        }
-        if (genBillData.customer_gst == null) {
-            delete genBillData.customer_gst;
-        }
+        // if (genBillData.room_discount === null) {
+        //     delete genBillData.room_discount;
+        // }
+        // if (genBillData.order_discount === null) {
+        //     delete genBillData.order_discount;
+        // }
+        // if (genBillData.customer_gst === null) {
+        //     delete genBillData.customer_gst;
+        // }
 
         console.table(genBillData);
         document.getElementById('gen-billBtn').onclick = () => genBillPOST(genBillData);
