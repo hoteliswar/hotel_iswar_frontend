@@ -1360,14 +1360,15 @@ function genBillPOST(genBillData) {
 
 // Edit Booking
 function editBooking(bookingId) {
+    alert('Edit Booking coming soon', 'success');
     console.log("editBooking called");
 
     // Function to handle the edit booking modal
-    const editBookingModal = document.getElementById('editBookingModal');
-    if (editBookingModal) {
-        setTimeout(() => editBookingModal.classList.add('show'), 10);
-        editBookingModal.style.display = 'block';
-    }
+    // const editBookingModal = document.getElementById('editBookingModal');
+    // if (editBookingModal) {
+    //     setTimeout(() => editBookingModal.classList.add('show'), 10);
+    //     editBookingModal.style.display = 'block';
+    // }
 }
 
 function editBooking2(bookingId) {
