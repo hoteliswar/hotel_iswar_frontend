@@ -1381,8 +1381,12 @@ function genBillPOST(genBillData) {
         })
 }
 
-// Edit Booking
 function editBooking(bookingId) {
+    alert('Edit Booking coming very soon', 'success');
+}
+
+// Edit Booking
+function editBooking3(bookingId) {
     // alert('Edit Booking coming soon', 'success');
     console.log("editBooking called");
     alert(bookingId, 'success');
