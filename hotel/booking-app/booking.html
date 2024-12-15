@@ -488,7 +488,7 @@
         </div>
     </div>
 
-    <!-- Modal: New Booking -->
+    <!-- Modal: Edit Booking -->
     <div class="modal-container-7">
         <div id="editBookingModal" class="edit-booking">
             <div class="modal-content-7">
@@ -503,59 +503,59 @@
                             <div class="input-element-add-room">
                                 <div class="row" id="room-1">
                                     <div class="input-element">
-                                        <label for="roomSelect-1">Room (first select date)</label>
-                                        <select disabled class="rooms-btn" id="roomSelect-1">
+                                        <label for="editroomSelect-1">Room (first select date)</label>
+                                        <select disabled class="rooms-btn" id="editroomSelect-1">
                                             <option selected disabled>Select Room</option>
                                         </select>
                                     </div>
                                     <div class="input-element ele-room">
-                                        <label for="startDate-1">Start Date</label>
+                                        <label for="editstartDate-1">Start Date</label>
                                         <!-- <input type="date" id="startDate-1" name="startDate" required> -->
 
-                                        <input type="datetime-local" id="startDate-1" name="startDate">
+                                        <input type="datetime-local" id="editstartDate-1" name="startDate">
 
-                                        <label for="endDate-1">End Date</label>
+                                        <label for="editendDate-1">End Date</label>
                                         <!-- <input type="date" id="endDate-1" name="endDate" required> -->
 
-                                        <input type="datetime-local" id="endDate-1" name="endDate">
+                                        <input type="datetime-local" id="editendDate-1" name="endDate">
 
                                         <i class="fa-solid fa-circle-plus fa-2x" id="add-more-btn"></i>
                                     </div>
                                 </div>
                             </div>
                             <div class="input-element">
-                                <label for="bookingPhone">Phone</label>
-                                <input type="text" id="bookingPhone" name="bookingPhone" required
+                                <label for="editbookingPhone">Phone</label>
+                                <input type="text" id="editbookingPhone" name="bookingPhone" required
                                     placeholder="+91 12345 67890">
                             </div>
                             <div class="input-element">
-                                <label for="bookingEmail">Email</label>
-                                <input type="email" id="bookingEmail" name="bookingEmail"
+                                <label for="editbookingEmail">Email</label>
+                                <input type="email" id="editbookingEmail" name="bookingEmail"
                                     placeholder="name@example.com">
                             </div>
                             <div class="input-element">
-                                <label for="bookingFname">First Name</label>
-                                <input type="text" id="bookingFname" name="bookingFname" required
+                                <label for="editbookingFname">First Name</label>
+                                <input type="text" id="editbookingFname" name="bookingFname" required
                                     placeholder="First Name">
                             </div>
                             <div class="input-element">
-                                <label for="bookingLname">Last Name</label>
-                                <input type="text" id="bookingLname" name="bookingLname" required
+                                <label for="editbookingLname">Last Name</label>
+                                <input type="text" id="editbookingLname" name="bookingLname" required
                                     placeholder="Last Name">
                             </div>
                             <div class="input-element">
-                                <label for="customerNationality">Nationality</label>
+                                <label for="editcustomerNationality">Nationality</label>
                                 <!-- <input type="text" id="customerNationality" name="customerNationality" value="indian"  placeholder="Last Name"> -->
-                                <select name="" id="customerNationality">
+                                <select name="" id="editcustomerNationality">
                                     <option value="" selected disabled>Select Nationality</option>
                                     <option value="indian">Indian</option>
                                     <option value="others">Others</option>
                                 </select>
                             </div>
                             <div class="input-element" id="customerState-div">
-                                <label for="customerState">State / Province</label>
+                                <label for="editcustomerState">State / Province</label>
                                 <div id="state-input-select">
-                                    <select name="customerState" id="customerState">
+                                    <select name="customerState" id="editcustomerState">
                                         <option selected disabled>Select State</option>
                                         <!-- States -->
                                         <option value="andhra_pradesh">Andhra Pradesh</option>
@@ -603,14 +603,14 @@
                             </div>
 
                             <div class="input-element address">
-                                <label for="bookingAddress">Address</label>
-                                <input type="text" id="bookingAddress" name="bookingAddress" required
+                                <label for="editbookingAddress">Address</label>
+                                <input type="text" id="editbookingAddress" name="bookingAddress" required
                                     placeholder="Address">
                             </div>
 
                             <div class="input-element">
-                                <label for="customerId">ID Card</label>
-                                <input type="file" id="customerId" name="customerId[]" multiple
+                                <label for="editcustomerId">ID Card</label>
+                                <input type="file" id="editcustomerId" name="customerId[]" multiple
                                     file-type="image/* , pdf/*">
                             </div>
 
@@ -626,9 +626,9 @@
 
                     <div class="advance-booking-amount">Advance (₹)</div>
                     <input type="text" class="advance-booking-amount-input" name="advance-booking-amount"
-                        id="advance-booking-amount" placeholder="0.00">
+                        id="editadvance-booking-amount" placeholder="0.00">
 
-                    <button class="new-booking-btn" id="new-booking-btn">Book</button>
+                    <button class="new-booking-btn" id="edit-booking-btn">Book</button>
                 </div>
             </div>
         </div>

@@ -34,7 +34,7 @@ async function convertToRequiredFormat_ListView() {
 
         const bookingData = getAllBookingsFromStorage();
         const apiDataString = JSON.stringify(bookingData);
-        // console.log(`apiDataString: ${apiDataString}`);
+        console.log(`apiDataString: ${apiDataString}`);
 
         // console.log(`apiDataString: ${JSON.stringify(apiDataString)}`);
         if (!apiDataString || apiDataString.length === 0) {
@@ -242,7 +242,6 @@ function renderListView(allBookings) {
 }
 
 var currentDate = new Date();
-console.log(currentDate);
 
 // JSON formating for calender
 function convertToRequiredFormat() {
@@ -291,22 +290,10 @@ function convertToRequiredFormat() {
             // let checkOutDate = new Date(room.end_date.replace('Z', ''));
             // console.log(`OUTSIDE LOOP: ${booking.id} ${room.room} ${checkInDate} , ${checkOutDate}`);
 
-            // let checkInDate = new Date (room.check_in_details?.check_in_date ?? room.start_date);
-            // let checkOutDate = new Date(room.check_out_date ?? room.end_date);
-            // let bookingDatee = new Date(booking.booking_date);
-            // console.log(`OUTSIDE LOOP: ${booking.id} ${room.room} checkin: ${checkInDate} , checkout: ${checkOutDate} , booking date: ${bookingDatee}`);
-
-
-            let checkInDate = new Date(room.check_in_details?.check_in_date ?? room.start_date);
-            checkInDate.setUTCMinutes(checkInDate.getUTCMinutes() - 330); // Subtract 5 hours 30 minutes
-
-            let checkOutDate = new Date(room.check_out_date ?? room.end_date);
-            checkOutDate.setUTCMinutes(checkOutDate.getUTCMinutes() - 330); // Subtract 5 hours 30 minutes
-
+            let checkInDate = new Date(room.start_date);
+            let checkOutDate = new Date(room.end_date);
             let bookingDatee = new Date(booking.booking_date);
-            bookingDatee.setUTCMinutes(bookingDatee.getUTCMinutes() - 330); // Subtract 5 hours 30 minutes
-
-            console.log(`OUTSIDE LOOP: ${booking.id} ${room.room} checkin: ${checkInDate.toISOString()} , checkout: ${checkOutDate.toISOString()} , booking date: ${bookingDatee.toISOString()}`);
+            console.log(`OUTSIDE LOOP: ${booking.id} ${room.room} ${checkInDate} , ${checkOutDate}`);
 
 
             let status;
@@ -365,8 +352,8 @@ function convertToRequiredFormat() {
                 phoneNumber: guestDetail.phone,
                 checkIn: checkInDate,
                 checkOut: checkOutDate,
-                bookingDate: bookingDatee,
                 status: status,
+                bookingDate: bookingDatee,
                 bookingId: booking.id,
                 id_card: booking.id_card
             });
@@ -525,8 +512,6 @@ function getBookingInfo(roomNumber, date) {
 
     return bookings.find(booking => {
         const bookingDate = new Date(date);
-        // console.warn(booking.bookingId, bookingDate.toISOString(), booking.checkIn, booking.checkOut);
-        // return bookingDate >= booking.checkIn && bookingDate.toISOString() < booking.checkOut;
         return bookingDate >= booking.checkIn && bookingDate < booking.checkOut;
     });
 }
@@ -574,7 +559,6 @@ function checkBookingStatus(roomNumber, date) {
 }
 
 function updateCalendar() {
-    console.warn(currentDate.toISOString());
     generateCalendar(currentDate);
     updateCurrentMonth();
 
@@ -2513,6 +2497,8 @@ function checkDatesAndPopulateRooms2(id) {
     const endDate = document.getElementById(`endDate-${id}`).value;
     const roomSelect = document.getElementById(`roomSelect-${id}`);
 
+
+
     if (startDate && endDate) {
         roomSelect.disabled = false;
         populateRoomOptions(roomSelect, new Date(startDate), new Date(endDate));
@@ -2527,9 +2513,6 @@ function checkDatesAndPopulateRooms(id) {
     const endDateInput = document.getElementById(`endDate-${id}`).value;
     const roomSelect = document.getElementById(`roomSelect-${id}`);
 
-    console.log(`StartDate : ${startDateInput}`)
-    console.log(`EndtDate : ${endDateInput}`)
-
     if (!startDateInput || !endDateInput || !roomSelect) {
         console.error('Required elements not found');
         return;
@@ -2542,10 +2525,10 @@ function checkDatesAndPopulateRooms(id) {
     const endDate = new Date(endDateInput);
     endDate.setHours(12, 0, 0, 0);    // Set to 12:00:00.000
 
-    // console.log('Dates with 12:00 PM IST:', {
-    //     startDate: startDate,
-    //     endDate: endDate
-    // });
+    console.log('Dates with 12:00 PM IST:', {
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString()
+    });
 
     // Validate dates
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
@@ -2561,8 +2544,7 @@ function checkDatesAndPopulateRooms(id) {
 
     if (startDate && endDate) {
         roomSelect.disabled = false;
-        // populateRoomOptions(roomSelect, startDate, endDate);
-        populateRoomOptions(roomSelect, startDateInput, endDateInput);
+        populateRoomOptions(roomSelect, startDate, endDate);
     } else {
         roomSelect.disabled = true;
         roomSelect.innerHTML = '<option selected disabled>Select Room</option>';
@@ -2748,13 +2730,6 @@ function populateRoomOptions3(select, startDate, endDate) {
 }
 
 function populateRoomOptions(select, startDate, endDate) {
-    startDate = startDate + ':00Z';
-    endDate = endDate + ':00Z';
-
-    console.log('Populating room options...');
-    console.log(`Start Date: ${startDate}, End Date: ${endDate}`);
-
-
     const roomList = localStorage.getItem('roomsList');
     const bookingsList = localStorage.getItem('bookingsList');
 
@@ -2785,55 +2760,47 @@ function populateRoomOptions(select, startDate, endDate) {
             }
 
             // Get dates in UTC format
-            // const bookingStartDate = new Date(roomBooking.checkin_details?.check_in_date ?? roomBooking.start_date);
-            // const bookingEndDate = new Date(roomBooking.check_out_date ?? roomBooking.end_date);
-            const bookingStartDate = roomBooking.check_in_details?.check_in_date ?? roomBooking.start_date;
-            const bookingEndDate = roomBooking.check_out_date ?? roomBooking.end_date;
+            const bookingStartDate = new Date(roomBooking.start_date);
+            const bookingEndDate = new Date(roomBooking.end_date);
 
             // Force UTC times to 12:00
-            // const startUTC = new Date(Date.UTC(
-            //     bookingStartDate.getUTCFullYear(),
-            //     bookingStartDate.getUTCMonth(),
-            //     bookingStartDate.getUTCDate(),
-            //     12, 0, 0, 0
-            // ));
+            const startUTC = new Date(Date.UTC(
+                bookingStartDate.getUTCFullYear(),
+                bookingStartDate.getUTCMonth(),
+                bookingStartDate.getUTCDate(),
+                12, 0, 0, 0
+            ));
 
-            // const endUTC = new Date(Date.UTC(
-            //     bookingEndDate.getUTCFullYear(),
-            //     bookingEndDate.getUTCMonth(),
-            //     bookingEndDate.getUTCDate(),
-            //     12, 0, 0, 0
-            // ));
+            const endUTC = new Date(Date.UTC(
+                bookingEndDate.getUTCFullYear(),
+                bookingEndDate.getUTCMonth(),
+                bookingEndDate.getUTCDate(),
+                12, 0, 0, 0
+            ));
 
             roomBookings[roomBooking.room].push({
-                startDate: bookingStartDate,
-                // startDate: startUTC,
-                endDate: bookingEndDate,
-                // endDate: endUTC,
+                startDate: startUTC,
+                endDate: endUTC,
                 bookingId: booking.id,
                 status: booking.status
             });
         });
     });
-    console.warn('Room Bookings Map:', roomBookings);
 
     // Convert request dates to UTC 12:00
-    // const requestStart = new Date(Date.UTC(
-    //     startDate.getUTCFullYear(),
-    //     startDate.getUTCMonth(),
-    //     startDate.getUTCDate(),
-    //     12, 0, 0, 0
-    // ));
+    const requestStart = new Date(Date.UTC(
+        startDate.getUTCFullYear(),
+        startDate.getUTCMonth(),
+        startDate.getUTCDate(),
+        12, 0, 0, 0
+    ));
 
-    // const requestEnd = new Date(Date.UTC(
-    //     endDate.getUTCFullYear(),
-    //     endDate.getUTCMonth(),
-    //     endDate.getUTCDate(),
-    //     12, 0, 0, 0
-    // ));
-
-    const requestStart = startDate;
-    const requestEnd = endDate;
+    const requestEnd = new Date(Date.UTC(
+        endDate.getUTCFullYear(),
+        endDate.getUTCMonth(),
+        endDate.getUTCDate(),
+        12, 0, 0, 0
+    ));
 
     // Check each room's availability
     roomListObj.forEach(room => {
@@ -2847,10 +2814,10 @@ function populateRoomOptions(select, startDate, endDate) {
             if (hasOverlap) {
                 console.log(`Room ${room.room_number} - Overlap found:`, {
                     bookingId: booking.bookingId,
-                    bookingStart: booking.startDate,
-                    bookingEnd: booking.endDate,
-                    requestStart: requestStart,
-                    requestEnd: requestEnd
+                    bookingStart: booking.startDate.toISOString(),
+                    bookingEnd: booking.endDate.toISOString(),
+                    requestStart: requestStart.toISOString(),
+                    requestEnd: requestEnd.toISOString()
                 });
             }
 
