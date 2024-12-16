@@ -1381,12 +1381,12 @@ function genBillPOST(genBillData) {
         })
 }
 
-function editBooking(bookingId) {
+function editBooking3(bookingId) {
     alert('Edit Booking coming very soon', 'success');
 }
 
 // Edit Booking
-function editBooking3(bookingId) {
+function editBooking(bookingId) {
     // alert('Edit Booking coming soon', 'success');
     console.log("editBooking called");
     alert(bookingId, 'success');

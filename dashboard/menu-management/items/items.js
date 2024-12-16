@@ -77,6 +77,7 @@ function addItemToList(name, price, category, description, imageSrc, status, id,
 
 // API Call to delete food item - DELETE
 function deleteFood(id) {
+    showLoading();
     const option = {
         method: 'DELETE',
         headers: {
@@ -89,9 +90,14 @@ function deleteFood(id) {
         // .then(response => response.json())
         .then(async data => {
             console.log('Data Deleted:', data);
-            await Promise.all([getFooditems()]);
+
+            const allFoodList = JSON.parse(localStorage.getItem('allFoodList'));
+            const updatedList = allFoodList.filter(item => item.id !== id);
+            localStorage.setItem('allFoodList', JSON.stringify(updatedList));
+
             alert('Item Deleted Successfully', 'success');
-            // coldReload();
+            document.getElementById('nav-item-items').click();
+            hideLoading();
         })
         .catch(error => {
             console.log('Error fetching data:', error);
@@ -224,6 +230,7 @@ document.getElementById('update-item').addEventListener('click', function (e) {
     updateItem(updatedItem);
 
     function updateItem(updatedItem) {
+        showLoading();
         option = {
             method: 'PATCH',
             headers: {
@@ -248,10 +255,21 @@ document.getElementById('update-item').addEventListener('click', function (e) {
             // .then(response => response.json())
             .then(async data => {
                 console.log('Item updated successfully:', data);
-                await Promise.all([getFooditems()]);
-                alert("Food Item Created Successfully", 'success');
+                const allFoodList = JSON.parse(localStorage.getItem('allFoodList') || '[]');
+                const updatedItemIndex = allFoodList.findIndex(item => item.id == updatedItem.id);
+                if (updatedItemIndex !== -1) {
+                    allFoodList[updatedItemIndex] = data;
+                    localStorage.setItem('allFoodList', JSON.stringify(allFoodList));
+                }
+
                 document.querySelector('.close').click();
-                coldReload();
+                document.getElementById('nav-item-items').click();
+
+                hideLoading();
+
+                // await Promise.all([getFooditems()]);
+                alert("Food Item Created Successfully", 'success');
+                // coldReload();
                 // alert('Item updated successfully:', data);
                 // Optionally, update the UI or show a success message
             })
@@ -442,12 +460,12 @@ function coldReload() {
 }
 
 function refreshFoodList() {
-    alert('Syncing Food List','info');
+    alert('Syncing Food List', 'info');
     const button = document.querySelector('#refresh-btn');
     button.classList.add('spinning');
     showLoading();
     console.log('Refreshing Food List');
-    
+
     // Call your existing category fetch function here
     getFoodListRefresh()
         .then(() => {
@@ -457,13 +475,13 @@ function refreshFoodList() {
                 button.classList.remove('spinning');
                 hideLoading();
             }, 1000);
-            alert('Food List Synced','success');
+            alert('Food List Synced', 'success');
         })
         .catch(error => {
             console.error('Error refreshing foods:', error);
             button.classList.remove('spinning');
             hideLoading();
-            alert('Error Syncing Food List','error');
+            alert('Error Syncing Food List', 'error');
         });
 }
 
