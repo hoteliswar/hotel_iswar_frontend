@@ -939,7 +939,7 @@ function customAlert(message, type = 'info') {
 alert = customAlert;
 
 // Disable all console statements
-// terminateConsole();
+terminateConsole();
 
 function terminateConsole() {
     console.log = function () { }
