@@ -57,7 +57,14 @@ function deleteCategory(id) {
         })
         .then(async data => {
             console.log('Data:', data);
-            await Promise.all([getCategoryList()]);
+
+            // Update the local storage with the updated list
+            const allCatgList = JSON.parse(localStorage.getItem('categoryList'));
+            const updatedList = allCatgList.filter(item => item.id !== id);
+            localStorage.setItem('categoryList', JSON.stringify(updatedList));
+
+            document.getElementById('nav-item-categories').click();
+
             hideLoading();
             alert("Category Deleted Successfully", 'success');
 
@@ -252,7 +259,7 @@ document.getElementById('add-category').addEventListener('click', function (e) {
 // API Call POST Food Items - Create
 
 function createCategory(catgData) {
-    
+
     showLoading();
     console.log(catgData);
     const option = {
@@ -340,11 +347,20 @@ document.getElementById('update-category').addEventListener('click', function (e
             // .then(response => response.json())
             .then(async data => {
                 console.log("Category Updated Successfully")
-                await Promise.all([getCategoryList()]);
+
+                // Update in Local Storage
+                const allCatgList = JSON.parse(localStorage.getItem('categoryList') || '[]');
+                const updatedItemIndex = allCatgList.findIndex(item => item.id == updatedItem.id);
+                if (updatedItemIndex !== -1) {
+                    allCatgList[updatedItemIndex] = data;
+                    localStorage.setItem('allFoodList', JSON.stringify(allCatgList));
+                }
+
+                document.querySelector('.close').click();
+                document.getElementById('nav-item-categories').click();
+
                 console.log('Category updated successfully:', data);
                 alert('Category updated successfully', 'success');
-                // coldReload();
-                // Optionally, update the UI or show a success message
                 hideLoading();
             })
             .catch(error => {
@@ -370,12 +386,12 @@ function coldReload() {
 
 
 function refreshCategoryList() {
-    alert('Syncing Category List','info');
+    alert('Syncing Category List', 'info');
     const button = document.querySelector('#refresh-btn');
     button.classList.add('spinning');
     showLoading();
     console.log('Refreshing Category List');
-    
+
     // Call your existing category fetch function here
     getCategoryListRefresh()
         .then(() => {
@@ -385,13 +401,13 @@ function refreshCategoryList() {
                 button.classList.remove('spinning');
                 hideLoading();
             }, 1000);
-            alert('Category List Synced','success');
+            alert('Category List Synced', 'success');
         })
         .catch(error => {
             console.error('Error refreshing categories:', error);
             button.classList.remove('spinning');
             hideLoading();
-            alert('Error Syncing Category List','error');
+            alert('Error Syncing Category List', 'error');
         });
 }
 
