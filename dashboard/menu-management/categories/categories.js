@@ -353,7 +353,7 @@ document.getElementById('update-category').addEventListener('click', function (e
                 const updatedItemIndex = allCatgList.findIndex(item => item.id == updatedItem.id);
                 if (updatedItemIndex !== -1) {
                     allCatgList[updatedItemIndex] = data;
-                    localStorage.setItem('allFoodList', JSON.stringify(allCatgList));
+                    localStorage.setItem('categoryList', JSON.stringify(allCatgList));
                 }
 
                 document.querySelector('.close').click();
