@@ -1,5 +1,5 @@
-baseURL = 'https://dineops.onrender.com/api/';
-// baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+// baseURL = 'https://dineops.onrender.com/api/';
+// baseURL = 'http://140.238.255.139:8001/api/';
 
 // Function to create categories
 async function createCategories() {
@@ -5697,18 +5697,24 @@ async function createOrders() {
 
 // Main function to populate the database
 async function populateDatabase() {
+    console.time('Time taken to populate database'); // Start the timer
     try {
         // await createCategories();
         // await createFoodItems();
         // await createTables();
-        await createOrders();
-        await createOrders();
+        // await createOrders();
+        // await createOrders();
+        // await createOrders();
+        // await createOrders();
+        // await createOrders();
         await createOrders();
         console.log('Database populated successfully');
         document.querySelector('.message').textContent = 'Database populated successfully';
     } catch (error) {
         console.error('Error populating database:', error);
         document.querySelector('.message').textContent = `Error populating database: ${error}`;
+    } finally {
+        console.timeEnd('Time taken to populate database'); // End the timer and display the result
     }
 }
 

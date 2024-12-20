@@ -709,13 +709,48 @@ td {
     margin-right: 10px;
 }
 
-.modal-body .btn-bookingedit{
-    height: 30px;
-    width: 120px;
-    background-color: #018736;
-    color: #fff;
+.modal-body .booking-details-card .bd-card{
+    background-color: #f6a903;
+    border: 0;
+    border-radius: 4px;
+    min-height: 50px;
+    max-height: 50px;
+    min-width: 130px;
+    max-width: 130px;
     font-size: 0.8em;
-    float: right;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-right: 5px;
+    padding: 0;
+    text-align: center;
+}
+
+.modal-body .booking-details-card .btn-bookingadd {
+    background-color: #00cf34;
+}
+
+.modal-body .booking-details-card .btn-bookingedit {
+    background-color: #ff9505;
+}
+
+.modal-body .booking-details-card .btn-bookingdetails {
+    background-color: #ff9505;
+}
+
+.modal-body .booking-details-card .btn-bookingcanc {
+    background-color: #f65403;
+}
+
+.modal-body .booking-details-card .btn-bookingadd:hover,
+.modal-body .booking-details-card .btn-bookingedit:hover,
+.modal-body .booking-details-card .btn-bookingdetails:hover,
+.modal-body .booking-details-card .btn-bookingcanc:hover {
+    opacity: 0.8;
+    cursor: pointer;
+    transition: 0.2s;
+    /* color: #fff; */
+    font-weight: 600;
+    font-size: 0.9em;
 }
 
 .order-list .modal-food{
@@ -1082,4 +1117,56 @@ td {
 
 .thumbnail-img:hover {
     transform: scale(1.05);
+}
+
+.modal-container2 {
+    position: fixed;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #00000080;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.payment-modal {
+    position: relative;
+    z-index: 1000;
+    min-width: 500px;
+    min-height: 400px;
+    max-height: 80vh;
+    background-color: #fff;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+}
+
+.modal-head {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #434343;
+    padding: 10px 20px;
+}
+
+.close-edit {
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.input-group-bill {
+    margin: 15px 0;
+}
+
+.input-group-bill label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-group-bill input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }

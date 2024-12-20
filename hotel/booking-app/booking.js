@@ -83,9 +83,14 @@ async function convertToRequiredFormat_ListView() {
                 }
 
                 const guestDetail = booking.guest_detail[0]; // Assuming there's always at least one guest
-                const checkIn = new Date(room.start_date);
-                const checkOut = new Date(room.end_date);
-                const bookingDate = new Date(booking.booking_date);
+                let checkIn = new Date(room.check_in_details?.check_in_date ?? room.start_date);
+                checkIn.setUTCMinutes(checkIn.getUTCMinutes() - 330); // Subtract 5 hours 30 minutes
+
+                let checkOut = new Date(room.check_out_date ?? room.end_date);
+                checkOut.setUTCMinutes(checkOut.getUTCMinutes() - 330); // Subtract 5 hours 30 minutes
+
+                let bookingDate = new Date(booking.booking_date);
+                bookingDate.setUTCMinutes(bookingDate.getUTCMinutes() - 330); // Subtract 5 hours 30 minutes
 
                 let status;
                 if (booking.status === 'pending') {
@@ -100,7 +105,7 @@ async function convertToRequiredFormat_ListView() {
                     status = 'checkin';
                 } else if (booking.status === 'confirmed') {
                     status = 'confirmed'
-                } else if (booking.status === 'partial_checked_in') {
+                } else if (booking.status === 'partial_checked_in_out' ||  'partial_checked_in') {
                     if (room.check_in_details && !room.check_out_date) {
                         status = 'checkin';
                     } else if (room.check_in_details && room.check_out_date) {
@@ -110,6 +115,8 @@ async function convertToRequiredFormat_ListView() {
                     } else if (room.start_date < currentDate.toISOString()) {
                         status = 'noshow';
                     }
+                } else {
+                    status = 'NA';
                 }
 
                 allBookings[roomNumber].push({
@@ -344,7 +351,7 @@ function convertToRequiredFormat() {
                 status = 'checkin';
             } else if (booking.status === 'confirmed') {
                 status = 'confirmed'
-            } else if (booking.status === 'partial_checked_in') {
+            } else if (booking.status === 'partial_checked_in_out' ||'partial_checked_in') {
                 if (room.check_in_details && !room.check_out_date) {
                     status = 'checkin';
                 } else if (room.check_in_details && room.check_out_date) {
@@ -651,14 +658,19 @@ function loadBookingModal(bookingInfo, roomNumber) {
     if (bookingInfo) {
         console.log(bookingInfo);
         let modalContent = `
-            <button class="btn-bookingedit" id="btn-bookingedit" onclick="editBooking(${bookingInfo.bookingId});">Edit Booking</button>
+            <div class = "booking-details-card">
+            <button class="btn-bookingadd bd-card" id="btn-bookingadd" onclick="">Add Room</button>
+            <button class="btn-bookingedit bd-card" id="btn-bookingedit" onclick="editBooking(${bookingInfo.bookingId});">Edit Booking</button>
+            <button class="btn-bookingdetails bd-card" id="btn-bookingdetails" onclick="editBookingDetails(${bookingInfo.bookingId});">Edit Billing Details</button>
+            <button class="btn-bookingcanc bd-card" id="btn-bookingcanc" onclick="">Cancel Room</button>
+            </div> <br>
             <div class="booking-modal-data">
                 <p><div class="booking-data-head">Booking Id:</div>  ${bookingInfo.bookingId}</p>
-                <p><div class="booking-data-head">Room No:</div> ${roomNumber}</p>
-                <p><div class="booking-data-head">Guest Name:</div> ${bookingInfo.guestName}</p>
+                <p><div class="booking-data-head">Billing Name:</div> ${bookingInfo.guestName}</p>
                 <!--<p><strong>Age:</strong> ${bookingInfo.age}</p>-->
                 <p><div class="booking-data-head">Email:</div> ${bookingInfo.email}</p>
                 <p><div class="booking-data-head">Phone:</div> ${bookingInfo.phoneNumber}</p>
+                <p><div class="booking-data-head">Room No:</div> ${roomNumber}</p>
                 <p><div class="booking-data-head">From:</div> ${formatDate(bookingInfo.checkIn)}</p>
                 <p><div class="booking-data-head">To:</div> ${formatDate(bookingInfo.checkOut)}</p>
                 <p><div class="booking-data-head">Status:</div> ${bookingInfo.status}</p>
@@ -927,28 +939,36 @@ function loadBookingModal(bookingInfo, roomNumber) {
                 }
 
                 function getBills(bookingId) {
-                    try {
-                        // Get bills from localStorage
-                        const billingList = JSON.parse(localStorage.getItem('billingList') || '[]');
-                        console.log('Raw billingList:', billingList);
+                    if (checkAllRoomsStatus(bookingId)) {
+                        try {
+                            // Get bills from localStorage
+                            const billingList = JSON.parse(localStorage.getItem('billingList') || '[]');
+                            console.log('Raw billingList:', billingList);
 
-                        console.log("Billing list found");
+                            console.log("Billing list found");
 
-                        // Ensure we're comparing numbers with numbers or strings with strings
-                        const bookingIdNum = parseInt(bookingId);
-                        // const bills = billingList.filter(bill => parseInt(bill.booking_id) === bookingIdNum);
-                        const bills = billingList.filter(bill => bill.booking_id == bookingId);
+                            // Ensure we're comparing numbers with numbers or strings with strings
+                            const bookingIdNum = parseInt(bookingId);
+                            // const bills = billingList.filter(bill => parseInt(bill.booking_id) === bookingIdNum);
+                            const bills = billingList.filter(bill => bill.booking_id == bookingId);
 
-                        console.log('Booking ID being searched:', bookingIdNum);
-                        console.log('Bills found:', bills);
+                            console.log('Booking ID being searched:', bookingIdNum);
+                            console.log('Bills found:', bills);
 
-                        setTimeout(() => {
-                            checkBill(bills);
-                        }, 500);
+                            setTimeout(() => {
+                                checkBill(bills);
+                            }, 500);
 
-                    } catch (error) {
-                        console.error('Error processing bills from localStorage:', error);
-                        checkBill([]);
+                        } catch (error) {
+                            console.error('Error processing bills from localStorage:', error);
+                            checkBill([]);
+                        }
+
+                    } else {
+                        // Show message that all rooms must be checked out
+                        alert('Cannot generate bill for Id '+ bookingId+ '. All rooms must be checked out first.', 'error');
+                        
+                        return false;
                     }
                 }
 
@@ -1139,6 +1159,42 @@ function loadBookingModal(bookingInfo, roomNumber) {
                             });
                     }
                 }
+
+                function checkAllRoomsStatus2(bookingID) {
+                    const bookingsList = JSON.parse(localStorage.getItem('bookingsList')) || [];
+                    const currentBooking = bookingsList.find(booking => booking.id === bookingID);
+
+                    if (!currentBooking) return false;
+
+                    // Check if all rooms are checked out
+                    const allRoomsCheckedOut = currentBooking.rooms.every(room => room.status === 'checkout');
+
+                    // Check if any room is still in checked-in status
+                    const hasCheckedInRooms = currentBooking.rooms.some(room => room.status === 'checkin');
+
+                    // Return true only if all rooms are checked out and none are checked in
+                    return allRoomsCheckedOut && !hasCheckedInRooms;
+                }
+
+                function checkAllRoomsStatus(bookingID) {
+                    const bookingsList = JSON.parse(localStorage.getItem('bookingsList')) || [];
+                    const currentBooking = bookingsList.find(booking => booking.id === bookingID);
+                    
+                    if (!currentBooking) return false;
+                    
+                    // Check if all rooms have check_out_date (checked out)
+                    const allRoomsCheckedOut = currentBooking.rooms.every(room => room.check_out_date);
+                    
+                    // Check if any room is checked in but not checked out
+                    const hasIncompleteCheckout = currentBooking.rooms.some(room => 
+                        room.check_in_details && !room.check_out_date
+                    );
+                    
+                    // Return true only if all rooms are checked out
+                    return allRoomsCheckedOut && !hasIncompleteCheckout;
+                }
+                
+
             }
 
         }
@@ -1252,7 +1308,6 @@ function loadBookingModal(bookingInfo, roomNumber) {
     }
 
 }
-
 
 function openBill(bill) {
     console.log('openBill called');
@@ -1507,6 +1562,63 @@ function editBooking2(bookingId) {
     bookingIdDiv.value = booking.bookingId;
 
 }
+
+// Function to open edit booking details modal
+function editBookingDetails(bookingId) {
+    console.log('editBookingDetails booked.')
+    const modal = document.getElementById('editBookingDetailsModal');
+    const modalContainer = document.querySelector('.modal-container2');
+    
+    // Display modal
+    modalContainer.style.display = 'flex';
+    modal.style.display = 'block';
+    setTimeout(() => modal.classList.add('show'), 10);
+
+    // Fetch booking details
+    const bookingData = JSON.parse(localStorage.getItem('bookingsList')) || [];
+    const bookingInfo = bookingData.find(booking => booking.id === bookingId);
+    console.log('Booking Info:', bookingInfo);
+
+    // Populate fields with current booking data
+    document.getElementById('edit-booking-id').value = bookingInfo.id;
+    document.getElementById('edit-first-name').value = bookingInfo.guest_detail[0].first_name;
+    document.getElementById('edit-last-name').value = bookingInfo.guest_detail[0].last_name;
+    document.getElementById('edit-phone').value = bookingInfo.guest_detail[0].phone;
+    document.getElementById('edit-email').value = bookingInfo.guest_detail[0].email;
+    // document.getElementById('address').value = bookingInfo.guest_detail[0].username;
+
+    // Handle update button click
+    document.getElementById('update-booking-btn').onclick = () => {
+        updateBookingDetails(bookingId);
+    };
+}
+
+// Update booking details function
+function updateBookingDetails(bookingId) {
+    const updatedData = {
+        first_name: document.getElementById('edit-first-name').value,
+        last_name: document.getElementById('edit-last-name').value || '',
+        phone: document.getElementById('edit-phone').value || '',
+        email: document.getElementById('edit-email').value || '',
+        address: document.getElementById('address').value || ''
+    };
+    
+    // Add your API call here to update the booking
+    console.log('Updating booking:', bookingId, updatedData);
+    // After successful update:
+    document.querySelector('.close-edit').click();
+}
+
+// Close modal handler
+document.querySelector('.close-edit').onclick = function() {
+    const modal = document.getElementById('editBookingDetailsModal');
+    const modalContainer = document.querySelector('.modal-container2');
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modalContainer.style.display = 'none';
+        modal.style.display = 'none';
+    }, 300);
+};
 
 // Close the service booking modal
 document.querySelector('.close7').onclick = function () {
@@ -2457,9 +2569,9 @@ function createNewRow(id) {
         </div>
         <div class="input-element ele-room">
             <label for="startDate-${id}">Start Date</label>
-            <input type="date" id="startDate-${id}" name="startDate" required>
+            <input type="datetime-local" id="startDate-${id}" name="startDate" required>
             <label for="endDate-${id}">End Date</label>
-            <input type="date" id="endDate-${id}" name="endDate" required>
+            <input type="datetime-local" id="endDate-${id}" name="endDate" required>
             <i class="fa-solid fa-circle-minus fa-2x remove-room-btn"></i>
         </div>
     `;
