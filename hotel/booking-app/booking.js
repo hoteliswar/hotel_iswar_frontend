@@ -105,7 +105,7 @@ async function convertToRequiredFormat_ListView() {
                     status = 'checkin';
                 } else if (booking.status === 'confirmed') {
                     status = 'confirmed'
-                } else if (booking.status === 'partial_checked_in_out' ||  'partial_checked_in') {
+                } else if (booking.status === 'partial_checked_in_out' || 'partial_checked_in') {
                     if (room.check_in_details && !room.check_out_date) {
                         status = 'checkin';
                     } else if (room.check_in_details && room.check_out_date) {
@@ -351,7 +351,7 @@ function convertToRequiredFormat() {
                 status = 'checkin';
             } else if (booking.status === 'confirmed') {
                 status = 'confirmed'
-            } else if (booking.status === 'partial_checked_in_out' ||'partial_checked_in') {
+            } else if (booking.status === 'partial_checked_in_out' || 'partial_checked_in') {
                 if (room.check_in_details && !room.check_out_date) {
                     status = 'checkin';
                 } else if (room.check_in_details && room.check_out_date) {
@@ -375,7 +375,8 @@ function convertToRequiredFormat() {
                 bookingDate: bookingDatee,
                 status: status,
                 bookingId: booking.id,
-                id_card: booking.id_card
+                id_card: booking.id_card,
+                roomid: room.room
             });
         });
     });
@@ -397,10 +398,10 @@ var roomBookings = convertToRequiredFormat();
 console.log(roomBookings);
 
 // Instead of using forEach, we'll use Object.entries to iterate over the object
-Object.entries(roomBookings).forEach(([roomNumber, bookings]) => {
-    console.log(`Room ${roomNumber}:`);
-    console.table(bookings);
-});
+// Object.entries(roomBookings).forEach(([roomNumber, bookings]) => {
+//     console.log(`Room ${roomNumber}:`);
+//     console.table(bookings);
+// });
 
 // Sample JSON format for calender
 var roomBookings2 = {
@@ -660,9 +661,9 @@ function loadBookingModal(bookingInfo, roomNumber) {
         let modalContent = `
             <div class = "booking-details-card">
             <button class="btn-bookingadd bd-card" id="btn-bookingadd" onclick="">Add Room</button>
-            <button class="btn-bookingedit bd-card" id="btn-bookingedit" onclick="editBooking(${bookingInfo.bookingId});">Edit Booking</button>
+            <button class="btn-bookingedit bd-card" id="btn-bookingedit" onclick="editBooking(${bookingInfo.roomid}, ${bookingInfo.bookingId});">Edit Booking</button>
             <button class="btn-bookingdetails bd-card" id="btn-bookingdetails" onclick="editBookingDetails(${bookingInfo.bookingId});">Edit Billing Details</button>
-            <button class="btn-bookingcanc bd-card" id="btn-bookingcanc" onclick="">Cancel Room</button>
+            <button class="btn-bookingcanc bd-card" id="btn-bookingcanc" onclick="roomBookCancel(${bookingInfo.roomid}, ${bookingInfo.bookingId});">Cancel Room</button>
             </div> <br>
             <div class="booking-modal-data">
                 <p><div class="booking-data-head">Booking Id:</div>  ${bookingInfo.bookingId}</p>
@@ -966,8 +967,8 @@ function loadBookingModal(bookingInfo, roomNumber) {
 
                     } else {
                         // Show message that all rooms must be checked out
-                        alert('Cannot generate bill for Id '+ bookingId+ '. All rooms must be checked out first.', 'error');
-                        
+                        alert('Cannot generate bill for Id ' + bookingId + '. All rooms must be checked out first.', 'error');
+
                         return false;
                     }
                 }
@@ -1179,21 +1180,21 @@ function loadBookingModal(bookingInfo, roomNumber) {
                 function checkAllRoomsStatus(bookingID) {
                     const bookingsList = JSON.parse(localStorage.getItem('bookingsList')) || [];
                     const currentBooking = bookingsList.find(booking => booking.id === bookingID);
-                    
+
                     if (!currentBooking) return false;
-                    
+
                     // Check if all rooms have check_out_date (checked out)
                     const allRoomsCheckedOut = currentBooking.rooms.every(room => room.check_out_date);
-                    
+
                     // Check if any room is checked in but not checked out
-                    const hasIncompleteCheckout = currentBooking.rooms.some(room => 
+                    const hasIncompleteCheckout = currentBooking.rooms.some(room =>
                         room.check_in_details && !room.check_out_date
                     );
-                    
+
                     // Return true only if all rooms are checked out
                     return allRoomsCheckedOut && !hasIncompleteCheckout;
                 }
-                
+
 
             }
 
@@ -1208,6 +1209,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
 
         modalBody.innerHTML = modalContent;
         modal.style.display = 'block';
+
     }
 
     const viewBillBtn = document.getElementById('view-bill-btn');
@@ -1305,6 +1307,17 @@ function loadBookingModal(bookingInfo, roomNumber) {
                 btn.style.cursor = 'not-allowed';
             });
         }
+
+        const cancelledBtn = document.querySelector('.modal-body .booking-details-card #btn-bookingcanc');
+        const editdetailBtn = document.querySelector('.modal-body .booking-details-card #btn-bookingedit');
+        
+        cancelledBtn.disabled = true;
+        cancelledBtn.style.backgroundColor = '#9e9e9e';
+        cancelledBtn.style.cursor = 'not-allowed';
+
+        editdetailBtn.disabled = true;
+        editdetailBtn.style.backgroundColor = '#9e9e9e';
+        editdetailBtn.style.cursor = 'not-allowed';
     }
 
 }
@@ -1441,7 +1454,7 @@ function editBooking3(bookingId) {
 }
 
 // Edit Booking
-function editBooking(bookingId) {
+function editBooking(roomid, bookingId) {
     // alert('Edit Booking coming soon', 'success');
     console.log("editBooking called");
     alert(bookingId, 'success');
@@ -1452,86 +1465,26 @@ function editBooking(bookingId) {
         setTimeout(() => editBookingModal.classList.add('show'), 10);
         editBookingModal.style.display = 'block';
     }
-
+ 
     // Get complete booking details from local storage bookingsList using bookingId and  fill the fields in the modal
     const bookingList = JSON.parse(localStorage.getItem('bookingsList') || '[]');
     const booking = bookingList.find(b => b.id === bookingId);
     console.log(booking);
 
-    if (!booking) {
-        console.error('Booking not found');
-        return;
-    }
-    // const modalTitle = editBookingModal.querySelector('.modal-content-title-2');
-    // modalTitle.textContent = 'Edit Bookinggg';
+    // From booking find room from rooms where id is roomid
+    const room = booking.rooms.find(r => r.room == roomid);
+    console.log('Found room:', room);
 
-    // Inside editBooking function after getting the booking object:
-    if (!booking) {
-        // Fill basic booking details
-        document.getElementById('editbookingPhone').value = booking.guest_detail[0].phone;
-        document.getElementById('editbookingEmail').value = booking.guest_detail[0].email;
-        document.getElementById('editbookingFname').value = booking.guest_detail[0].first_name;
-        document.getElementById('editbookingLname').value = booking.guest_detail[0].last_name;
-        document.getElementById('editcustomerNationality').value = booking.nationality;
-        document.getElementById('editcustomerState').value = booking.state;
-        document.getElementById('editbookingAddress').value = booking.address;
+    // Get rooms from localStorage and find matching room
+    const roomsList = JSON.parse(localStorage.getItem('roomsList') || '[]');
+    const roomDetails = roomsList.find(r => r.id === roomid);
+    console.log('Room details from roomsList:', roomDetails);
 
-        // Fill room booking details
-        const roomSelect = document.getElementById('editroomSelect-1');
-        const startDate = document.getElementById('editstartDate-1');
-        const endDate = document.getElementById('editendDate-1');
+    document.getElementById('editExistingRoom').value = roomDetails.room_number;
+    document.getElementById('editStartTime').value = room.start_date;
+    document.getElementById('editLastTime').value = room.end_date;
 
-        roomSelect.value = booking.roomNumber;
-        startDate.value = booking.startDateTime;
-        endDate.value = booking.endDateTime;
-
-        // Fill payment details
-        const advanceAmount = document.querySelector('.editadvance-booking-amount-input');
-        const totalAmount = document.querySelector('.total-booking-amount-value');
-
-        advanceAmount.value = booking.advance || '0.00';
-        totalAmount.textContent = `₹ ${booking.total_mount || '0.00'}`;
-
-        // Enable room select after dates are filled
-        roomSelect.disabled = false;
-    }
-
-    if (booking) {
-        // Fill guest details from the first guest
-        const guestDetail = booking.guest_detail[0];
-        document.getElementById('bookingPhone').value = guestDetail.phone;
-        document.getElementById('bookingEmail').value = guestDetail.email;
-        document.getElementById('bookingFname').value = guestDetail.first_name;
-        document.getElementById('bookingLname').value = guestDetail.last_name;
-
-        // Fill address
-        document.getElementById('bookingAddress').value = guestDetail.address_line_1;
-
-        // Extract nationality and state from address_line_2
-        const addressParts = guestDetail.address_line_2.split(' ');
-        document.getElementById('customerNationality').value = addressParts[0].toLowerCase();
-        document.getElementById('customerState').value = addressParts[1].toLowerCase();
-
-        // Fill room booking details from the first room
-        const roomBooking = booking.rooms[0];
-        const roomSelect = document.getElementById('roomSelect-1');
-        const startDate = document.getElementById('startDate-1');
-        const endDate = document.getElementById('endDate-1');
-
-        roomSelect.value = roomBooking.room;
-        startDate.value = roomBooking.start_date;
-        endDate.value = roomBooking.end_date;
-
-        // Fill payment details
-        const advanceAmount = document.querySelector('.advance-booking-amount-input');
-        const totalAmount = document.querySelector('.total-booking-amount-value');
-
-        advanceAmount.value = booking.advance || '0.00';
-        totalAmount.textContent = `₹ ${booking.total_amount}`;
-
-        roomSelect.disabled = false;
-    }
-
+    console.log(JSON.parse(roomBookings));
 
 
 }
@@ -1567,8 +1520,8 @@ function editBooking2(bookingId) {
 function editBookingDetails(bookingId) {
     console.log('editBookingDetails booked.')
     const modal = document.getElementById('editBookingDetailsModal');
-    const modalContainer = document.querySelector('.modal-container2');
-    
+    const modalContainer = document.querySelector('.modal-container-8');
+
     // Display modal
     modalContainer.style.display = 'flex';
     modal.style.display = 'block';
@@ -1589,30 +1542,138 @@ function editBookingDetails(bookingId) {
 
     // Handle update button click
     document.getElementById('update-booking-btn').onclick = () => {
-        updateBookingDetails(bookingId);
+        updateBookingDetails(bookingInfo.guest_detail[0].id);
     };
 }
 
 // Update booking details function
-function updateBookingDetails(bookingId) {
+function updateBookingDetails(guestUserId) {
     const updatedData = {
         first_name: document.getElementById('edit-first-name').value,
         last_name: document.getElementById('edit-last-name').value || '',
         phone: document.getElementById('edit-phone').value || '',
-        email: document.getElementById('edit-email').value || '',
-        address: document.getElementById('address').value || ''
+        email: document.getElementById('edit-email').value || ''
+        // address: document.getElementById('address').value || ''
     };
-    
+
     // Add your API call here to update the booking
-    console.log('Updating booking:', bookingId, updatedData);
+    console.log('Updating booking:', guestUserId, updatedData);
+
+    PATCHdetails_booking(updatedData, guestUserId);
+
     // After successful update:
     document.querySelector('.close-edit').click();
+
+    function PATCHdetails_booking(updatedData, guestUserId) {
+        showLoading();
+        const options = {
+            method: 'PATCH',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updatedData)
+        };
+        const url = `${baseURL}accounts/users/${guestUserId}/`;
+
+        refreshAccessToken2(url, options)
+            .then(data => {
+                console.log("Patch: Booking Data posted:", data);
+                alert("Billing Details Updated Successfully", 'success');
+
+                // Get bookings from localStorage
+                const allBookings = JSON.parse(localStorage.getItem('bookingsList')) || [];
+                // Find and update matching bookings
+                const updatedBookings = allBookings.map(booking => {
+                    if (booking.guest_detail[0].id === guestUserId) {
+                        return {
+                            ...booking,
+                            guest_detail: [{
+                                ...booking.guest_detail[0],
+                                ...updatedData
+                            }]
+                        };
+                    }
+                    return booking;
+                });
+                // Save back to localStorage
+                localStorage.setItem('bookingsList', JSON.stringify(updatedBookings));
+
+                document.querySelector('.close-edit').click();
+                document.getElementById('booking').click();
+
+                hideLoading();
+            })
+            .catch(error => {
+                console.error("Error patching booking data:", error);
+                alert("Error in: Billing Details Update", 'error');
+                hideLoading();
+            });
+    }
+}
+
+function roomBookCancel(roomid, bookingId) {
+    console.log(`Room Id to Delete: ${roomid}`);
+    console.log(`From Booking Id to Delete: ${bookingId}`);
+
+    const roomsToRemove = JSON.stringify([roomid]);
+    console.log(`Rooms to Remove: ${roomsToRemove}`);
+
+    const formdata = new FormData();
+    formdata.append("rooms_to_remove", roomsToRemove);
+
+    PATCHremove_booking(formdata, bookingId);
+
+    function PATCHremove_booking(formdata, bookingId) {
+        showLoading();
+        const options = {
+            method: 'PATCH',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+            },
+            body: formdata
+            // body: new FormData()
+        };
+        const url = `${baseURL}hotel/bookings/${bookingId}/`;
+
+        refreshAccessToken2(url, options)
+            .then(data => {
+                console.log("Patch: Room removed:", data);
+                alert("Room removed Successfully", 'success');
+
+                // Get bookings from localStorage
+                const allBookings = JSON.parse(localStorage.getItem('bookingsList')) || [];
+                // Find and update booking
+                const updatedBookings = allBookings.map(booking => {
+                    if (booking.id === bookingId) {
+                        // Remove room with matching ID
+                        booking.rooms = booking.rooms.filter(room => room.room !== roomid);
+                    }
+                    return booking;
+                });
+                // Save back to localStorage
+                localStorage.setItem('bookingsList', JSON.stringify(updatedBookings));
+
+                // document.querySelector('.close-edit').click();
+                document.getElementById('booking').click();
+
+                hideLoading();
+            })
+            .catch(error => {
+                console.error("Error removing booked room:", error);
+                alert("Error in: Room Cancellation", 'error');
+                hideLoading();
+            });
+    }
+
+
+
 }
 
 // Close modal handler
-document.querySelector('.close-edit').onclick = function() {
+document.querySelector('.close-edit').onclick = function () {
     const modal = document.getElementById('editBookingDetailsModal');
-    const modalContainer = document.querySelector('.modal-container2');
+    const modalContainer = document.querySelector('.modal-container-8');
     modal.classList.remove('show');
     setTimeout(() => {
         modalContainer.style.display = 'none';
