@@ -37,7 +37,7 @@ function checkSession() {
 }
 
 // Run session check when page loads
-// document.addEventListener('DOMContentLoaded', checkSession);
+// document.addEventListener('DOMContentLoaded', checkTokensAndRedirect);
 
 // Optional: Periodically check session
 // setInterval(checkSession, 60000); // Check every minute
@@ -57,7 +57,6 @@ function checkTokensAndRedirect() {
         window.location.href = `${rootPath}/login/login.html`;
     }
 }
-
 
 // Call this function immediately
 checkTokensAndRedirect();

@@ -4,7 +4,7 @@ baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 // baseURL = 'http://140.238.255.139:8080/api/';
 
 // Disable all console statements
-// terminateConsole();
+terminateConsole();
 
 // console.log(baseURL);
 
@@ -26,7 +26,7 @@ function checkTokensAndRedirect() {
 
 
 // Call this function immediately
-checkTokensAndRedirect();
+// checkTokensAndRedirect();
 
 
 
@@ -945,7 +945,7 @@ function customAlert(message, type = 'info') {
 alert = customAlert;
 
 // Disable all console statements
-terminateConsole();
+// terminateConsole();
 
 function terminateConsole() {
     console.log = function () { }
