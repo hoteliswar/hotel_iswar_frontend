@@ -41,3 +41,23 @@ function checkSession() {
 
 // Optional: Periodically check session
 // setInterval(checkSession, 60000); // Check every minute
+
+// Add this at the beginning of your file, after baseURL declaration
+function checkTokensAndRedirect() {
+    // Check if current page is login page
+    if (window.location.pathname.includes('/login/login.html')) {
+        return; // Skip redirect if already on login page
+    }
+
+    const accessToken = getCookie('access_token');
+    const refreshToken = getCookie('refresh_token');
+
+    if (!accessToken || !refreshToken) {
+        const rootPath = window.location.origin;
+        window.location.href = `${rootPath}/login/login.html`;
+    }
+}
+
+
+// Call this function immediately
+checkTokensAndRedirect();

@@ -3,7 +3,8 @@ baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 // baseURL = 'https://dineops.onrender.com/api/';
 // baseURL = 'http://140.238.255.139:8080/api/';
 
-
+// Disable all console statements
+// terminateConsole();
 
 // console.log(baseURL);
 
@@ -19,13 +20,13 @@ function checkTokensAndRedirect() {
 
     if (!accessToken || !refreshToken) {
         const rootPath = window.location.origin;
-        window.location.href = `${rootPath}/hotel-iswar/login/login.html`;
+        window.location.href = `${rootPath}/login/login.html`;
     }
 }
 
 
 // Call this function immediately
-// checkTokensAndRedirect();
+checkTokensAndRedirect();
 
 
 
