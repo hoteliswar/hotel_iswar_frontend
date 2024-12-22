@@ -324,8 +324,6 @@ function paymentPOST(bill) {
 
 }
 
-
-
 // Close the settle modal
 document.querySelector('.close-payment').onclick = function () {
     const settleModal = document.getElementById('paymentModal');
@@ -337,10 +335,6 @@ document.querySelector('.close-payment').onclick = function () {
         settleModal.style.display = 'none';
     }, 300);
 }
-
-
-
-// 
 
 async function generatePrintableBill(item) {
     // Get required data from localStorage

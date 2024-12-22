@@ -297,7 +297,7 @@ async function refreshAccessToken3(url, option) {
 
 // Refresh Category List
 function getCategoryListRefresh() {
-    
+
     return new Promise((resolve, reject) => {
         const url = `${baseURL}foods/categories/`;
         const option = {
@@ -938,6 +938,7 @@ function customAlert(message, type = 'info') {
         }, 300);
     }, 5000);
 }
+
 
 // Override default alert
 alert = customAlert;

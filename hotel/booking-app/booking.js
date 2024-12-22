@@ -104,7 +104,7 @@ async function convertToRequiredFormat_ListView() {
                 } else if (room.check_in_details && !room.check_out_date) {
                     status = 'checkin';
                 } else if (booking.status === 'confirmed') {
-                    status = 'confirmed'
+                    status = 'booked'
                 } else if (booking.status === 'partial_checked_in_out' || 'partial_checked_in') {
                     if (room.check_in_details && !room.check_out_date) {
                         status = 'checkin';
@@ -499,7 +499,7 @@ function generateDayCells(roomNumber, date) {
 
         if (bookingInfo) {
             switch (bookingInfo.status) {
-                case 'booked':
+                case 'confirmed':
                     cellClass = 'booked';
                     break;
                 case 'checkin':
@@ -655,22 +655,33 @@ function showBookingModal(roomNumber, dateString) {
     loadBookingModal(bookingInfo, roomNumber);
 }
 
+
 function loadBookingModal(bookingInfo, roomNumber) {
     if (bookingInfo) {
         console.log(bookingInfo);
         let modalContent = `
             <div class = "booking-details-card">
-            <button class="btn-bookingadd bd-card" id="btn-bookingadd" onclick="">Add Room</button>
-            <button class="btn-bookingedit bd-card" id="btn-bookingedit" onclick="editBooking(${bookingInfo.roomid}, ${bookingInfo.bookingId});">Edit Booking</button>
-            <button class="btn-bookingdetails bd-card" id="btn-bookingdetails" onclick="editBookingDetails(${bookingInfo.bookingId});">Edit Billing Details</button>
-            <button class="btn-bookingcanc bd-card" id="btn-bookingcanc" onclick="roomBookCancel(${bookingInfo.roomid}, ${bookingInfo.bookingId});">Cancel Room</button>
+                <button class="btn-bookingadd bd-card" id="btn-bookingadd" onclick="" style="display: none">Add Room</button>
+                <button class="btn-bookingedit bd-card" id="btn-bookingedit" onclick="editBooking(${bookingInfo.roomid}, ${bookingInfo.bookingId});">Edit Booking</button>
+                <button class="btn-bookingdetails bd-card" id="btn-bookingdetails" onclick="editBookingDetails(${bookingInfo.bookingId});">Edit Billing Details</button>
+                <button class="btn-bookingcanc bd-card" id="btn-bookingcanc" onclick="roomBookCancel(${bookingInfo.roomid}, ${bookingInfo.bookingId});">Cancel Room</button>
+            </div> 
+            <div class = "booking-details-card">
+                <button class="btn-report bd-card-2" id="btn-report" onclick="" style="display: none">Report
+                    <i class="fa fa-download" aria-hidden="true"></i>
+                </button>
+                <button class="btn-receiept bd-card-2" id="btn-receiept" onclick="downloadReciept(${bookingInfo.bookingId});">Booking Reciept
+                    <i class="fa fa-download" aria-hidden="true"></i>
+                </button>
             </div> <br>
-            <div class="booking-modal-data">
+            <div class="booking-modal-data cols">
                 <p><div class="booking-data-head">Booking Id:</div>  ${bookingInfo.bookingId}</p>
-                <p><div class="booking-data-head">Billing Name:</div> ${bookingInfo.guestName}</p>
+                <p><div class="booking-data-head">Name:</div> ${bookingInfo.guestName}</p>
                 <!--<p><strong>Age:</strong> ${bookingInfo.age}</p>-->
                 <p><div class="booking-data-head">Email:</div> ${bookingInfo.email}</p>
                 <p><div class="booking-data-head">Phone:</div> ${bookingInfo.phoneNumber}</p>
+                </div>
+            <div class="booking-modal-data cols">
                 <p><div class="booking-data-head">Room No:</div> ${roomNumber}</p>
                 <p><div class="booking-data-head">From:</div> ${formatDate(bookingInfo.checkIn)}</p>
                 <p><div class="booking-data-head">To:</div> ${formatDate(bookingInfo.checkOut)}</p>
@@ -1786,6 +1797,188 @@ function roomBookCancel(roomid, bookingId) {
 
 
 }
+
+function downloadReciept(bookingId){
+    alert("Downloading Receipt", 'success');
+    downloadReciept(bookingId);
+}
+
+function convertToIST(dateString) {
+    const date = new Date(dateString);
+    date.setHours(date.getHours() - 5);
+    date.setMinutes(date.getMinutes() - 30);
+    return date.toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    });
+}
+
+function downloadReciept(bookingId) {
+    // Get booking data from localStorage
+    const bookings = JSON.parse(localStorage.getItem('bookingsList')) || [];
+    const booking = bookings.find(b => b.id === bookingId);
+    const roomsList = JSON.parse(localStorage.getItem('roomsList')) || [];
+
+    if (!booking) {
+        alert('Booking not found', 'error');
+        return;
+    }
+
+    // Create receipt container
+    const receiptContainer = document.createElement('div');
+    receiptContainer.className = 'bill-container';
+
+    // Create receipt page
+    const page = document.createElement('div');
+    page.className = 'bill-page';
+
+    const pageContainer = document.createElement('div');
+    pageContainer.className = 'page-container';
+
+    // Create and append header
+    const header = document.createElement('div');
+    header.className = 'bill-header';
+    header.innerHTML = `
+        <header class="bill-header">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="./../order_bill/logo.png" alt="Hotel Logo" class="restaurant-logo">
+                </div>
+                <div class="restaurant-details">
+                    <h3>Hotel Iswar & Family Restaurant</h3>
+                    <p>Central Road, Silchar, Assam, 788001</p>
+                    <p>+91 38423 19540 / +91 6003704064</p>
+                    <p>www.hoteliswar.in</p>
+                    <p>GST No: 18BDXPS2451N1ZK</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="invoice-customer-info">
+            <div class="invoice-info">
+                <h3>Booking Confirmation</h3>
+                <div>Booking ID: <span>${booking.id}</span></div>
+                <div>Booking Date: <span>${convertToIST(booking.booking_date)}</span></div>
+                <div>Status: <span>${booking.status}</span></div>
+            </div>
+
+            <div class="bill-details">
+                <h3>Guest Details</h3>
+                <div>Name: <span>${booking.guest_detail[0].first_name} ${booking.guest_detail[0].last_name}</span></div>
+                <div>Email: <span>${booking.guest_detail[0].email}</span></div>
+                <div>Phone: <span>${booking.guest_detail[0].phone}</span></div>
+                <div>Address: <span>${booking.guest_detail[0].address_line_1}, ${booking.guest_detail[0].address_line_2}</span></div>
+            </div>
+        </section>
+    `;
+    pageContainer.appendChild(header);
+
+    // Room Details Section
+    const roomSection = document.createElement('div');
+    roomSection.className = 'bill-section';
+    roomSection.innerHTML = `
+        <h3>Room Details</h3>
+        <table class="bill-table">
+            <thead>
+                <tr>
+                    <th>Room No</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${booking.rooms.map(room => {
+                    const roomDetails = roomsList.find(r => r.id === room.room);
+                    return `
+                        <tr>
+                            <td>${roomDetails ? roomDetails.room_number : room.room}</td>
+                            <td>${convertToIST(room.start_date)}</td>
+                            <td>${convertToIST(room.end_date)}</td>
+                            <td>${room.is_active ? 'Active' : 'Inactive'}</td>
+                        </tr>
+                    `;
+                }).join('')}
+            </tbody>
+        </table>
+    `;
+    pageContainer.appendChild(roomSection);
+
+    // Payment Details Section
+    const paymentSection = document.createElement('div');
+    paymentSection.className = 'bill-section';
+    paymentSection.innerHTML = `
+        <h3>Payment Details</h3>
+        <table class="summary-table">
+            <tr>
+                <td>Sub Amount:</td>
+                <td class="amount">₹ ${parseFloat(booking.total_amount).toFixed(2)}</td>
+            </tr>
+            <tr>
+                <td>GST (18%):</td>
+                <td class="amount">₹ ${(parseFloat(booking.total_amount).toFixed(2) * 0.18).toFixed(2)}</td>
+            </tr>
+            <tr>
+                <td>Net Total:</td>
+                <td class="amount">₹ ${(parseFloat(booking.total_amount) * 1.18).toFixed(2)}</td>
+            </tr>
+            <tr>
+                <td>Advance Paid:</td>
+                <td class="amount">₹ ${booking.advance ? parseFloat(booking.advance).toFixed(2) : '0.00'}</td>
+            </tr>
+        </table>
+    `;
+    pageContainer.appendChild(paymentSection);
+
+    // Terms and Conditions
+    const termsSection = document.createElement('div');
+    termsSection.className = 'bill-section';
+    termsSection.innerHTML = `
+        <h3>Terms & Conditions</h3>
+        <ol>
+            <li>Check-in time: 12:00 PM, Check-out time: 11:00 AM</li>
+            <li>Valid ID proof is mandatory at check-in</li>
+            <li>Early check-in and late check-out subject to availability</li>
+            <li>Cancellation policy applies as per hotel terms</li>
+            <li>Advance payment is non-refundable</li>
+        </ol>
+    `;
+    pageContainer.appendChild(termsSection);
+
+    // Add footer
+    const footer = document.createElement('div');
+    footer.className = 'bill-footer';
+    footer.innerHTML = `
+        <div class="bill-footer-text">
+            * * * Thank you for choosing Hotel Iswar & Family Restaurant! * * *
+        </div>
+    `;
+    pageContainer.appendChild(footer);
+
+    page.appendChild(pageContainer);
+    receiptContainer.appendChild(page);
+
+    // Create print window
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Booking Confirmation - ${booking.id}</title>
+                <style>${getBillStyles()}</style>
+            </head>
+            <body>
+                ${receiptContainer.outerHTML}
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+}
+
 
 // Close modal handler
 document.querySelector('.close-edit').onclick = function () {
@@ -3258,6 +3451,12 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
     const customerId = document.getElementById('customerId');
     const advanceBookingAmount = document.getElementById('advance-booking-amount').value;
 
+    // remove ruppee symbol and space from totalBookingAmount
+    const totalBookingAmount = document.querySelector('.total-booking-amount-value')
+    .textContent
+    .replace('₹', '')
+    .trim();
+
     // If any of the above fields are empty, alert the user
     if (!bookingPhone || !bookingEmail || !bookingFname || !bookingLname || !bookingAddress || !customerState || !customerNationality) {
         if (!bookingPhone) {
@@ -3290,8 +3489,10 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
         }
     }
 
+    let status = 'confirmed';
     if (advanceBookingAmount === null) {
         advanceBookingAmount = 0;
+        let status = 'pending';
     }
 
     console.log("Booking data:", bookingData);
@@ -3306,7 +3507,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
         'address_line_2': customerState + " , " + customerNationality,
         'id': customerId,
         'advance': advanceBookingAmount,
-        // 'total_amount': totalBookingAmount,
+        'total_amount': totalBookingAmount,
         'rooms': bookingData,
         'status': 'pending'
     }
@@ -3320,8 +3521,9 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
     bookingFormData.append('last_name', bookingLname);
     bookingFormData.append('address_line_1', bookingAddress);
     bookingFormData.append('address_line_2', customerState + " , " + customerNationality);
+    bookingFormData.append('total_amount', totalBookingAmount);
     bookingFormData.append('advance', advanceBookingAmount);
-    bookingFormData.append('status', 'pending');
+    bookingFormData.append('status', status);
     bookingFormData.append('rooms', JSON.stringify(bookingData));
     if (customerId.files.length > 0) {
         // Loop through all selected files
@@ -3535,3 +3737,304 @@ function createStateInput() {
 }
 
 
+function getBillStyles() {
+    return `
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        .bill-container {
+            font-family: Arial, sans-serif;
+            width: 210mm; /* A4 width */
+            margin: 0 auto;
+        }
+
+        .bill-page {
+            position: relative;
+            width: 210mm;
+            height: 297mm;
+            padding: 10mm;
+            page-break-after: always;
+            box-sizing: border-box;
+            background: white;
+        }
+
+        .page-container {
+            position: relative;
+            height: 100%;
+            border: 1px solid #000;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        .bill-content {
+            position: relative;
+            min-height: calc(297mm - 40mm - 80mm); /* Full height minus margins minus footer */
+            padding-bottom: 80mm; /* Space for footer */
+        }
+
+        .bill-header {
+            text-align: center;
+            margin-bottom: 0px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: flex-start;  /* Changed from center to flex-start */
+            justify-content: space-between;  /* Changed from center to space-between */
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            flex: 0 0 auto;  /* Prevents logo from growing or shrinking */
+        }
+
+        .restaurant-logo {
+            width: 100px;
+            height: auto;
+        }
+
+        .restaurant-details {
+            text-align: right;  /* Changed from center to right */
+            flex: 1;  /* Allows details to take remaining space */
+            margin-left: 20px;  /* Space between logo and details */
+        }
+
+        .restaurant-details h3 {
+            margin: 0;
+            color: #333;
+            font-size: 1.5em;
+            text-align: right;  /* Ensure heading is also right-aligned */
+        }
+
+        .restaurant-details p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            text-align: right;  /* Ensure paragraphs are right-aligned */
+        }
+
+        .invoice-customer-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+            padding: 10px;
+            border-top: 2px solid #999;
+            border-bottom: 2px solid #999;
+            gap: 20px;  /* Add space between the two sections */
+        }
+
+        .invoice-info, .bill-details {
+            flex: 1;
+            text-align: left;  /* Ensure left alignment */
+        }
+
+        .invoice-info h3, .bill-details h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+            text-align: left;
+            border-bottom: none;
+            padding-bottom: 5px;
+        }
+
+        .invoice-info h3 {
+            margin-bottom: 3px;
+        }
+
+        .invoice-info div, .bill-details div {
+            margin: 5px 0;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        .invoice-info span, .bill-details span {
+            display: inline-block;
+            margin-left: 5px;
+            font-weight: 500;
+        }
+
+        .bill-section {
+            margin: 20px 0;
+        }
+
+        .bill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .bill-table th, .bill-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .bill-table th {
+            background-color: #f5f5f5;
+        }
+
+        .bill-summary {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .bill-summary table {
+            margin-left: auto;
+            width: 300px;
+        }
+
+        .bill-summary td {
+            padding: 5px;
+        }
+
+        .bill-footer {
+            position: absolute;
+            bottom: 4mm;
+            left: 5mm;
+            right: 5mm;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .kot-line {
+            text-align: left;
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+        }
+
+        .kot-head {
+            font-weight: 500;
+            margin-right: 5px;
+        }
+
+        .cashier-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0 0 0;
+            padding: 0;
+        }
+
+        .cashier-left {
+            text-align: left;
+        }
+
+        .cashier-right {
+            text-align: right;
+        }
+
+        .license-nos {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .bill-footer-text {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+
+            .bill-page {
+                margin: 0;
+                border: none;
+                width: 210mm;
+                height: 297mm;
+                page-break-after: always;
+            }
+
+            .restaurant-logo {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+
+        .summary-content {
+            padding: 0 0;
+        }
+
+        .summary-content h4{
+            margin: 0;
+        }
+
+        .summary-title {
+            text-align: center;
+            font-size: 1.5em;
+            color: #333;
+            margin: 0;
+        }
+
+        .summary-section {
+            margin-bottom: 15px;
+        }
+
+        .summary-section h4 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .summary-table td {
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .summary-table .amount {
+            text-align: right;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+
+        .subtotal {
+            background-color: #f8f8f8;
+            font-weight: 500;
+        }
+
+        .grand-total {
+            margin-top: 10px;
+        }
+
+        .grand-total h3 {
+            color: #333;
+            border-bottom-color: #333;
+        }
+
+        .final-total {
+            font-size: 0.9em;
+            background-color: #f0f0f0;
+            border-top: 2px solid #333;
+        }
+        
+        .advance-paid {
+            font-size: 0.8em;
+        }
+
+        .payable-amount {
+            font-size: 1em;
+        }
+
+        .final-total td {
+            padding: 12px 8px;
+        }
+
+            
+
+    `;
+}

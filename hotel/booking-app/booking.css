@@ -310,7 +310,7 @@ td {
     transition: right 0.3s ease-out;
 }
 .calendar-modal{
-    max-width: 40%;
+    max-width: 50%;
 }
 .new-booking {
     max-width: 65%;
@@ -656,6 +656,12 @@ td {
     font-weight: 600;
 }
 
+.booking-modal-data{
+    width: 49%;
+    display: inline-block;
+}
+
+
 .service-list li{
     list-style-type: none;
     background-color: #fff3e2;
@@ -725,6 +731,23 @@ td {
     text-align: center;
 }
 
+.bd-card-2{
+    background-color: #f6a903;
+    border: 0;
+    border-radius: 4px;
+    min-height: 25px;
+    max-height: 25px;
+    min-width: 130px;
+    max-width: 130px;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-right: 5px;
+    padding: 0;
+    text-align: center;
+    color: #fff;
+}
+
 .modal-body .booking-details-card .btn-bookingadd {
     background-color: #00cf34;
 }
@@ -739,6 +762,14 @@ td {
 
 .modal-body .booking-details-card .btn-bookingcanc {
     background-color: #f65403;
+}
+
+.modal-body .booking-details-card .btn-report {
+    background-color: #168aad;
+}
+
+.modal-body .booking-details-card .btn-receiept {
+    background-color: #168aad;
 }
 
 .modal-body .booking-details-card .btn-bookingadd:hover,
@@ -1184,3 +1215,23 @@ td {
     border: 1px solid #ddd;
     border-radius: 4px;
 }
+
+.modal-header-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.close {
+    font-size: 28px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.modal-header-2 {
+    flex-grow: 1;
+    text-align: center;
+    margin-left: -28px; /* Offset close button width */
+}
+
