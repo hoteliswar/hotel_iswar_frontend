@@ -19,7 +19,7 @@ document.getElementById('viewToggle').addEventListener('click', function () {
     });
 });
 
-getAllBookings();
+// getAllBookings();
 
 document.getElementById('viewToggle').click();
 
