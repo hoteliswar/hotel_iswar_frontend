@@ -1,11 +1,11 @@
-// baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 // baseURL = 'http://127.0.0.1:8000/api/';
 // baseURL = 'https://dineops.onrender.com/api/';
-baseURL = 'http://140.238.255.139:8080/api/';
-// baseURL = 'http://140.238.255.139:8001/api/';
+// baseURL = 'http://140.238.255.139:8080/api/';
 
 
-console.log(baseURL);
+
+// console.log(baseURL);
 
 // Add this at the beginning of your file, after baseURL declaration
 function checkTokensAndRedirect() {
@@ -943,7 +943,7 @@ function customAlert(message, type = 'info') {
 alert = customAlert;
 
 // Disable all console statements
-// terminateConsole();
+terminateConsole();
 
 function terminateConsole() {
     console.log = function () { }

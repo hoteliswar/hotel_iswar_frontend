@@ -19,7 +19,7 @@ document.getElementById('viewToggle').addEventListener('click', function () {
     });
 });
 
-// getAllBookings();
+getAllBookings();
 
 document.getElementById('viewToggle').click();
 
@@ -1310,7 +1310,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
 
         const cancelledBtn = document.querySelector('.modal-body .booking-details-card #btn-bookingcanc');
         const editdetailBtn = document.querySelector('.modal-body .booking-details-card #btn-bookingedit');
-        
+
         cancelledBtn.disabled = true;
         cancelledBtn.style.backgroundColor = '#9e9e9e';
         cancelledBtn.style.cursor = 'not-allowed';
@@ -1457,7 +1457,7 @@ function editBooking3(bookingId) {
 function editBooking(roomid, bookingId) {
     // alert('Edit Booking coming soon', 'success');
     console.log("editBooking called");
-    alert(bookingId, 'success');
+    // alert(bookingId, 'success');
 
     // Function to handle the edit booking modal
     const editBookingModal = document.getElementById('editBookingModal');
@@ -1465,7 +1465,7 @@ function editBooking(roomid, bookingId) {
         setTimeout(() => editBookingModal.classList.add('show'), 10);
         editBookingModal.style.display = 'block';
     }
- 
+
     // Get complete booking details from local storage bookingsList using bookingId and  fill the fields in the modal
     const bookingList = JSON.parse(localStorage.getItem('bookingsList') || '[]');
     const booking = bookingList.find(b => b.id === bookingId);
@@ -1484,7 +1484,124 @@ function editBooking(roomid, bookingId) {
     document.getElementById('editStartTime').value = room.start_date;
     document.getElementById('editLastTime').value = room.end_date;
 
-    console.log(JSON.parse(roomBookings));
+    let start_date = new Date(room.start_date);
+    let end_date = new Date(room.end_date);
+
+    let formatted_start_date = start_date.toISOString().slice(0, 16);
+    let formatted_end_date = end_date.toISOString().slice(0, 16);
+
+    // remove :00Z from room.start_date & room.end_date and put value
+    document.getElementById('newstartDate').value = formatted_start_date;
+    document.getElementById('newendDate').value = formatted_end_date;
+
+    console.log(roomBookings);
+    // checkRoomAvailability_forEdit();
+
+    function checkRoomAvailability_forEdit() {
+        // Get form values
+        const newStartDate = (document.getElementById('newstartDate').value);
+        const newEndDate = (document.getElementById('newendDate').value);
+        const roomNumber = document.getElementById('editExistingRoom').value;
+        const oldStartDate = new Date(document.getElementById('editStartTime').value);
+        const oldEndDate = new Date(document.getElementById('editLastTime').value);
+
+        // Get bookings
+        const bookings = JSON.parse(localStorage.getItem('bookingsList')) || [];
+
+        // Find room bookings excluding current booking
+        const roomBookings = bookings.flatMap(booking =>
+            booking.rooms.filter(room => {
+                const roomDetails = JSON.parse(localStorage.getItem('roomsList')).find(r => r.id === room.room);
+                return roomDetails.room_number === roomNumber &&
+                    !(new Date(room.start_date).getTime() === oldStartDate.getTime() &&
+                        new Date(room.end_date).getTime() === oldEndDate.getTime());
+            })
+        );
+
+        // Check for overlapping bookings
+        const hasOverlap = roomBookings.some(booking => {
+            const bookingStart = (booking.start_date);
+            const bookingEnd = (booking.end_date);
+
+            console.log(newStartDate, '<', bookingEnd, '&&', newEndDate, '>', bookingStart);
+
+
+            return (newStartDate < bookingEnd && newEndDate > bookingStart);
+        });
+
+        return !hasOverlap;
+    }
+
+    // Add event listener to check availability
+    document.getElementById('edit-booking-btn').onclick = function () {
+        if (checkRoomAvailability_forEdit()) {
+            alert('Room is available for selected dates', 'success');
+            // Proceed with booking update
+            PATCHedit_booking();
+        } else {
+            alert('Room is not available for selected dates', 'error');
+        }
+    };
+
+    // Function to update booking
+    function PATCHedit_booking() {
+        const bookingId = booking.id;
+        let newStartDate = (document.getElementById('newstartDate').value) + ':00Z';
+        let newEndDate = (document.getElementById('newendDate').value) + ':00Z';
+        const roomNumber = document.getElementById('editExistingRoom').value;
+
+        console.log(bookingId, newStartDate, newEndDate, roomNumber, roomid);
+
+        const formdata = new FormData();
+        formdata.append("update_rooms", `[{\"room_id\": ${roomid},\"start_date\":\"${newStartDate}\",\"end_date\":\"${newEndDate}\"}]`);
+
+        showLoading();
+        const options = {
+            method: 'PATCH',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+            },
+            body: formdata
+        };
+        const url = `${baseURL}hotel/bookings/${bookingId}/`;
+
+        refreshAccessToken2(url, options)
+            .then(data => {
+                console.log("Patch: Timings Changed:", data);
+                alert("Timings changed Successfully", 'success');
+
+                // Get bookings from localStorage
+                const allBookings = JSON.parse(localStorage.getItem('bookingsList')) || [];
+                // Update specific booking and room
+                const updatedBookings = allBookings.map(booking => {
+                    if (booking.id === bookingId) {
+                        booking.rooms = booking.rooms.map(room => {
+                            if (room.room === roomid) {
+                                return {
+                                    ...room,
+                                    start_date: newStartDate,
+                                    end_date: newEndDate
+                                };
+                            }
+                            return room;
+                        });
+                    }
+                    return booking;
+                });
+
+                // Save back to localStorage
+                localStorage.setItem('bookingsList', JSON.stringify(updatedBookings));
+
+                document.getElementById('booking').click();
+
+                hideLoading();
+            })
+            .catch(error => {
+                console.error("Error changing time:", error);
+                alert("Error in: Timing Change", 'error');
+                hideLoading();
+            });
+    }
 
 
 }
