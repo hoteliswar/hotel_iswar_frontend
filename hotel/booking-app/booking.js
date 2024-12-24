@@ -830,7 +830,7 @@ function loadBookingModal(bookingInfo, roomNumber) {
 
         }
 
-        if (bookingInfo.status === 'pending' || bookingInfo.status === 'noshow') {
+        if (bookingInfo.status === 'pending' || bookingInfo.status === 'noshow' || bookingInfo.status === 'confirmed') {
             // modalContent += `
             //     <p><strong>Status:</strong> ${bookingInfo.status}</p>
             // `;
