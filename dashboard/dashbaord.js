@@ -1,5 +1,4 @@
 
-
 function getCookie(name) {
     let value = "; " + document.cookie;
     let parts = value.split("; " + name + "=");
@@ -153,7 +152,4 @@ function checkOrientation() {
 window.addEventListener("orientationchange", checkOrientation);
 window.addEventListener("resize", checkOrientation);
 checkOrientation(); // Initial check
-
-
-
 
