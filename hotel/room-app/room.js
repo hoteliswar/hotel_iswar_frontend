@@ -289,8 +289,9 @@ function updateRoomModal() {
             document.querySelector('.close').click();
 
             function updateRoom(roomData) {
+                showLoading();
 
-                const url = `${baseURL}hotel/rooms/`;
+                const url = `${baseURL}hotel/rooms/${roomData.id}`;
                 const options = {
                     method: 'PATCH',
                     headers: {
@@ -307,17 +308,26 @@ function updateRoomModal() {
                     .then(data => {
                         console.log('Data:', data);
                         console.table(data);
-                        alert("Room Created Successfully");
+                        alert("Room Updated Successfully");
                         getRoomsData();
                         return getRoomsData();
                     })
                     .then(() => {
-                        alert("Room Created Successfully");
+                        alert("Room Updated Successfully");
                         document.querySelector('.append-all-room').innerHTML = '';
+                        
+                        // update the local storage roomsList
+                        const roomsList = JSON.parse(localStorage.getItem('roomsList')) || [];
+                        const roomIndex = roomsList.findIndex(room => room.id === roomData.id);
+                        roomsList[roomIndex] = roomData;
+                        localStorage.setItem('roomsList', JSON.stringify(roomsList));
+                        
+                        hideLoading();
                         renderRoomData();
                     })
                     .catch(error => {
                         console.log('Error fetching data:', error);
+                        hideLoading();
                     });
             }
         }

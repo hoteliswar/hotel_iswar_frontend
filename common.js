@@ -1,10 +1,11 @@
-baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
-// baseURL = 'http://127.0.0.1:8000/api/';
+// baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 // baseURL = 'https://dineops.onrender.com/api/';
-// baseURL = 'http://140.238.255.139:8080/api/';
+
+
+baseURL = 'https://backend.hoteliswar.in/api/';
 
 // Disable all console statements
-terminateConsole();
+// terminateConsole();
 
 // console.log(baseURL);
 
@@ -1139,4 +1140,142 @@ async function callAllApi2() {
         customAlert('Error loading data', 'error');
     }
     console.log("Call Completed.");
+}
+
+// Custom confirm function that creates and manages its own HTML/CSS
+function customConfirm(message) {
+    return new Promise((resolve) => {
+        // Create the CSS styles
+        const styleId = 'custom-confirm-styles';
+        if (!document.getElementById(styleId)) {
+            const styleSheet = document.createElement('style');
+            styleSheet.id = styleId;
+            styleSheet.textContent = `
+                .custom-confirm-overlay {
+                    display: none;
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: rgba(0, 0, 0, 0.5);
+                    z-index: 1000;
+                    justify-content: center;
+                    align-items: center;
+                }
+                
+                .custom-confirm-box {
+                    background-color: white;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                    width: 300px;
+                    text-align: center;
+                }
+                
+                .confirm-title {
+                    margin: 0 0 15px 0;
+                    color: #333;
+                }
+                
+                .confirm-content {
+                    margin-bottom: 20px;
+                }
+                
+                .confirm-buttons {
+                    display: flex;
+                    justify-content: center;
+                    gap: 10px;
+                }
+                
+                .confirm-btn {
+                    padding: 8px 20px;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: background-color 0.2s;
+                }
+                
+                .yes-btn {
+                    background-color: #dc3545;
+                    color: white;
+                }
+                
+                .yes-btn:hover {
+                    background-color: #c82333;
+                }
+                
+                .no-btn {
+                    background-color: #6c757d;
+                    color: white;
+                }
+                
+                .no-btn:hover {
+                    background-color: #5a6268;
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        }
+
+        // Create the dialog HTML
+        const dialog = document.createElement('div');
+        dialog.id = 'customConfirmDialog';
+        dialog.className = 'custom-confirm-overlay';
+        dialog.innerHTML = `
+            <div class="custom-confirm-box">
+                <div class="confirm-content">
+                    <h3 class="confirm-title">Confirm Delete</h3>
+                    <p id="confirmMessage">${message}</p>
+                </div>
+                <div class="confirm-buttons">
+                    <button id="confirmYes" class="confirm-btn yes-btn">Yes</button>
+                    <button id="confirmNo" class="confirm-btn no-btn">No</button>
+                </div>
+            </div>
+        `;
+
+        // Add dialog to document
+        document.body.appendChild(dialog);
+
+        // Show dialog
+        dialog.style.display = 'flex';
+
+        // Get button elements
+        const yesButton = dialog.querySelector('#confirmYes');
+        const noButton = dialog.querySelector('#confirmNo');
+
+        function cleanup() {
+            dialog.remove();
+            resolve(false);
+        }
+
+        function handleYes() {
+            dialog.remove();
+            resolve(true);
+        }
+
+        function handleNo() {
+            cleanup();
+        }
+
+        // Add event listeners
+        yesButton.addEventListener('click', handleYes);
+        noButton.addEventListener('click', handleNo);
+
+        // Close on click outside
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) {
+                cleanup();
+            }
+        });
+
+        // Close on escape key
+        document.addEventListener('keydown', function handler(e) {
+            if (e.key === 'Escape') {
+                cleanup();
+                document.removeEventListener('keydown', handler);
+            }
+        });
+    });
 }

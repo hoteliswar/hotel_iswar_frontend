@@ -76,33 +76,43 @@ function addItemToList(name, price, category, description, imageSrc, status, id,
 
 
 // API Call to delete food item - DELETE
-function deleteFood(id) {
-    showLoading();
-    const option = {
-        method: 'DELETE',
-        headers: {
-            'Authorization': 'Bearer ' + getCookie('access_token'),
-            'Content-Type': 'application/json'
+async function deleteFood(id) {
+
+    // get item name using id from local storage
+    const allFoodList = JSON.parse(localStorage.getItem('allFoodList'));
+    const itemName = allFoodList.find(item => item.id === id).name;
+
+    // Use confirm() instead of alert() to get user input
+    const confirmDelete = await customConfirm(`Are you sure you want to delete ${itemName}?`);
+
+    if (confirmDelete) {
+        showLoading();
+        const option = {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            }
         }
+        const url = `${baseURL}foods/fooditems/${id}/`;
+        refreshAccessToken2(url, option)
+            // .then(response => response.json())
+            .then(async data => {
+                console.log('Data Deleted:', data);
+
+                const allFoodList = JSON.parse(localStorage.getItem('allFoodList'));
+                const updatedList = allFoodList.filter(item => item.id !== id);
+                localStorage.setItem('allFoodList', JSON.stringify(updatedList));
+
+                alert(`${itemName} Deleted Successfully`, 'success');
+                document.getElementById('nav-item-items').click();
+                hideLoading();
+            })
+            .catch(error => {
+                console.log('Error fetching data:', error);
+                alert('Item not deleted', 'error');
+            });
     }
-    const url = `${baseURL}foods/fooditems/${id}/`;
-    refreshAccessToken2(url, option)
-        // .then(response => response.json())
-        .then(async data => {
-            console.log('Data Deleted:', data);
-
-            const allFoodList = JSON.parse(localStorage.getItem('allFoodList'));
-            const updatedList = allFoodList.filter(item => item.id !== id);
-            localStorage.setItem('allFoodList', JSON.stringify(updatedList));
-
-            alert('Item Deleted Successfully', 'success');
-            document.getElementById('nav-item-items').click();
-            hideLoading();
-        })
-        .catch(error => {
-            console.log('Error fetching data:', error);
-            alert('Item not deleted', 'error');
-        });
 
 }
 
@@ -401,6 +411,8 @@ function createFood(itemData) {
     console.log(itemData.status);
     console.log(itemData.veg);
 
+    showLoading();
+
     const option = {
         method: 'POST',
         headers: {
@@ -428,11 +440,15 @@ function createFood(itemData) {
             // addItemToList(data.name, data.price, data.category_id, data.description, '', data.status, data.veg);
             alert("Food Item Created Successfully", 'success');
             // coldReload();
+            hideLoading();
+            document.getElementById('nav-item-items').click();
+
         })
 
         .catch(error => {
             console.log('Error fetching data:', error);
             alert('Food Item not created', 'error');
+            hideLoading();
         });
 }
 
