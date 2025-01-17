@@ -289,9 +289,12 @@ function updateRoomModal() {
             document.querySelector('.close').click();
 
             function updateRoom(roomData) {
+                // find id for roomData from local storage
+                const roomsList = JSON.parse(localStorage.getItem('roomsList')) || [];
+                const roomId = roomsList.find(room => room.room_number === roomData.room_number).id;
                 showLoading();
 
-                const url = `${baseURL}hotel/rooms/${roomData.id}`;
+                const url = `${baseURL}hotel/rooms/${roomId}/`;
                 const options = {
                     method: 'PATCH',
                     headers: {
