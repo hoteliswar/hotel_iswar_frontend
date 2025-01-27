@@ -1279,3 +1279,75 @@ function customConfirm(message) {
         });
     });
 }
+
+// add a element to the top of body to show a marquee text
+function addMarqueeText() {
+    // Remove any existing marquee element
+    const existingMarquee = document.getElementById('custom-marquee-container');
+    if (existingMarquee) {
+        existingMarquee.remove();
+    }
+
+    // Create container
+    const container = document.createElement('div');
+    container.id = 'custom-marquee-container';
+    
+    // Create text element
+    const text = document.createElement('div');
+    text.id = 'custom-marquee-text';
+    text.textContent = 'Note: Please clear all the outstanding payments before 31st January 2025 to avoid software interruptions.';
+    
+    // Add elements to DOM
+    container.appendChild(text);
+    document.body.insertBefore(container, document.body.firstChild);
+
+    // Add styles
+    const style = document.createElement('style');
+    style.textContent = `
+        #custom-marquee-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(45deg, #ff9800, #ff5722);
+            color: white;
+            padding: 8px 0;
+            overflow: hidden;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        #custom-marquee-text {
+            white-space: nowrap;
+            display: inline-block;
+            padding-left: 100%;
+            animation: marquee 20s linear infinite;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        @keyframes marquee {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Pause animation on hover */
+        #custom-marquee-container:hover #custom-marquee-text {
+            animation-play-state: paused;
+        }
+
+        /* Adjust body padding to account for fixed marquee */
+        body {
+            padding-top: 40px;
+        }
+    `;
+
+    document.head.appendChild(style);
+}
+
+// Call the function after DOM is loaded
+document.addEventListener('DOMContentLoaded', addMarqueeText);
