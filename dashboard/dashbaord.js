@@ -109,7 +109,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 // Landscape Alert
-
 function checkOrientation() {
     if (window.innerWidth <= 900) {
         let overlay = document.getElementById('orientationOverlay');

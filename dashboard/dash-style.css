@@ -19,10 +19,17 @@ body {
     height: 9vh;
 }
 
+.logo{
+    width: 50px;
+    height: 45px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
 .header-title{
     font-size: 1.7em;
-    font-weight: 600;
-    color: rgb(255, 175, 2);
+    font-weight: 700;
+    color: #ffaf02;
     /* text-align: center; */
     padding: 10px;
     padding-left: 20px;

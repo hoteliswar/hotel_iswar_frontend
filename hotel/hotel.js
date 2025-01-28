@@ -4,9 +4,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const insertAllModal = document.querySelector('.insert-all-modal');
 
     loadContent('HOME');   // Load the default content
+    navItems[0].classList.add('selected');
 
     navItems.forEach(item => {
         item.addEventListener('click', function () {
+            navItems.forEach(nav => nav.classList.remove('selected'));
+            this.classList.add('selected');
+
             const navName = this.querySelector('.nav-name').textContent.trim();
             loadContent(navName);
         });
@@ -153,3 +157,42 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
+// Landscape Alert
+function checkOrientation() {
+    if (window.innerWidth <= 900) {
+        let overlay = document.getElementById('orientationOverlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'orientationOverlay';
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(0, 0, 0, 1)';
+            overlay.style.zIndex = '9998';
+            document.body.appendChild(overlay);
+
+            let alertBox = document.createElement('div');
+            alertBox.id = 'orientationAlert';
+            alertBox.style.position = 'fixed';
+            alertBox.style.top = '50%';
+            alertBox.style.left = '50%';
+            alertBox.style.transform = 'translate(-50%, -50%)';
+            alertBox.style.padding = '40px';
+            alertBox.style.backgroundColor = 'white';
+            alertBox.style.color = 'black';
+            alertBox.style.textAlign = 'center';
+            alertBox.style.zIndex = '9999';
+            alertBox.style.borderRadius = '10px';
+            alertBox.style.boxShadow = '0 0 10px rgba(255,255,255,0.5)';
+            alertBox.textContent = "For the best experience, please use in landscape mode in Desktop or Tablet.";
+            overlay.appendChild(alertBox);
+        }
+    } else {
+        let overlay = document.getElementById('orientationOverlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    }
+}
