@@ -1,8 +1,8 @@
-baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+// baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 // baseURL = 'https://dineops.onrender.com/api/';
 
 
-// baseURL = 'https://backend.hoteliswar.in/api/';
+baseURL = 'https://backend.hoteliswar.in/api/';
 
 // Disable all console statements
 terminateConsole();

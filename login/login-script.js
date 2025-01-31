@@ -137,8 +137,10 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            username: username,
-            password: password
+            // username: username,
+            // password: password 
+            username: 'ExampleUser',
+            password: 'ExamplePass'
         })
     })
         .then(response => {
@@ -170,14 +172,17 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
             } else {
                 removeLoadingState();
                 console.error('Login failed:', data);
-                customAlert('Invalid username or password', 'error');
+                // customAlert('Invalid username or password', 'error');
+                customAlert('Server Down', 'error');
             }
         })
         .catch(error => {
             removeLoadingState();
             console.error('Error:', error);
-            customAlert('Invalid Username or Password', 'error');
+            // customAlert('Invalid Username or Password', 'error');
+            customAlert('Server Down', 'error');
             document.getElementById('password').value = '';
+            // window.location.href = './../login/login.html?msg=Server_Error';
         });
 });
 
