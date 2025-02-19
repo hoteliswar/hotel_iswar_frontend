@@ -1350,4 +1350,4 @@ function addMarqueeText() {
 }
 
 // Call the function after DOM is loaded
-document.addEventListener('DOMContentLoaded', addMarqueeText);
+// document.addEventListener('DOMContentLoaded', addMarqueeText);
