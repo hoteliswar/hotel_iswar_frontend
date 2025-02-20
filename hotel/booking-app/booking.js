@@ -3449,7 +3449,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
     const customerState = document.getElementById('customerState').value;
     const customerNationality = document.getElementById('customerNationality').value;
     const customerId = document.getElementById('customerId');
-    const advanceBookingAmount = document.getElementById('advance-booking-amount').value;
+    let advanceBookingAmount = document.getElementById('advance-booking-amount').value;
 
     // remove ruppee symbol and space from totalBookingAmount
     const totalBookingAmount = document.querySelector('.total-booking-amount-value')
@@ -3489,10 +3489,12 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
         }
     }
 
-    let status = 'confirmed';
-    if (advanceBookingAmount === null) {
+    let status = '';
+    if (!advanceBookingAmount || advanceBookingAmount == '') {
         advanceBookingAmount = 0;
-        let status = 'pending';
+        status = 'pending';
+    }else {
+        status = 'confirmed';
     }
 
     console.log("Booking data:", bookingData);
@@ -3509,7 +3511,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
         'advance': advanceBookingAmount,
         'total_amount': totalBookingAmount,
         'rooms': bookingData,
-        'status': 'pending'
+        'status': status
     }
     console.log(booking);
 
@@ -3571,7 +3573,6 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
                     localStorage.setItem('bookingsList', JSON.stringify([data]));
                 }
 
-
                 alert("Booked Successfully");
                 // await Promise.all([getAllBookings()]);
                 document.querySelector('.close2').click();
@@ -3580,6 +3581,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
             })
             .catch(error => {
                 console.log('Error fetching booked data:', error);
+                alert("Error Booking", 'error');
                 hideLoading();
             });
 
@@ -4038,3 +4040,35 @@ function getBillStyles() {
 
     `;
 }
+
+function refreshOrdersList() {
+
+    showLoading();
+    alert('Syncing Booking List', 'info');
+    const button = document.querySelector('#refresh-btn-orders');
+    button.classList.add('spinning');
+    console.log('Refreshing Booking List');
+
+    // Call your existing category fetch function here
+    getCompleteBooking()
+        .then(() => {
+            console.log('Booking List Refreshed');
+            // Remove spinning class after refresh
+            setTimeout(() => {
+                button.classList.remove('spinning');
+            }, 1000);
+            document.getElementById('orders').click();
+            hideLoading();
+            alert('Booking List Synced', 'success');
+        })
+        .catch(error => {
+            console.error('Error refreshing Booking:', error);
+            button.classList.remove('spinning');
+            alert('Error Syncing Booking List', 'error');
+            hideLoading();
+        });
+}
+
+// Add event listener for tooltip and refresh button
+document.querySelector('#refresh-btn-orders')?.addEventListener('click', refreshOrdersList);
+

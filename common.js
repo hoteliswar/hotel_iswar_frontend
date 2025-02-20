@@ -1,8 +1,8 @@
 // baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 // baseURL = 'https://dineops.onrender.com/api/';
+// 129.154.239.47
 
-
-baseURL = 'https://backend.hoteliswar.in/api/';
+baseURL = 'http://backend.hoteliswar.in:8001/api/';
 
 // Disable all console statements
 terminateConsole();
@@ -28,8 +28,6 @@ function checkTokensAndRedirect() {
 
 // Call this function immediately
 // checkTokensAndRedirect();
-
-
 
 // Helper function to save a cookie value
 function setCookie2(name, value, minutes) {
@@ -296,7 +294,6 @@ async function refreshAccessToken3(url, option) {
 }
 
 
-
 // Refresh Category List
 function getCategoryListRefresh() {
 
@@ -374,6 +371,30 @@ function getOrdersListRefresh() {
     });
 }
 
+function getCompleteBooking() {
+    return new Promise((resolve, reject) => {
+        const url = `${baseURL}hotel/bookings/`;
+        const option = {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + getCookie('access_token'),
+                'Content-Type': 'application/json'
+            }
+        };
+
+        refreshAccessToken2(url, option)
+            .then(data => {
+                console.log('Booking Data:', data);
+                localStorage.setItem('bookingsList', JSON.stringify(data));
+                getAllBookingsFromStorage();
+                resolve(data);
+            })
+            .catch(error => {
+                console.error('Error in bookingsList:', error);
+                reject(error);
+            });
+    });
+}
 
 
 // API Call GET Category List - Read

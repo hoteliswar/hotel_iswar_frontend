@@ -966,8 +966,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function saveOrderPOST(orderData) {
-            showLoading();
             console.table(orderData);
+            showLoading();
             const option = {
                 method: 'POST',
                 headers: {
@@ -2576,26 +2576,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-const orderbillItems = [
-    {
-        foodId: 1,
-        itemName: 'Item 1',
-        quantity: 2,
-        rate: 100,
-        total: 200
-    },
-    {
-        foodId: 2,
-        itemName: 'Item 2',
-        quantity: 1,
-        rate: 150,
-        total: 150
-    },
-    {
-        foodId: 3,
-        itemName: 'Item 3',
-        quantity: 3,
-        rate: 200,
-        total: 600
-    }
-]
+// const orderbillItems = [
+//     {
+//         foodId: 1,
+//         itemName: 'Item 1',
+//         quantity: 2,
+//         rate: 100,
+//         total: 200
+//     },
+//     {
+//         foodId: 2,
+//         itemName: 'Item 2',
+//         quantity: 1,
+//         rate: 150,
+//         total: 150
+//     },
+//     {
+//         foodId: 3,
+//         itemName: 'Item 3',
+//         quantity: 3,
+//         rate: 200,
+//         total: 600
+//     }
+// ]
