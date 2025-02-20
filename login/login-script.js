@@ -139,8 +139,6 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
         body: JSON.stringify({
             username: username,
             password: password 
-            // username: 'ExampleUser',
-            // password: 'ExamplePass'
         })
     })
         .then(response => {
@@ -163,7 +161,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
                     window.location.href = './../dashboard/dashboard.html';
                 } else {
                     alert('Please wait while we are fetching data from server...','info');
-                    // await getCallAllAPI();
+                    await getCallAllAPI();
                     window.location.href = './../dashboard/dashboard.html';
                 }
 
