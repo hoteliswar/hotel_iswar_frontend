@@ -5,7 +5,7 @@
 baseURL = 'http://backend.hoteliswar.in:8001/api/';
 
 // Disable all console statements
-terminateConsole();
+// terminateConsole();
 
 // console.log(baseURL);
 
