@@ -1798,7 +1798,7 @@ function roomBookCancel(roomid, bookingId) {
 
 }
 
-function downloadReciept(bookingId){
+function downloadReciept(bookingId) {
     alert("Downloading Receipt", 'success');
     downloadReciept(bookingId);
 }
@@ -1893,8 +1893,8 @@ function downloadReciept(bookingId) {
             </thead>
             <tbody>
                 ${booking.rooms.map(room => {
-                    const roomDetails = roomsList.find(r => r.id === room.room);
-                    return `
+        const roomDetails = roomsList.find(r => r.id === room.room);
+        return `
                         <tr>
                             <td>${roomDetails ? roomDetails.room_number : room.room}</td>
                             <td>${convertToIST(room.start_date)}</td>
@@ -1902,7 +1902,7 @@ function downloadReciept(bookingId) {
                             <td>${room.is_active ? 'Active' : 'Inactive'}</td>
                         </tr>
                     `;
-                }).join('')}
+    }).join('')}
             </tbody>
         </table>
     `;
@@ -2482,6 +2482,10 @@ function addGuestInfoRow() {
             <label for="cim-purpose">Purpose of Visit</label>
             <input type="text" id="cim-purpose" name="purpose" placeholder="Purpose of Visit" required>
         </div>
+        <div class="input-element-checkin sm">
+            <label for="cim-idcard">ID Card</label>
+            <input type="file" id="cim-idcard" name="idcard" required>
+        </div>
         <i class="fa-solid fa-circle-minus fa-2x remove-info-btn"></i>
     `;
 
@@ -2539,22 +2543,35 @@ function checkInSubmit() {
         const goingTo = row.querySelector('input[name="going"]');
         const purpose = row.querySelector('input[name="purpose"]');
         const idcard = row.querySelector('input[name="idcard"]');
+
+        // console.log(idcard.files.length);
+
         // if any data missing show alert
-        if (!firstName || !lastName || !guestPhone || !guestEmail || !nationality || !customerState || !comingFrom || !goingTo || !purpose) {
+        if (!firstName || !lastName || !guestPhone || !nationality || !customerState || !comingFrom || !goingTo || !purpose || !idcard) {
             console.log(`Missing element in row ${index + 1}:`, {
                 firstName: !!firstName,
                 lastName: !!lastName,
                 guestPhone: !!guestPhone,
-                guestEmail: !!guestEmail,
+                // guestEmail: !!guestEmail,
                 address_line_1: !!address,
                 nationality: !!nationality,
                 customerState: !!customerState,
+                idcard: !!idcard,
             });
             alert(`Error: Some elements are missing in row ${index + 1}. Please check the console for details.`);
             return;
         }
 
-        if (firstName.value && lastName.value && guestPhone.value && guestEmail.value && nationality.value && customerState.value && comingFrom.value && goingTo.value && purpose.value) {
+        const guestIdFiles = [];
+        if (idcard.files.length > 0) {
+            // Loop through all selected files
+            for (let i = 0; i < idcard.files.length; i++) {
+                guestIdFiles.push(idcard.files[i]);
+            }
+        }
+
+
+        if (firstName.value && lastName.value && guestPhone.value && nationality.value && customerState.value && comingFrom.value && goingTo.value && purpose.value) {
             guestsData.push({
                 first_name: firstName.value,
                 last_name: lastName.value,
@@ -2567,7 +2584,7 @@ function checkInSubmit() {
                 purpose: purpose.value,
                 dob: guestDOB.value,
                 foreigner: nationality.value === 'others' ? true : false,
-                // guest_id: idcard.value,
+                guest_id: guestIdFiles,
 
             })
         } else {
@@ -2592,11 +2609,15 @@ function checkInSubmit() {
         check_in_date: checkinDateTimeISO,
         guests: guestsData
     };
-    postCheckInData(checkInData);
     console.log("Check-In Data:", JSON.stringify(checkInData, null, 2));
-
+    postCheckInData(checkInData);
     console.log(`Room Number: ${roomNumber}`);
     console.log(`Check-In Date and Time: ${checkinDateTime}`);
+
+    // Using FormData
+
+    // Create FormData for the API request
+
 }
 
 function serviceSubmit() {
@@ -2671,7 +2692,8 @@ function postCheckInData(checkInData) {
             'Authorization': 'Bearer ' + getCookie('access_token'),
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(checkInData),
+        body: checkInData,
+        // body: JSON.stringify(checkInData),
     };
     const url = `${baseURL}hotel/checkin/`;
     refreshAccessToken2(url, options)
@@ -3453,9 +3475,9 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
 
     // remove ruppee symbol and space from totalBookingAmount
     const totalBookingAmount = document.querySelector('.total-booking-amount-value')
-    .textContent
-    .replace('₹', '')
-    .trim();
+        .textContent
+        .replace('₹', '')
+        .trim();
 
     // If any of the above fields are empty, alert the user
     if (!bookingPhone || !bookingEmail || !bookingFname || !bookingLname || !bookingAddress || !customerState || !customerNationality) {
@@ -3493,7 +3515,7 @@ document.getElementById('new-booking-btn').addEventListener('click', function (e
     if (!advanceBookingAmount || advanceBookingAmount == '') {
         advanceBookingAmount = 0;
         status = 'pending';
-    }else {
+    } else {
         status = 'confirmed';
     }
 

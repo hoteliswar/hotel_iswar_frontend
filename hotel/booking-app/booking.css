@@ -878,8 +878,10 @@ td {
 }
 
 .row-block {
-    border-bottom: 1px solid #bababa;
-    margin-top: 10px;
+    /* border-bottom: 1px solid #bababa; */
+    border-top: 4px solid #7c7c7c;
+    margin-top: 20px;
+    padding-top: 15px;
 }
 
 .modal-body-service {
