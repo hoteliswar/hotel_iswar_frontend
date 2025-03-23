@@ -1,11 +1,11 @@
-// baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
+baseURL = 'https://hotel-iswar-backend.onrender.com/api/';
 // baseURL = 'https://dineops.onrender.com/api/';
 // 129.154.239.47
 
-baseURL = 'http://backend.hoteliswar.in:8001/api/';
+// baseURL = 'http://backend.hoteliswar.in:8001/api/';
 
 // Disable all console statements
-// terminateConsole();
+terminateConsole();
 
 // console.log(baseURL);
 
@@ -385,6 +385,7 @@ function getCompleteBooking() {
         refreshAccessToken2(url, option)
             .then(data => {
                 console.log('Booking Data:', data);
+                localStorage.removeItem('bookingsList');
                 localStorage.setItem('bookingsList', JSON.stringify(data));
                 getAllBookingsFromStorage();
                 resolve(data);

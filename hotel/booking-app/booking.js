@@ -4073,20 +4073,28 @@ function refreshOrdersList() {
 
     // Call your existing category fetch function here
     getCompleteBooking()
-        .then(() => {
+        .then((data) => {
+            if (!data) {
+                throw new Error('No data received from getCompleteBooking');
+            }
             console.log('Booking List Refreshed');
+            console.log(data);
             // Remove spinning class after refresh
             setTimeout(() => {
                 button.classList.remove('spinning');
             }, 1000);
-            document.getElementById('orders').click();
             hideLoading();
+            const ordersTab = document.getElementById('orders');
+            if (ordersTab) {
+                // ordersTab.click();
+            }
             alert('Booking List Synced', 'success');
         })
         .catch(error => {
-            console.error('Error refreshing Booking:', error);
+            console.error('Error refreshing Booking:', error.message);
             button.classList.remove('spinning');
             alert('Error Syncing Booking List', 'error');
+            alert(`Error Syncing Booking List: ${error.message}`, 'error');
             hideLoading();
         });
 }
